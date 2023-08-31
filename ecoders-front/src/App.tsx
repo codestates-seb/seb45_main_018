@@ -3,14 +3,14 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 import './App.css';
 import CommunityPage from './pages/CommunityPage';
-import CommunityWritePage from './pages/CommunityWritePage';
+import CommunityPostWritePage from './pages/CommunityPostWritePage';
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/community" element={<CommunityPage />} />
-        <Route path="/community/write" element={<CommunityWritePage />} />
+        <Route path="/community/write" element={<CommunityPostWritePage />} />
         {/* <Route element={NotFound} /> */}
       </Routes>
     </BrowserRouter>

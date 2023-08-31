@@ -14,15 +14,17 @@ interface ButtonType {
     fontSize?: number;
     children?: string;
     weight?: string;
-    onClick?: () => void;
+    onClick?: React.MouseEventHandler<HTMLButtonElement>;
 }
 
 function CommonButton (props: ButtonType) {
     return (
         // {...props} 는 props로 받은 속성들을 styled component에 넘겨주는 역할
-        <Button {...props}>{props.children}</Button>
+        <Button {...props} onClick={props.onClick}>{props.children}</Button>
     );
 }
+
+export default CommonButton;
 
 const Button = styled.button<ButtonType>`
     cursor: pointer;
@@ -33,7 +35,7 @@ const Button = styled.button<ButtonType>`
     width: ${(props) => (props.width ? props.width : '100%')};
     height: ${(props) => (props.height ? props.height : '100%')};
     border: ${(props) => (props.border ? props.border : '1px solid black')};
-    font-size: ${(props) => (props.fontSize ? props.fontSize : '1.5rem')};
+    font-size: ${(props) => (props.fontSize ? props.fontSize : '1rem')};
     background-color: ${(props) => (props.bgColor ? props.bgColor : 'white')};
     color: ${(props) => (props.color ? props.color : 'black')};
 
@@ -43,5 +45,3 @@ const Button = styled.button<ButtonType>`
         color: ${(props) => (props.hoverColor ? props.hoverColor : 'white')};
     }
 `;
-
-export default CommonButton;

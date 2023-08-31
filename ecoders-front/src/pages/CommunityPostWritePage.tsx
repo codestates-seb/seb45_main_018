@@ -1,5 +1,7 @@
+import PostWrite from '../components/features/PostWrite';
+
 function CommunityPostWritePage() {
-  return <div>글 작성 페이지 입니다.</div>;
+  return <PostWrite />;
 }
 
 export default CommunityPostWritePage;

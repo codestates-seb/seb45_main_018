@@ -48,12 +48,43 @@ const EditorComponent = () => {
   );
 };
 
+const PostWriteHeader = () => {
+  return (
+    <div className="post-write-header">
+      <input type="text" name="" id="" />
+      <select name="category" defaultValue="전체">
+        <option value="전체">전체</option>
+        <option value="모집글">모집글</option>
+        <option value="응모글">응모글</option>
+      </select>
+    </div>
+  );
+};
+
+const PostWriteBody = () => {
+  return (
+    <div className="post-write-body">
+      <EditorComponent />
+    </div>
+  );
+};
+
+const PostSubmit = () => {
+  return (
+    <div className="submit-button-container">
+      <button>등록</button>
+    </div>
+  );
+};
+
 function PostWrite() {
   return (
     <PostWriteLayout>
-      <PostWriteBody>
-        <EditorComponent />
-      </PostWriteBody>
+      <PostWriteForm>
+        <PostWriteHeader />
+        <PostWriteBody />
+        <PostSubmit />
+      </PostWriteForm>
     </PostWriteLayout>
   );
 }
@@ -64,11 +95,24 @@ const PostWriteLayout = styled.div`
   width: 100%;
 `;
 
-const PostWriteBody = styled.div`
-  width: 64%;
+const PostWriteForm = styled.div`
+  width: 65%;
   height: auto;
   background-color: #eceff1;
-  display: flex;
   margin: 0 auto;
+  padding: 10px;
   border-radius: 15px;
+  justify-content: center;
+  div.post-write-header {
+    display: flex;
+    margin: 5px 0;
+    justify-content: space-between;
+  }
+  div.post-write-body {
+  }
+  div.submit-button-container {
+    display: flex;
+    justify-content: right;
+    margin: 5px 0;
+  }
 `;

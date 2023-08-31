@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import logo from '../../assets/Logo.png';
 
-const Footer = () => {
+const Footer: React.FC = () => {
   return (
     <>
     <FooterContainer>
@@ -50,6 +50,7 @@ const Footer = () => {
         </FooterSectionContent>
       </FooterSectionContainer>
       </FooterInfoContainer>
+      <FooterLine />
       <RigthInfo>© 2023 Polareco - All Rights Reserved</RigthInfo>
     </FooterContainer>
           </>
@@ -135,6 +136,14 @@ const FooterLogoContent = styled(FooterSectionContent)`
   width: 304px;
 `;
 
+const FooterLine = styled.hr`
+border: none;
+height: 1px;
+background-color: #B2AFAF;
+margin-top: 150px;
+width: 1596px;
+`
+
 const RigthInfo = styled.div`
   color: var(--White, #fdfdfd);
   text-align: center;
@@ -144,5 +153,5 @@ const RigthInfo = styled.div`
   font-style: normal;
   font-weight: 600;
   line-height: 130%; /* 31.2px */
-  margin-top: 180px;
+  margin-top: 30px;
 `;

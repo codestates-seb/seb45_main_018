@@ -8,6 +8,7 @@ import { closeModal } from "../../redux/slice/modalSlice";
 
 interface ModalType {
     children?: React.ReactNode;
+    className?: string;
 }
 
 function CommonModal (props: ModalType) {

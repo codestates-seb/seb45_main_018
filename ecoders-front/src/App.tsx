@@ -8,14 +8,18 @@ import Header from './components/atoms/Header';
 
 function App() {
   return (
-    <BrowserRouter>
-    <Header />
-      <Routes>
-        <Route path='/' element={<Main />} />
-       {/* <Route element={NotFound} /> */}
-      </Routes>
+    <div className="app-container">
+      <BrowserRouter>
+        <Header />
+        <div className="body-container">
+          <Routes>
+            <Route path="/" element={<Main />} />
+            {/* <Route element={NotFound} /> */}
+          </Routes>
+        </div>
+      </BrowserRouter>
       <Footer />
-    </BrowserRouter>
+    </div>
   );
 }
 

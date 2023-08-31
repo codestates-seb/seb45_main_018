@@ -4,56 +4,58 @@ import logo from '../../assets/Logo.png';
 const Footer: React.FC = () => {
   return (
     <>
-    <FooterContainer>
+      <FooterContainer>
         <FooterInfoContainer>
-      <FooterLogoSectionContainer>
-        <FooterLogoText>
-          <Logo src={logo} />
-          POLARECO
-        </FooterLogoText>
-        <FooterLogoContent>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit ut aliquam, purus sit amet luctus venenatis, lectus
-          magna fringilla urna
-        </FooterLogoContent>
-      </FooterLogoSectionContainer>
-      <FooterSectionContainer>
-        <FooterSectionTitle>Company</FooterSectionTitle>
-        <FooterSectionContent>
-          <div className="footer-content">About Us</div>
-          <div className="footer-content">Contact Us</div>
-          <div className="footer-content">Features</div>
-        </FooterSectionContent>
-      </FooterSectionContainer>
-      <FooterSectionContainer>
-        <FooterSectionTitle>Services</FooterSectionTitle>
-        <FooterSectionContent>
-          <div className="footer-content">Eco-Habit</div>
-          <div className="footer-content">Challenge</div>
-          <div className="footer-content">Community</div>
-          <div className="footer-content">Sponsor</div>
-        </FooterSectionContent>
-      </FooterSectionContainer>
-      <FooterContactSection>
-        <FooterSectionTitle>Contact</FooterSectionTitle>
-        <FooterSectionContent>
-          <div className="footer-content">(+82) 10-0000-0000</div>
-          <div className="footer-content">polareco.official@gmail.com</div>
-          <div className="footer-content">Address: Gangnamgu, Seoul, 03232</div>
-        </FooterSectionContent>
-      </FooterContactSection>
-      <FooterSectionContainer>
-        <FooterSectionTitle>Link</FooterSectionTitle>
-        <FooterSectionContent>
-          <div className="footer-content">Terms of Service</div>
-          <div className="footer-content">Privacy Policy</div>
-          <div className="footer-content">Career</div>
-        </FooterSectionContent>
-      </FooterSectionContainer>
-      </FooterInfoContainer>
-      <FooterLine />
-      <RigthInfo>© 2023 Polareco - All Rights Reserved</RigthInfo>
-    </FooterContainer>
-          </>
+          <FooterLogoSectionContainer>
+            <FooterLogoText>
+              <Logo src={logo} />
+              POLARECO
+            </FooterLogoText>
+            <FooterLogoContent>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit ut aliquam, purus sit amet luctus venenatis,
+              lectus magna fringilla urna
+            </FooterLogoContent>
+          </FooterLogoSectionContainer>
+          <FooterSectionContainer>
+            <FooterSectionTitle>Company</FooterSectionTitle>
+            <FooterSectionContent>
+              <div className="footer-content">About Us</div>
+              <div className="footer-content">Contact Us</div>
+              <div className="footer-content">Features</div>
+            </FooterSectionContent>
+          </FooterSectionContainer>
+          <FooterSectionContainer>
+            <FooterSectionTitle>Services</FooterSectionTitle>
+            <FooterSectionContent>
+              <div className="footer-content">Eco-Habit</div>
+              <div className="footer-content">Challenge</div>
+              <div className="footer-content">Community</div>
+              <div className="footer-content">Sponsor</div>
+            </FooterSectionContent>
+          </FooterSectionContainer>
+          <FooterContactSection>
+            <FooterSectionTitle>Contact</FooterSectionTitle>
+            <FooterSectionContent>
+              <div className="footer-content">(+82) 10-0000-0000</div>
+              <div className="footer-content">polareco.official@gmail.com</div>
+              <div className="footer-content">
+                Address: Gangnamgu, <div>Seoul, 03232</div>
+              </div>
+            </FooterSectionContent>
+          </FooterContactSection>
+          <FooterSectionContainer>
+            <FooterSectionTitle>Link</FooterSectionTitle>
+            <FooterSectionContent>
+              <div className="footer-content">Terms of Service</div>
+              <div className="footer-content">Privacy Policy</div>
+              <div className="footer-content">Career</div>
+            </FooterSectionContent>
+          </FooterSectionContainer>
+        </FooterInfoContainer>
+        <FooterLine />
+        <RigthInfo>© 2023 Polareco - All Rights Reserved</RigthInfo>
+      </FooterContainer>
+    </>
   );
 };
 
@@ -66,12 +68,33 @@ const Logo = styled.img`
 `;
 
 const FooterContainer = styled.div`
+  margin: 0;
+  padding: 0;
+  transform: scale(0.8); // 이 줄을 추가
   max-width: 1920px;
   min-width: 960px;
   height: 738px;
-  width: 1920px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   background-color: #131313;
-  `
+
+  @media (max-width: 1152px) {
+    // 화면 크기가 768px 이하일 때
+    transform: scale(0.6); // 이 줄을 추가
+  }
+
+  @media (max-width: 768px) {
+    // 화면 크기가 768px 이하일 때
+    transform: scale(0.4); // 이 줄을 추가
+  }
+
+  @media (max-width: 480px) {
+    // 화면 크기가 480px 이하일 때
+    transform: scale(0.25); // 이 줄을 추가
+  }
+`;
 
 const FooterInfoContainer = styled.div`
   display: flex;
@@ -122,6 +145,7 @@ const FooterSectionContent = styled.div`
 
   > .footer-content {
     margin-bottom: 25px;
+    white-space: nowrap;
   }
 `;
 
@@ -137,12 +161,12 @@ const FooterLogoContent = styled(FooterSectionContent)`
 `;
 
 const FooterLine = styled.hr`
-border: none;
-height: 1px;
-background-color: #B2AFAF;
-margin-top: 150px;
-width: 1596px;
-`
+  border: none;
+  height: 1px;
+  background-color: #b2afaf;
+  margin-top: 150px;
+  width: 1596px;
+`;
 
 const RigthInfo = styled.div`
   color: var(--White, #fdfdfd);

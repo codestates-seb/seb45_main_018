@@ -3,12 +3,27 @@
 #root {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  max-width: 1920px;
-  /* width: 50%; */
-  margin: 0 auto;
-  padding: 2rem;
+  width: 1920px;
+  align-items: center;
+  margin-bottom: 0;
+  padding-top: 2rem;
+  padding-bottom: 0px;
   text-align: center;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 110vh; /* 뷰포트의 높이로 설정 */
+  margin: 0px;
+  padding: 0px;
+  
+}
+
+.body-container {
+  flex: 1;  /* 가능한 모든 공간을 차지하도록 설정 */
+  overflow-y: auto; 
+  /* 내용이 넘칠 경우 스크롤 허용 */
 }
 
 .logo {

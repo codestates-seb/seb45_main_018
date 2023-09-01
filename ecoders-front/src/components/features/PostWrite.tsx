@@ -1,52 +1,54 @@
 import { styled } from 'styled-components';
-import { useRef, useState, useMemo } from 'react';
+import { useRef, useState, useMemo, useEffect } from 'react';
 
-import ReactQuill from 'react-quill';
+// import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import { Editor } from '@toast-ui/react-editor';
+import '@toast-ui/editor/dist/toastui-editor.css';
 
-const EditorComponent = () => {
-  const QuillRef = useRef<ReactQuill>();
-  const [contents, setContents] = useState('');
+// const EditorComponent = () => {
+//   const QuillRef = useRef<ReactQuill>();
+//   const [contents, setContents] = useState('');
 
-  // quill에서 사용할 모듈을 설정하는 코드 입니다.
-  // useMemo를 사용하지 않으면, 키를 입력할 때마다, imageHandler 때문에 focus가 계속 풀리게 됩니다.
-  const modules = useMemo(
-    () => ({
-      toolbar: {
-        container: [
-          ['link', 'image', 'video'],
-          [{ header: [1, 2, 3, false] }],
-          ['bold', 'italic', 'underline', 'strike'],
-          ['blockquote'],
-          [{ list: 'ordered' }, { list: 'bullet' }],
-          [{ color: [] }, { background: [] }],
-          [{ align: [] }],
-        ],
-        // handlers: {
-        //   image: imageHandler,
-        // },
-      },
-    }),
-    [],
-  );
+//   // quill에서 사용할 모듈을 설정하는 코드 입니다.
+//   // useMemo를 사용하지 않으면, 키를 입력할 때마다, imageHandler 때문에 focus가 계속 풀리게 됩니다.
+//   const modules = useMemo(
+//     () => ({
+//       toolbar: {
+//         container: [
+//           ['link', 'image', 'video'],
+//           [{ header: [1, 2, 3, false] }],
+//           ['bold', 'italic', 'underline', 'strike'],
+//           ['blockquote'],
+//           [{ list: 'ordered' }, { list: 'bullet' }],
+//           [{ color: [] }, { background: [] }],
+//           [{ align: [] }],
+//         ],
+//         // handlers: {
+//         //   image: imageHandler,
+//         // },
+//       },
+//     }),
+//     [],
+//   );
 
-  return (
-    <>
-      <ReactQuill
-        ref={element => {
-          if (element !== null) {
-            QuillRef.current = element;
-          }
-        }}
-        value={contents}
-        onChange={setContents}
-        modules={modules}
-        theme="snow"
-        placeholder="내용을 입력해주세요."
-      />
-    </>
-  );
-};
+//   return (
+//     <>
+//       <ReactQuill
+//         ref={element => {
+//           if (element !== null) {
+//             QuillRef.current = element;
+//           }
+//         }}
+//         value={contents}
+//         onChange={setContents}
+//         modules={modules}
+//         theme="snow"
+//         placeholder="내용을 입력해주세요."
+//       />
+//     </>
+//   );
+// };
 
 const PostWriteHeader = () => {
   return (
@@ -62,17 +64,39 @@ const PostWriteHeader = () => {
 };
 
 const PostWriteBody = () => {
+  const editorRef = useRef<Editor>(null);
+
+  const submitButtonClickHandler = () => {
+    const data = editorRef.current?.getInstance().getHTML() || '';
+    console.log(data);
+  };
+  type HookCallback = (url: string, text?: string) => void;
+  //서버로 보내는 로직
+  const uploadImageHandler = async (blob: Blob | File, callback: HookCallback) => {
+    console.log(blob.type);
+    // uploadImage가 그 서버로 보내는 함수인것 같아요..1
+    // const url = await uploadImage(blob);
+    // callback(url, 'alt text');
+    return false;
+  };
+
   return (
     <div className="post-write-body">
-      <EditorComponent />
-    </div>
-  );
-};
-
-const PostSubmit = () => {
-  return (
-    <div className="submit-button-container">
-      <button>등록</button>
+      <Editor
+        initialValue="hello react editor world!"
+        previewStyle="vertical"
+        height="550px"
+        initialEditType="wysiwyg"
+        hideModeSwitch={true}
+        useCommandShortcut={false}
+        ref={editorRef}
+        hooks={{
+          addImageBlobHook: uploadImageHandler,
+        }}
+      />
+      <div className="submit-button-container">
+        <button onClick={submitButtonClickHandler}>등록</button>
+      </div>
     </div>
   );
 };
@@ -83,7 +107,6 @@ function PostWrite() {
       <PostWriteForm>
         <PostWriteHeader />
         <PostWriteBody />
-        <PostSubmit />
       </PostWriteForm>
     </PostWriteLayout>
   );

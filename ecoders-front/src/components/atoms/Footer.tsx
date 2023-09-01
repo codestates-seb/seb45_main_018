@@ -79,6 +79,8 @@ const FooterContainer = styled.div`
   flex-direction: column;
   align-items: center;
   background-color: #131313;
+  bottom: 0;
+
 
   @media (max-width: 1152px) {
     // 화면 크기가 768px 이하일 때

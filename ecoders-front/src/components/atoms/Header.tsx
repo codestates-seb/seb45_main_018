@@ -1,11 +1,26 @@
 import styled from 'styled-components';
 import logo from '../../assets/Logo.png';
+import { useDispatch } from "react-redux";
+import { login } from "../../redux/slice/loginSlice";
+import { logout } from "../../redux/slice/loginSlice";
 import profileImg from '../../assets/ProfileImage.svg';
-import React, { useState } from 'react';
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store/store";
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const isLoggedIn = useSelector((state: RootState) => state.login.isLoggedIn)
+
+  const handleLogin = () => {
+    dispatch(login());
+  }
+
+  const handleLogout = () => {
+    dispatch(logout());
+  }
 
   const navigateToMain = () => {
     navigate('/');
@@ -15,7 +30,6 @@ const Header: React.FC = () => {
     navigate('/myinfo');
   };
 
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   return (
     <>
@@ -55,11 +69,11 @@ const Header: React.FC = () => {
             <>
               <HeaderProfilePic src={profileImg} onClick={navigateToMyInfo} />
               <UsernameButton onClick={navigateToMyInfo}>Username</UsernameButton>
-              <LogoutButton onClick={() => { setIsLoggedIn(false); navigate("/");}}>Logout</LogoutButton>
+              <LogoutButton onClick={handleLogout}>Logout</LogoutButton>
             </>
           ) : (
             <>
-              <LoginButton onClick={() => setIsLoggedIn(true)}>Login</LoginButton>
+              <LoginButton onClick={handleLogin}>Login</LoginButton>
               <CreateAccountButton>Create Account</CreateAccountButton>
             </>
           )}

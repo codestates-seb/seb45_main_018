@@ -1,0 +1,18 @@
+<svg width="54" height="54" viewBox="0 0 54 54" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="ProfileImage">
+<g id="Image BG">
+<path id="Image BG_2" d="M51.8048 26.7528C51.8048 12.9635 40.6439 1.7804 26.8708 1.7804C13.0979 1.7804 1.9371 12.9635 1.9371 26.7528C1.9371 40.5416 13.0981 51.7225 26.8708 51.7225C40.6437 51.7225 51.8048 40.5416 51.8048 26.7528Z" fill="url(#paint0_linear_266_211)" stroke="#D9D9D9" stroke-width="3"/>
+<mask id="mask0_266_211" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="0" y="0" width="54" height="54">
+<path id="Image BG_3" d="M51.8048 26.7528C51.8048 12.9635 40.6439 1.7804 26.8708 1.7804C13.0979 1.7804 1.9371 12.9635 1.9371 26.7528C1.9371 40.5416 13.0981 51.7225 26.8708 51.7225C40.6437 51.7225 51.8048 40.5416 51.8048 26.7528Z" fill="white" stroke="white" stroke-width="3"/>
+</mask>
+<g mask="url(#mask0_266_211)">
+</g>
+</g>
+</g>
+<defs>
+<linearGradient id="paint0_linear_266_211" x1="27" y1="1.5" x2="27" y2="51.5" gradientUnits="userSpaceOnUse">
+<stop stop-color="#F3FFC9"/>
+<stop offset="1" stop-color="#438AFE" stop-opacity="0"/>
+</linearGradient>
+</defs>
+</svg>

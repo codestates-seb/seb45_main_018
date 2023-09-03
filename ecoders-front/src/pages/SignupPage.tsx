@@ -45,7 +45,7 @@ function SignupPage () {
                             <Input
                                 className="username-input"
                                 placeholder="닉네임"
-                                type="password" />
+                                type="text" />
                             <ButtonWrapper>
                                 <SubmitButton
                                     className="sign-up-submit"

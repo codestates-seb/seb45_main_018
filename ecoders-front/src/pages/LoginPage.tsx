@@ -4,17 +4,13 @@ import Input from "../components/atoms/Input";
 import Button from "../components/atoms/Button";
 import Modal from "../components/atoms/Modal";
 import { useDispatch } from "react-redux";
-import { openModal, setModalContent } from "../redux/slice/modalSlice";
+import { openModal } from "../redux/slice/modalSlice";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { RootState } from "../redux/store/store";
 
 
 function LoginPage () {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-
-    const isModalOpen = useSelector((state: RootState) => state.modal.isOpen);
 
     const linkToSignupHandler = () => {
         navigate("/signup");
@@ -22,7 +18,6 @@ function LoginPage () {
 
     const modalOpenHandler = () => {
         dispatch(openModal());
-        dispatch(setModalContent("비밀번호를 잊으셨나요? 가입하신 이메일을 적어주세요. 이메일로 비밀번호 재설정 링크를 보내드리겠습니다."));
     }
 
     return (
@@ -46,7 +41,7 @@ function LoginPage () {
                             <PwModal>
                                 <div className="modal-cont-wrapper">
                                     <div className="modal-title">비밀번호 찾기</div>
-                                    <p className="modal-content">{isModalOpen ? "비밀번호를 잊으셨나요? 가입하신 이메일을 적어주세요. 이메일로 비밀번호 재설정 링크를 보내드리겠습니다." : ""}</p>
+                                    <p className="modal-content">비밀번호를 잊으셨나요? 가입하신 이메일을 적어주세요. 이메일로 비밀번호 재설정 링크를 보내드리겠습니다.</p>
                                     <div>
                                         <Input className="modal-email-input"
                                         placeholder="이메일"
@@ -81,21 +76,6 @@ const Container = styled.section`
     align-items: center;
     width: auto;
     height: 100vh;
-
-    @media (max-width: 1152px) {
-        // 화면 크기가 1056px 이하일 때
-        transform: scale(0.9);
-    }
-
-    @media (max-width: 768px) {
-        // 화면 크기가 768px 이하일 때
-        transform: scale(0.9);
-    }
-
-    @media (max-width: 480px) {
-        // 화면 크기가 480px 이하일 때
-        transform: scale(0.9);
-    }
 `;
 
 const LoginContainer = styled.div`

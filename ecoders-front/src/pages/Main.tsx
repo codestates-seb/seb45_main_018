@@ -6,12 +6,14 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store/store';
 import EcoHabitButton from '../assets/EcoHabitDefaultButton.png';
 import EcoHabitHoveringButton from '../assets/EcoHabitHoveringButton.png';
+import { useNavigate } from 'react-router-dom';
 
 
 
 const Main = () => {
   const isLoggedIn = useSelector((state: RootState) => state.login.isLoggedIn);
   const [isHovered, setIsHovered] = useState(false);
+  const navigate = useNavigate();
 
 
   return (
@@ -24,6 +26,7 @@ const Main = () => {
             src={isHovered ? EcoHabitHoveringButton : EcoHabitButton}
             onMouseOver={() => setIsHovered(true)}
             onMouseOut={() => setIsHovered(false)}
+            onClick={() => navigate('/eco-habit')}
           />
           </Wrapper>
         </>

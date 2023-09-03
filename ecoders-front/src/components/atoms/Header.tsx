@@ -86,7 +86,7 @@ const Header: React.FC = () => {
 export default Header;
 
 const HeaderContainer = styled.div`
-  transform: scale(0.8); // 이 줄을 추가
+  transform: scale(0.65); // 이 줄을 추가
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -101,7 +101,7 @@ const HeaderContainer = styled.div`
 
   @media (max-width: 1152px) {
     // 화면 크기가 1056px 이하일 때
-    transform: scale(0.55); // 이 줄을 추가
+    transform: scale(0.6); // 이 줄을 추가
   }
 
   @media (max-width: 768px) {

@@ -70,7 +70,7 @@ const Logo = styled.img`
 const FooterContainer = styled.div`
   margin: 0;
   padding: 0;
-  transform: scale(0.8); // 이 줄을 추가
+  transform: scale(0.65); // 이 줄을 추가
   max-width: 1920px;
   min-width: 960px;
   height: 738px;

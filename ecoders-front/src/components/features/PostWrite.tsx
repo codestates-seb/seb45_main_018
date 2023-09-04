@@ -6,6 +6,7 @@ import 'react-quill/dist/quill.snow.css';
 import { Editor } from '@toast-ui/react-editor';
 import '@toast-ui/editor/dist/toastui-editor.css';
 
+import CommonButton from '../atoms/CommonButton';
 // const EditorComponent = () => {
 //   const QuillRef = useRef<ReactQuill>();
 //   const [contents, setContents] = useState('');
@@ -53,8 +54,8 @@ import '@toast-ui/editor/dist/toastui-editor.css';
 const PostWriteHeader = () => {
   return (
     <div className="post-write-header">
-      <input type="text" name="" id="" />
-      <select name="category" defaultValue="전체">
+      <input className="post-write-title" type="text" placeholder="Title" />
+      <select className="post-select-category" name="category" defaultValue="전체">
         <option value="전체">전체</option>
         <option value="모집글">모집글</option>
         <option value="응모글">응모글</option>
@@ -73,7 +74,7 @@ const PostWriteBody = () => {
   type HookCallback = (url: string, text?: string) => void;
   //서버로 보내는 로직
   const uploadImageHandler = async (blob: Blob | File, callback: HookCallback) => {
-    console.log(blob.type);
+    console.log(blob);
     // uploadImage가 그 서버로 보내는 함수인것 같아요..1
     // const url = await uploadImage(blob);
     // callback(url, 'alt text');
@@ -83,19 +84,26 @@ const PostWriteBody = () => {
   return (
     <div className="post-write-body">
       <Editor
-        initialValue="hello react editor world!"
-        previewStyle="vertical"
+        initialValue=""
         height="550px"
         initialEditType="wysiwyg"
         hideModeSwitch={true}
         useCommandShortcut={false}
         ref={editorRef}
-        hooks={{
-          addImageBlobHook: uploadImageHandler,
-        }}
+        placeholder="content"
+        // hooks={{
+        //   addImageBlobHook: uploadImageHandler,
+        // }}
       />
       <div className="submit-button-container">
-        <button onClick={submitButtonClickHandler}>등록</button>
+        <CommonButton
+          width="80px"
+          fontSize={0.5}
+          hoverBgColor="#7092bf"
+          hoverColor="white"
+          onClick={submitButtonClickHandler}>
+          등록
+        </CommonButton>
       </div>
     </div>
   );
@@ -131,11 +139,24 @@ const PostWriteForm = styled.div`
     margin: 5px 0;
     justify-content: space-between;
   }
+  div.post-write-header .post-select-category {
+    width: 100px;
+    border-radius: 10px;
+    border: 1.5px solid #afafaf;
+  }
+  div.post-write-header .post-write-title {
+    width: 83%;
+    border: 1.5px solid #afafaf;
+    padding: 0 10px;
+    height: 30px;
+    border-radius: 10px;
+  }
   div.post-write-body {
   }
   div.submit-button-container {
     display: flex;
+    height: 30px;
     justify-content: right;
-    margin: 5px 0;
+    margin-top: 10px;
   }
 `;

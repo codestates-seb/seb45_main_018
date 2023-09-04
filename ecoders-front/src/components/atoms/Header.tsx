@@ -1,11 +1,26 @@
 import styled from 'styled-components';
 import logo from '../../assets/Logo.png';
+import { useDispatch } from "react-redux";
+import { login } from "../../redux/slice/loginSlice";
+import { logout } from "../../redux/slice/loginSlice";
 import profileImg from '../../assets/ProfileImage.svg';
-import React, { useState } from 'react';
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store/store";
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const isLoggedIn = useSelector((state: RootState) => state.login.isLoggedIn)
+
+  const handleLogin = () => {
+    dispatch(login());
+  }
+
+  const handleLogout = () => {
+    dispatch(logout());
+  }
 
   const navigateToMain = () => {
     navigate('/');
@@ -15,7 +30,6 @@ const Header: React.FC = () => {
     navigate('/myinfo');
   };
 
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   return (
     <>
@@ -55,11 +69,11 @@ const Header: React.FC = () => {
             <>
               <HeaderProfilePic src={profileImg} onClick={navigateToMyInfo} />
               <UsernameButton onClick={navigateToMyInfo}>Username</UsernameButton>
-              <LogoutButton onClick={() => { setIsLoggedIn(false); navigate("/");}}>Logout</LogoutButton>
+              <LogoutButton onClick={handleLogout}>Logout</LogoutButton>
             </>
           ) : (
             <>
-              <LoginButton onClick={() => setIsLoggedIn(true)}>Login</LoginButton>
+              <LoginButton onClick={handleLogin}>Login</LoginButton>
               <CreateAccountButton>Create Account</CreateAccountButton>
             </>
           )}
@@ -72,7 +86,7 @@ const Header: React.FC = () => {
 export default Header;
 
 const HeaderContainer = styled.div`
-  transform: scale(0.8); // 이 줄을 추가
+  transform: scale(0.65); // 이 줄을 추가
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -87,7 +101,7 @@ const HeaderContainer = styled.div`
 
   @media (max-width: 1152px) {
     // 화면 크기가 1056px 이하일 때
-    transform: scale(0.55); // 이 줄을 추가
+    transform: scale(0.6); // 이 줄을 추가
   }
 
   @media (max-width: 768px) {

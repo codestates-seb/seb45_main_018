@@ -9,7 +9,8 @@ import static org.springframework.http.HttpStatus.*;
 public enum ExceptionCode {
 
     MEMBER_ALREADY_EXISTS(FORBIDDEN, "Member already exists"),
-    MEMBER_NOT_FOUND(NOT_FOUND, "Member not found");
+    MEMBER_NOT_FOUND(NOT_FOUND, "Member not found"),
+    MEMBER_JWT_AUTHENTICATION_FAILED(UNAUTHORIZED, "JWT Authentication Failed");
 
     private final HttpStatus httpStatus;
 

@@ -30,6 +30,10 @@ public class Member {
     @Column(name = "verified", nullable = false)
     private Boolean isVerified;
 
+    public Boolean isVerified() {
+        return isVerified;
+    }
+
     @Getter
     public enum AuthType {
 

@@ -5,7 +5,7 @@ spring:
   h2:
     console:
       enabled: true
-      path: /h2-console
+      path: /h2
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
@@ -21,3 +21,7 @@ logging:
       springframework:
         jdbc:
           core: trace
+jwt:
+  secret-key: ${JWT_SECRET_KEY}
+  access-token-expiration-minutes: 30
+  refresh-token-expiration-minutes: 600

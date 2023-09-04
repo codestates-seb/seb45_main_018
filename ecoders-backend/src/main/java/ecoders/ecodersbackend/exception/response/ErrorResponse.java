@@ -3,7 +3,6 @@ package ecoders.ecodersbackend.exception.response;
 import ecoders.ecodersbackend.exception.ExceptionCode;
 import lombok.Getter;
 
-
 @Getter
 public class ErrorResponse {
 

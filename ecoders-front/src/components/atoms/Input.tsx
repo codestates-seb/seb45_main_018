@@ -15,6 +15,7 @@ interface InputType {
     borderWidth?: string;
     padding?: string;
     className?: string;
+    name?: string;
     onChange?: (e: any) => void;
 }
 

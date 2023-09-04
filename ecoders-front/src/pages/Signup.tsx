@@ -6,43 +6,59 @@ import Modal from "../components/atoms/Modal";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { closeModal, openModal } from "../redux/slice/modalSlice";
-import React, { useState } from "react";
-import { registerUser } from "../redux/slice/authSlice";
+import { useState } from "react";
+import { registerFail, registerStart, registerSuccess } from "../redux/slice/authSlice";
+import axios from "axios";
 
-interface SignUpProps {
-    username?: string;
-    email?: string;
-    password?: string;
-}
 
-function SignupPage (props: SignUpProps) {
-    const [ formData, setFormData ] = useState({
-        username: '',
-        email: '',
-        password: '',
-    });
+function Signup () {
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
+
+    // input 상태
+    const [ formData, setFormData ] = useState({
+        email: '',
+        password: '',
+        confirmPassword: '',
+        username: '',
+    });
+
+    // 유효성 검사용 input 상태
+    const [ inputErrors, setInputErrors ] = useState({
+        email: '',
+        password: '',
+        confirmPassword: '',
+        username: '',
+    });
+
+    // onChange
+    const changeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setFormData({
+            ...formData,
+            [name]: value,
+        });
+
+    };
+
 
     const linkToLoginPageHandler = () => {
         navigate("/login");
         dispatch(closeModal());
     };
 
-    const valueHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        console.log(formData)
-        setFormData({
-            ...formData,
-            [name]: value,
-        });
-    };
-
-    const onSubmitHandler = (e: React.FormEvent) => {
+    const onSubmitHandler = async (e: React.FormEvent) => {
         e.preventDefault();
-        /* dispatch(registerUser(formData)); // 오류가 나는 부분 */
-        dispatch(openModal());
+        dispatch(registerStart());
+        try {
+            const response = await axios.post('https://5843db23-3410-49dd-8ef6-3f35040f9951.mock.pstmn.io/auth/signup', formData);
+            console.log(response.data);
+            dispatch(registerSuccess(response.data.user));
+            dispatch(openModal());
+        } catch (err: any) {
+            dispatch(registerFail(err.response.data.error));
+        }
     };
 
     return (
@@ -58,24 +74,33 @@ function SignupPage (props: SignUpProps) {
                                 className="email-input"
                                 placeholder="이메일"
                                 type="email"
+                                name="email"
                                 value={formData.email}
-                                onChange={valueHandler} />
+                                onChange={changeHandler}
+                                />
                             <Input
                                 className="password-input"
                                 placeholder="비밀번호"
                                 type="password"
+                                name="password"
                                 value={formData.password}
-                                onChange={valueHandler}/>
+                                onChange={changeHandler}
+                                />
                             <Input
                                 className="password-check-input"
                                 placeholder="비밀번호 확인"
-                                type="password" />
+                                type="password"
+                                name="confirmPassword"
+                                value={formData.confirmPassword}
+                                onChange={changeHandler}
+                                />
                             <Input
                                 className="username-input"
                                 placeholder="닉네임"
                                 type="text"
+                                name="username"
                                 value={formData.username}
-                                onChange={valueHandler}
+                                onChange={changeHandler}
                                 />
                             <ButtonWrapper>
                                 <SubmitButton
@@ -102,7 +127,7 @@ function SignupPage (props: SignUpProps) {
     )
 }
 
-export default SignupPage;
+export default Signup;
 
 const Container = styled.section`
     display: flex;

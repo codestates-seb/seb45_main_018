@@ -8,9 +8,8 @@ import Header from './components/atoms/Header';
 import MyInfo from './pages/Myinfo';
 import Service from './pages/Service';
 import Contact from './pages/Contact';
-
 import LoginPage from './pages/LoginPage';
-import SignupPage from './pages/SignupPage';
+import Signup from './pages/Signup';
 
 function App() {
   return (
@@ -22,7 +21,7 @@ function App() {
             <Route path="/service" element={<Service />}/>
             <Route path="/contact" element={<Contact />}/>
             <Route path="/login" element={<LoginPage />} />
-            <Route path="/signup" element={<SignupPage />} />
+            <Route path="/signup" element={<Signup />} />
             {/* <Route element={NotFound} /> */}
           </Routes>
       </BrowserRouter>

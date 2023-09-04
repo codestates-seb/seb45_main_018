@@ -236,6 +236,14 @@ const BoardBody = styled.div`
     justify-content: center;
     align-items: center;
   }
+  div.board-card {
+    border: 1px solid #566e915a;
+  }
+  /* 카드 hover시 효과 */
+  div.board-card:hover {
+    box-shadow: 1.5px 1.5px 3px 0px #7092bf;
+    cursor: pointer;
+  }
   /* 그리드 속성이.. 너무 엉망인것같아요.. ㅠㅁㅠ~ 여쭤봐야징 */
   @media all and (max-width: 1355px) {
     div.board-body-container div.board-card-container {

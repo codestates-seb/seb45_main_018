@@ -1,16 +1,27 @@
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 import { AiOutlineHeart } from 'react-icons/ai';
 
 import { card } from './Board';
 
 function BoardCard({ dummyData }: { dummyData: Array<card> }) {
-  console.log(dummyData);
+  // console.log(dummyData);
+  const navigate = useNavigate();
 
+  function goToDetailHandeler(event: React.MouseEvent<HTMLDivElement>, index: number) {
+    //detaial페이지로 이동
+    navigate(`/community/postdetail/${index}`);
+  }
   return (
     <div className="board-card-container">
       {dummyData.map((item, index) => {
         return (
-          <CardBody key={index} className="board-card">
+          <CardBody
+            key={index}
+            className="board-card"
+            onClick={event => {
+              goToDetailHandeler(event, index);
+            }}>
             <div className="board-card-body">
               <div className="board-card-img-container">
                 <img src={item.imgUrl} />
@@ -45,7 +56,6 @@ const CardBody = styled.div`
   div.board-card-body {
     margin: 8px 0;
   }
-
   div.board-card-img-container {
     width: 180px;
     height: 113px;

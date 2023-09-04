@@ -39,7 +39,7 @@ const CardBody = styled.div`
   width: 200px;
   height: 252px;
   overflow: hidden;
-  margin: 0 20px 20px 0;
+  margin: 10px;
   border-radius: 10px;
   background: #fcfcfc;
   div.board-card-body {
@@ -96,7 +96,7 @@ const CardTitle = styled.div`
   font-size: 15px;
   font-weight: 700;
   height: 40px;
-  margin: 8px 0 0 8px;
+  margin: 8px 8px 0 8px;
   overflow: hidden;
   text-overflow: ellipsis;
   text-align: left;

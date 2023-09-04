@@ -5,21 +5,45 @@ import Button from "../components/atoms/Button";
 import Modal from "../components/atoms/Modal";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { openModal } from "../redux/slice/modalSlice";
+import { closeModal, openModal } from "../redux/slice/modalSlice";
+import React, { useState } from "react";
+import { registerUser } from "../redux/slice/authSlice";
 
+interface SignUpProps {
+    username?: string;
+    email?: string;
+    password?: string;
+}
 
-function SignupPage () {
+function SignupPage (props: SignUpProps) {
+    const [ formData, setFormData ] = useState({
+        username: '',
+        email: '',
+        password: '',
+    });
+
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
     const linkToLoginPageHandler = () => {
         navigate("/login");
-    }
+        dispatch(closeModal());
+    };
 
-    const signUpModalHandler = (e: { preventDefault: () => void; }) => {
+    const valueHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        console.log(formData)
+        setFormData({
+            ...formData,
+            [name]: value,
+        });
+    };
+
+    const onSubmitHandler = (e: React.FormEvent) => {
         e.preventDefault();
+        /* dispatch(registerUser(formData)); // 오류가 나는 부분 */
         dispatch(openModal());
-    }
+    };
 
     return (
      <Container>
@@ -29,15 +53,19 @@ function SignupPage () {
                     <Title>SIGN UP</Title>
                     <div className="sign-up-text">구글 간편 로그인으로 회원가입 및 로그인이 가능합니다.</div>
                     <FormContainer>
-                        <SignUpForm>
+                        <SignUpForm onSubmit={onSubmitHandler}>
                             <Input
                                 className="email-input"
                                 placeholder="이메일"
-                                type="email" />
+                                type="email"
+                                value={formData.email}
+                                onChange={valueHandler} />
                             <Input
                                 className="password-input"
                                 placeholder="비밀번호"
-                                type="password" />
+                                type="password"
+                                value={formData.password}
+                                onChange={valueHandler}/>
                             <Input
                                 className="password-check-input"
                                 placeholder="비밀번호 확인"
@@ -45,17 +73,20 @@ function SignupPage () {
                             <Input
                                 className="username-input"
                                 placeholder="닉네임"
-                                type="text" />
+                                type="text"
+                                value={formData.username}
+                                onChange={valueHandler}
+                                />
                             <ButtonWrapper>
                                 <SubmitButton
-                                    className="sign-up-submit"
-                                    onClick={signUpModalHandler}>Sign up</SubmitButton>
+                                    className="sign-up-submit">Sign up</SubmitButton>
                                     <SignUpModal>
                                         <div className="modal-cont-wrapper">
                                             <p className="modal-content">회원가입 인증 메일이 전송되었습니다. 메일함을 확인해주세요.</p>
                                             <div>
                                                 <SubmitButton
-                                                className="link-to-login">로그인 하러가기</SubmitButton>
+                                                className="link-to-login"
+                                                onClick={linkToLoginPageHandler}>로그인 하러가기</SubmitButton>
                                             </div>
                                         </div>
                                     </SignUpModal>

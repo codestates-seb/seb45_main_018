@@ -1,6 +1,10 @@
 import styled from 'styled-components';
+
+import { useState, useEffect } from 'react';
+
 import BoardCard from './BoardCard';
 import CommunityButtonGroup from './CommunityButtonGroup';
+import CommonButton from '../atoms/CommonButton';
 
 export interface card {
   userName: string;
@@ -12,6 +16,13 @@ export interface card {
 }
 
 function Board() {
+  const categoryOption: Array<string> = ['전체', '모집글', '인증글'];
+  //카테고리 상태 (카드 컴포넌트에 넘겨주기 -> 조건부 렌더링 진행)
+  const [category, setCategory] = useState('전체');
+  //검색창 입력 데이터
+  const [searchText, setSearchText] = useState('');
+
+  //더미 데이터
   const dummyData: Array<card> = [
     {
       userName: '남극러버',
@@ -79,27 +90,69 @@ function Board() {
     },
   ];
 
+  //필터된 데이터 state
+  const [filteredData, setFilteredData] = useState(Array<card>);
+
+  function changeCategoryHandler(event: React.MouseEvent<HTMLButtonElement>) {
+    setCategory((event.target as HTMLButtonElement).value);
+  }
+  function changeSearchTextHandler(event: React.ChangeEvent<HTMLInputElement>) {
+    setSearchText((event.target as HTMLInputElement).value);
+  }
+
+  //필터 기능(특정 state(여기선 filteredData)가 바뀔 때마다.)
+  useEffect(() => {
+    if (category === '모집글') {
+      setFilteredData(
+        dummyData.filter(item => {
+          console.log(item.category);
+          return item.category === category;
+        }),
+      );
+    } else if (category === '인증글') {
+      setFilteredData(
+        dummyData.filter(item => {
+          return item.category === category;
+        }),
+      );
+    } else {
+      setFilteredData(dummyData);
+    }
+  }, [category]);
+
   return (
     <BoardLayout>
       <BoardHead>
         <div className="board-header-container">
           <div className="board-header-btn-container">
-            {/* atoms에서 버튼 가져와 사용 */}
-            <button>전체</button>
-            <button>모집글</button>
-            <button>인증글</button>
+            {categoryOption.map((item, index) => {
+              return (
+                <>
+                  <CommonButton
+                    key={index}
+                    className={category === item ? 'clicked-category' : ''}
+                    width="60px"
+                    fontSize={0.5}
+                    hoverBgColor="#7092bf"
+                    hoverColor="white"
+                    value={item}
+                    onClick={changeCategoryHandler}>
+                    {item}
+                  </CommonButton>
+                </>
+              );
+            })}
           </div>
           <div className="board-header-serch-input-container">
-            {/* atoms에서 인풋 가져와 사용 */}
-            <input></input>
+            <SearchInput type="search" value={searchText} onChange={changeSearchTextHandler} />
           </div>
         </div>
       </BoardHead>
       <br></br>
       <BoardBody>
         <div className="board-body-container">
-          {/* dummyData -> 서버에서 받아오는 글 데이터로 해야함 */}
-          <BoardCard dummyData={dummyData}></BoardCard>
+          {/* 필터된 데이터 전달 */}
+          <BoardCard dummyData={filteredData}></BoardCard>
         </div>
       </BoardBody>
       <CommunityButtonGroup />
@@ -124,15 +177,21 @@ const BoardHead = styled.div`
     margin: 20px 25px 20px 25px;
     display: flex;
     justify-content: space-between;
+    flex-wrap: wrap;
   }
   div.board-header-btn-container {
     display: flex;
   }
   div.board-header-btn-container button {
-    margin: 0 2px;
+    margin: 0 4px;
   }
-  @media all and (max-width: 650px) {
-    width: 64%;
+  div.board-header-btn-container button.clicked-category {
+    background-color: #7092bf;
+    color: #ffffff;
+    border: 1px solid #ffffff;
+  }
+  @media all and (max-width: 740px) {
+    width: 70%;
     background-color: #eceff1;
     display: flex;
     border-radius: 15px;
@@ -141,15 +200,16 @@ const BoardHead = styled.div`
       align-items: center;
     }
     div.board-header-btn-container {
+      margin: 0 auto;
       display: flex;
       justify-content: center;
       margin-bottom: 10px;
     }
     div.board-header-btn-container button {
-      margin: 5px;
-      font-size: 10px;
+      margin: 3px;
     }
     div.board-header-serch-input-container {
+      margin: 0 auto;
       display: flex;
       justify-content: center;
     }
@@ -163,15 +223,58 @@ const BoardBody = styled.div`
   margin: 0 auto;
   border-radius: 15px;
   div.board-body-container {
-    margin: 10px;
-    display: flex;
-    flex-wrap: wrap;
+    width: 100%;
   }
   div.board-body-container div.board-card-container {
     margin: 20px;
-    display: flex;
-    justify-content: center;
+    /* display: flex;
     flex-wrap: wrap;
+    justify-content: center; */
+    display: grid;
+    grid-template-columns: repeat(4, minmax(20%, auto));
+    grid-gap: 15px;
+    justify-content: center;
+    align-items: center;
+  }
+  /* 그리드 속성이.. 너무 엉망인것같아요.. ㅠㅁㅠ~ 여쭤봐야징 */
+  @media all and (max-width: 1355px) {
+    div.board-body-container div.board-card-container {
+      margin: 20px;
+      /* display: flex;
+    flex-wrap: wrap;
+    justify-content: center; */
+      display: grid;
+      grid-template-columns: repeat(3, minmax(30%, auto));
+      grid-gap: 5px;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+  @media all and (max-width: 1045px) {
+    div.board-body-container div.board-card-container {
+      margin: 20px;
+      /* display: flex;
+    flex-wrap: wrap;
+    justify-content: center; */
+      display: grid;
+      grid-template-columns: repeat(2, minmax(40%, auto));
+      grid-gap: 5px;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+  @media all and (max-width: 770px) {
+    div.board-body-container div.board-card-container {
+      margin: 20px;
+      /* display: flex;
+    flex-wrap: wrap;
+    justify-content: center; */
+      display: grid;
+      grid-template-columns: repeat(1, minmax(50%, auto));
+      grid-gap: 5px;
+      justify-content: center;
+      align-items: center;
+    }
   }
   @media all and (max-width: 480px) {
     width: 64%;
@@ -189,5 +292,17 @@ const BoardBody = styled.div`
       flex-wrap: wrap;
       margin: 0 auto;
     }
+  }
+`;
+
+const SearchInput = styled.input`
+  width: 200px;
+  border: 1.5px solid #afafaf;
+  padding: 0 10px;
+  height: 30px;
+  border-radius: 50px;
+  @media all and (min-width: 900px) {
+    width: 300px;
+    margin: 0;
   }
 `;

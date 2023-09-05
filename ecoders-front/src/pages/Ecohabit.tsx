@@ -1,24 +1,30 @@
 import { styled } from "styled-components";
 import { PiStarFourFill } from "react-icons/pi";
+import Button from "../components/atoms/Button";
 
 function Ecohabit () {
     return (
         <Container>
             <ContentsContiner>
                 <StampContainer>
-                    <div><PiStarFourFill /> Stamps of Week!</div>
                     <div>
-                        <div>요일</div>
-                        <div>
-                            
-                        </div>
+                        <div><PiStarFourFill /> Stamps of Week!</div>
+                        <Button>나의 스탬프 현황</Button>
+                    </div>
+                    <div>
+                        주간 스탬프
                     </div>
                 </StampContainer>
                 <MyMissionContainer>
-                    <div><PiStarFourFill /> 나만의 미션!</div>
+                    <div>
+                        <div><PiStarFourFill /> 나만의 미션!</div>
+                        <Button>+</Button>
+                        <Button>R</Button>
+                    </div>
                 </MyMissionContainer>
                 <TodayMissionContainer>
                     <div><PiStarFourFill /> 오늘의 미션!</div>
+                    <div>미션 박스들</div>
                 </TodayMissionContainer>
             </ContentsContiner>
         </Container>

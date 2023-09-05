@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import logo from '../../assets/Logo.png';
 import { useDispatch } from "react-redux";
-import { login } from "../../redux/slice/loginSlice";
+// import { login } from "../../redux/slice/loginSlice";
 import { logout } from "../../redux/slice/loginSlice";
 import profileImg from '../../assets/ProfileImage.svg';
 import { useSelector } from "react-redux";
@@ -14,9 +14,9 @@ const Header: React.FC = () => {
   const dispatch = useDispatch();
   const isLoggedIn = useSelector((state: RootState) => state.login.isLoggedIn)
 
-  const handleLogin = () => {
-    dispatch(login());
-  }
+  // const handleLogin = () => {
+  //   dispatch(login());
+  // }
 
   const handleLogout = () => {
     dispatch(logout());
@@ -73,8 +73,8 @@ const Header: React.FC = () => {
             </>
           ) : (
             <>
-              <LoginButton onClick={handleLogin}>Login</LoginButton>
-              <CreateAccountButton>Create Account</CreateAccountButton>
+              <LoginButton onClick={()=> {navigate('/login')}}>Login</LoginButton>
+              <CreateAccountButton onClick={()=> {navigate('/signup')}}>Create Account</CreateAccountButton>
             </>
           )}
         </HeaderProfileContainer>

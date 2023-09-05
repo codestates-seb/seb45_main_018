@@ -84,6 +84,7 @@ const PostWriteLayout = styled.div`
 `;
 
 const PostWriteForm = styled.div`
+  border: 1px solid #a8adaf;
   width: 65%;
   height: auto;
   background-color: #eceff1;
@@ -93,7 +94,7 @@ const PostWriteForm = styled.div`
   justify-content: center;
   div.post-write-header {
     display: flex;
-    margin: 5px 0;
+    margin: 5px 0 10px 0;
     justify-content: space-between;
   }
   div.post-write-header .post-select-category {

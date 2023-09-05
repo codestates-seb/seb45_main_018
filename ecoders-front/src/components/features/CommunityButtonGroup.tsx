@@ -3,13 +3,16 @@ import { styled } from 'styled-components';
 
 import { Link } from 'react-router-dom';
 
-function CommunityButtonGroup() {
+interface leftSetting {
+  left?: string;
+}
+function CommunityButtonGroup(props: leftSetting) {
   function moveToTopButtonClickHandler() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
   return (
-    <ButtonGroup>
-      <Link to="/community/write">
+    <ButtonGroup {...props}>
+      <Link to="/community/postwrite">
         <HasWriteButton> + 글쓰기</HasWriteButton>
       </Link>
       <HasIconButton onClick={moveToTopButtonClickHandler}>
@@ -20,9 +23,9 @@ function CommunityButtonGroup() {
 }
 export default CommunityButtonGroup;
 
-const ButtonGroup = styled.div`
+const ButtonGroup = styled.div<leftSetting>`
   position: fixed;
-  left: 75%;
+  left: ${props => (props.left ? props.left : '75%')};
   top: 85%;
   z-index: 2;
   button {

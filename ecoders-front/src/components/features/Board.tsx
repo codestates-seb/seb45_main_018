@@ -167,6 +167,7 @@ const BoardLayout = styled.div`
 `;
 
 const BoardHead = styled.div`
+  border: 1px solid #a8adaf;
   width: 64%;
   background-color: #eceff1;
   display: flex;
@@ -217,6 +218,7 @@ const BoardHead = styled.div`
 `;
 
 const BoardBody = styled.div`
+  border: 1px solid #a8adaf;
   width: 64%;
   background-color: #eceff1;
   display: flex;

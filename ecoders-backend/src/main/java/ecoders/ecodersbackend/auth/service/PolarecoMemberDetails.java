@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
@@ -13,7 +14,7 @@ import java.util.Collection;
 @Getter
 public class PolarecoMemberDetails implements UserDetails {
 
-    private final long memberId;
+    private final long id;
 
     private final String username;
 
@@ -21,13 +22,25 @@ public class PolarecoMemberDetails implements UserDetails {
 
     private final String password;
 
+    private final Member.AuthType authType;
+
+    private final boolean isVerified;
+
     public static PolarecoMemberDetails of(Member member) {
-        return new PolarecoMemberDetails(member.getId(), member.getUsername(), member.getEmail(), member.getPassword());
+        return new PolarecoMemberDetails(
+            member.getId(),
+            member.getUsername(),
+            member.getEmail(),
+            member.getPassword(),
+            member.getAuthType(),
+            member.isVerified()
+        );
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return isVerified ? AuthorityUtils.createAuthorityList("VERIFIED", "UNVERIFIED")
+            : AuthorityUtils.createAuthorityList("UNVERIFIED");
     }
 
     @Override

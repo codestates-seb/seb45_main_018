@@ -12,12 +12,12 @@ import javax.persistence.*;
 public class Member {
 
     @Id
-    private Long id;
+    private long id;
 
     @Column(nullable = false)
     private String username;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String email;
 
     @Column(nullable = true)
@@ -27,12 +27,8 @@ public class Member {
     @Column(nullable = false)
     private AuthType authType;
 
-    @Column(name = "verified", nullable = false)
-    private Boolean isVerified;
-
-    public Boolean isVerified() {
-        return isVerified;
-    }
+    @Column(nullable = false)
+    private boolean isVerified;
 
     @Getter
     public enum AuthType {

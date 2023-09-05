@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.stereotype.Component;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -15,7 +14,6 @@ import java.io.IOException;
 
 @Slf4j
 @AllArgsConstructor
-@Component
 public class PolarecoAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
     private final JwtProvider jwtProvider;
@@ -28,7 +26,7 @@ public class PolarecoAuthenticationSuccessHandler implements AuthenticationSucce
     ) throws IOException, ServletException {
         PolarecoMemberDetails memberDetails = (PolarecoMemberDetails) authentication.getPrincipal();
         String accessToken = jwtProvider.generateAccessToken(memberDetails);
-        String refreshToken = jwtProvider.generateRefreshToken(memberDetails.getMemberId());
+        String refreshToken = jwtProvider.generateRefreshToken(memberDetails.getId());
         response.setHeader("Authorization", "Bearer " + accessToken);
         response.setHeader("Refresh-Token", "Bearer " + refreshToken);
         log.info("Authenticated successfully");

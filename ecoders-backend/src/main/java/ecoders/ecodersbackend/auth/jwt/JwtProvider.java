@@ -1,6 +1,7 @@
 package ecoders.ecodersbackend.auth.jwt;
 
 import ecoders.ecodersbackend.auth.service.PolarecoMemberDetails;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,10 +32,12 @@ public class JwtProvider {
 
     public String generateAccessToken(PolarecoMemberDetails memberDetails) {
         return Jwts.builder()
-            .setSubject(memberDetails.getMemberId() + "-access-token")
-            .claim("id", memberDetails.getMemberId())
+            .setSubject(memberDetails.getId() + "-access-token")
+            .claim("id", memberDetails.getId())
             .claim("username", memberDetails.getUsername())
             .claim("email", memberDetails.getEmail())
+            .claim("auth-type", memberDetails.getAuthType())
+            .claim("is-verified", memberDetails.isVerified())
             .setIssuedAt(new Date())
             .setExpiration(getExpiration(accessTokenExpirationMinutes))
             .signWith(secretKey)
@@ -52,5 +55,13 @@ public class JwtProvider {
 
     private Date getExpiration(int expirationMinutes) {
         return new Date(System.currentTimeMillis() + expirationMinutes * 60000L);
+    }
+
+    public Claims getClaims(String token) {
+        return Jwts.parserBuilder()
+            .setSigningKey(secretKey)
+            .build()
+            .parseClaimsJws(token)
+            .getBody();
     }
 }

@@ -11,6 +11,13 @@ import { registerFail, registerStart, registerSuccess } from "../redux/slice/aut
 import axios from "axios";
 
 
+interface ErrorObject {
+    email: string | null | undefined;
+    password: string | null | undefined;
+    confirmPassword: string | null | undefined;
+    username: string | null | undefined;
+  }
+
 function Signup () {
 
     const navigate = useNavigate();
@@ -25,12 +32,81 @@ function Signup () {
     });
 
     // 유효성 검사용 input 상태
-    const [ inputErrors, setInputErrors ] = useState({
-        email: '',
-        password: '',
-        confirmPassword: '',
-        username: '',
+    const [errors, setErrors] = useState<ErrorObject>({
+        email: null,
+        password: null,
+        confirmPassword: null,
+        username: null,
     });
+
+    // 유효성 검사 함수
+    const validateForm = (): boolean => {
+        const newErrors: ErrorObject = {
+            email: null,
+            password: null,
+            confirmPassword: null,
+            username: null,
+          };
+
+        // input에 값을 입력하지 않았을 경우
+        if (!formData.email) {
+            newErrors.email = '이메일을 입력하세요.';
+        }
+        if (!formData.password) {
+            newErrors.password = '비밀번호를 입력하세요.';
+        }
+        if (!formData.confirmPassword) {
+            newErrors.confirmPassword = '비밀번호를 다시 한 번 입력하세요.';
+        }
+        if (!formData.username) {
+            newErrors.username = '닉네임을 입력하세요.';
+        }
+
+        // 이미 존재하는 이매일 일때
+        /* if () {
+            newErrors.email = '이미 존재하는 이메일입니다.';
+        } */
+
+        // 이메일이 형식에 맞지 않을 때
+        const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+
+        if (formData.email && !emailRegex.test(formData.email)) {
+            newErrors.email = '올바른 이메일 형식이 아닙니다.';
+        }
+
+        // 이미 존재하는 닉네임일 때
+        /* if () {
+            newErrors.username = '이미 존재하는 닉네임입니다.';
+        } */
+
+        // 닉네임이 형식에 맞지 않을 때
+        if (formData.username.length > 20) {
+            newErrors.username = '닉네임은 20자 이하로 설정하세요.';
+        }
+
+        // 비밀번호가 형식에 맞지 않을 때
+        const passwordRegex = /^(?![0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*()_+])[A-Za-z0-9!@#$%^&*()_+]{8,}$/;
+
+        if (formData.password) {
+            newErrors.password = !passwordRegex.test(formData.password)
+                ? /^[0-9]/.test(formData.password)
+                    ? '비밀번호는 숫자로 시작할 수 없습니다.'
+                    : formData.password.length < 8
+                    ? '비밀번호는 8자 이상이어야 합니다.'
+                    : undefined
+                : undefined;
+        }
+
+        // 비밀번호가 일치하지 않을 때
+        if (formData.password !== formData.confirmPassword) {
+            newErrors.confirmPassword = '비밀번호가 일치하지 않습니다.';
+        }
+
+        setErrors(newErrors);
+
+        // 오류가 없다면
+        return Object.values(newErrors).every((error) =>!error);
+    }
 
     // onChange
     const changeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -42,15 +118,23 @@ function Signup () {
 
     };
 
-
+    // 로그인 페이지로 이동
     const linkToLoginPageHandler = () => {
         navigate("/login");
-        dispatch(closeModal());
+        dispatch(closeModal()); // 모달이 열려 있지 않게 함
     };
 
+    // submit 함수
     const onSubmitHandler = async (e: React.FormEvent) => {
         e.preventDefault();
         dispatch(registerStart());
+
+        // 유효성 검사
+        const isValid = validateForm();
+        if(!isValid) {
+            return;
+        }
+
         try {
             const response = await axios.post('https://5843db23-3410-49dd-8ef6-3f35040f9951.mock.pstmn.io/auth/signup', formData);
             console.log(response.data);
@@ -69,7 +153,7 @@ function Signup () {
                     <Title>SIGN UP</Title>
                     <div className="sign-up-text">구글 간편 로그인으로 회원가입 및 로그인이 가능합니다.</div>
                     <FormContainer>
-                        <SignUpForm onSubmit={onSubmitHandler}>
+                        <SignUpForm onSubmit={onSubmitHandler} noValidate>
                             <Input
                                 className="email-input"
                                 placeholder="이메일"
@@ -78,6 +162,7 @@ function Signup () {
                                 value={formData.email}
                                 onChange={changeHandler}
                                 />
+                                {errors.email && <ErrorText>{errors.email}</ErrorText>}
                             <Input
                                 className="password-input"
                                 placeholder="비밀번호"
@@ -86,6 +171,7 @@ function Signup () {
                                 value={formData.password}
                                 onChange={changeHandler}
                                 />
+                                {errors.password && <ErrorText>{errors.password}</ErrorText>}
                             <Input
                                 className="password-check-input"
                                 placeholder="비밀번호 확인"
@@ -94,6 +180,7 @@ function Signup () {
                                 value={formData.confirmPassword}
                                 onChange={changeHandler}
                                 />
+                                {errors.confirmPassword && <ErrorText>{errors.confirmPassword}</ErrorText>}
                             <Input
                                 className="username-input"
                                 placeholder="닉네임"
@@ -102,6 +189,7 @@ function Signup () {
                                 value={formData.username}
                                 onChange={changeHandler}
                                 />
+                                {errors.username && <ErrorText>{errors.username}</ErrorText>}
                             <ButtonWrapper>
                                 <SubmitButton
                                     className="sign-up-submit">Sign up</SubmitButton>
@@ -276,4 +364,10 @@ const IsUser = styled.div`
     font-weight: 400;
     line-height: normal;
     cursor: pointer;
+`;
+
+const ErrorText = styled.div`
+  color: red;
+  font-size: 12px;
+  text-align: left;
 `;

@@ -8,6 +8,7 @@ import Header from './components/atoms/Header';
 import MyInfo from './pages/Myinfo';
 import Service from './pages/Service';
 import Contact from './pages/Contact';
+import Ecohabit from './pages/Ecohabit';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
             <Route path="/myinfo" element={<MyInfo />} />
             <Route path="/service" element={<Service />}/>
             <Route path="/contact" element={<Contact />}/>
+            <Route path="/ecohabit" element={<Ecohabit />}/>
 
             {/* <Route element={NotFound} /> */}
           </Routes>

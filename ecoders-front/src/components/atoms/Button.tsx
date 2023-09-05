@@ -18,16 +18,16 @@ interface ButtonType {
     onClick?: React.MouseEventHandler<HTMLButtonElement>;
 }
 
-function CommonButton (props: ButtonType) {
+function Button (props: ButtonType) {
     return (
         // {...props} 는 props로 받은 속성들을 styled component에 넘겨주는 역할
-        <Button {...props} onClick={props.onClick}>{props.children}</Button>
+        <CommonButton {...props} onClick={props.onClick}>{props.children}</CommonButton>
     );
 }
 
-export default CommonButton;
+export default Button;
 
-const Button = styled.button<ButtonType>`
+const CommonButton = styled.button<ButtonType>`
     cursor: pointer;
     font-weight: 600;
     /* {(props) => (props.속성값 ? props.속성값 : '100%')}

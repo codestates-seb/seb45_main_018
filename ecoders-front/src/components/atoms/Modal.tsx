@@ -11,7 +11,7 @@ interface ModalType {
     className?: string;
 }
 
-function CommonModal (props: ModalType) {
+function Modal (props: ModalType) {
     const dispatch = useDispatch();
     const isOpen = useSelector((state: RootState) => state.modal.isOpen);
 
@@ -36,7 +36,7 @@ function CommonModal (props: ModalType) {
     )
 };
 
-export default CommonModal;
+export default Modal;
 
 const Container = styled.div`
     display: flex;

@@ -8,3 +8,10 @@ jwt:
   secret-key: ${JWT_SECRET_KEY}
   access-token-expiration-minutes: 30
   refresh-token-expiration-minutes: 600
+jpa:
+  properties:
+    hibernate:
+      format_sql: true
+      show_sql: true
+server:
+  port: 8000

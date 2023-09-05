@@ -1,15 +1,11 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://ecodersdb.cv52uztqspox.ap-northeast-2.rds.amazonaws.com:8080/test?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    url: jdbc:mysql://${POLARECO_RDS_ENDPOINT}/test?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
     username: ${POLARECO_RDS_USERNAME}
     password: ${POLARECO_RDS_PASSWORD}
   jpa:
+    database: mysql
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
     hibernate:
-      ddl-auto: create
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.MySQL57Dialect
-        format_sql: true
-        show_sql: true
+      ddl-auto: update

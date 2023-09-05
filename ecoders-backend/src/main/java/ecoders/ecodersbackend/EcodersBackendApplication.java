@@ -9,5 +9,4 @@ public class EcodersBackendApplication {
     public static void main(String[] args) {
         SpringApplication.run(EcodersBackendApplication.class, args);
     }
-
 }

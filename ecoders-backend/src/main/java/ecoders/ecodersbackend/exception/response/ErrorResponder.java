@@ -1,7 +1,7 @@
 package ecoders.ecodersbackend.exception.response;
 
 import com.google.gson.Gson;
-import ecoders.ecodersbackend.exception.ExceptionCode;
+import ecoders.ecodersbackend.exception.code.ExceptionCode;
 import org.springframework.http.MediaType;
 
 import javax.servlet.http.HttpServletResponse;

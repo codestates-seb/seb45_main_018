@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
-import static ecoders.ecodersbackend.exception.ExceptionCode.*;
+import static ecoders.ecodersbackend.exception.code.ExceptionCode.*;
 
 @AllArgsConstructor
 @Transactional

@@ -1,7 +1,7 @@
 package ecoders.ecodersbackend.exception.advice;
 
 import ecoders.ecodersbackend.exception.BusinessLogicException;
-import ecoders.ecodersbackend.exception.ExceptionCode;
+import ecoders.ecodersbackend.exception.code.ExceptionCode;
 import ecoders.ecodersbackend.exception.response.ErrorResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;

@@ -1,10 +1,12 @@
-package ecoders.ecodersbackend.auth.jwt;
+package ecoders.ecodersbackend.auth.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ecoders.ecodersbackend.auth.dto.AuthDto;
+import ecoders.ecodersbackend.exception.BusinessLogicException;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -12,6 +14,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import static ecoders.ecodersbackend.exception.code.ExceptionCode.JWT_AUTHENTICATION_METHOD_NOT_ALLOWED;
 
 @AllArgsConstructor
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
@@ -21,7 +25,12 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     @SneakyThrows
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
-        throws AuthenticationException {
+        throws AuthenticationException, BusinessLogicException {
+        if (!request.getMethod().equals("POST")) {
+            String message = JWT_AUTHENTICATION_METHOD_NOT_ALLOWED.getMessage();
+            Throwable cause = new BusinessLogicException(JWT_AUTHENTICATION_METHOD_NOT_ALLOWED);
+            throw new AuthenticationServiceException(message, cause);
+        }
         ObjectMapper objectMapper = new ObjectMapper();
         AuthDto.LoginDto loginDto = objectMapper.readValue(request.getInputStream(), AuthDto.LoginDto.class);
         UsernamePasswordAuthenticationToken authenticationToken =

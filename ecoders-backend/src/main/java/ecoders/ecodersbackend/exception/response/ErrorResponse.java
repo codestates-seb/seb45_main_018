@@ -1,6 +1,6 @@
 package ecoders.ecodersbackend.exception.response;
 
-import ecoders.ecodersbackend.exception.ExceptionCode;
+import ecoders.ecodersbackend.exception.code.ExceptionCode;
 import lombok.Getter;
 
 @Getter

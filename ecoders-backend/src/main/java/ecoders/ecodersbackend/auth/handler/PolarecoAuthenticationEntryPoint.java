@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static ecoders.ecodersbackend.exception.ExceptionCode.MEMBER_JWT_AUTHENTICATION_FAILED;
+import static ecoders.ecodersbackend.exception.code.ExceptionCode.MEMBER_JWT_AUTHENTICATION_FAILED;
 
 @Slf4j
 @Component

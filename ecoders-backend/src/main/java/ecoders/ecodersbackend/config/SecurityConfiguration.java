@@ -5,7 +5,7 @@ import ecoders.ecodersbackend.auth.handler.PolarecoAuthenticationEntryPoint;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -26,9 +26,9 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity builder) throws Exception {
         builder
-            .headers().frameOptions().sameOrigin()
+            .cors().configurationSource(corsConfigurationSource())
+            .and().headers().frameOptions().sameOrigin()
             .and().csrf().disable()
-            .cors(Customizer.withDefaults())
             .formLogin().disable()
             .httpBasic().disable()
             .exceptionHandling()
@@ -36,6 +36,7 @@ public class SecurityConfiguration {
             .accessDeniedHandler(new PolarecoAccessDeniedHandler())
             .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and().authorizeHttpRequests(registry -> registry
+                .antMatchers(HttpMethod.GET, "/members/**").permitAll()
                 .anyRequest().permitAll()
             )
             .apply(customFilterConfigurer);
@@ -46,7 +47,9 @@ public class SecurityConfiguration {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
         corsConfiguration.setAllowedOrigins(List.of("*"));
-        corsConfiguration.setAllowedMethods(List.of("POST", "GET", "PATCH", "DELETE"));
+        corsConfiguration.setAllowedMethods(List.of("POST", "GET", "PATCH", "DELETE", "OPTIONS"));
+        corsConfiguration.setAllowedHeaders(List.of("*"));
+        corsConfiguration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource corsConfigurationSource = new UrlBasedCorsConfigurationSource();
         corsConfigurationSource.registerCorsConfiguration("/**", corsConfiguration);
         return corsConfigurationSource;

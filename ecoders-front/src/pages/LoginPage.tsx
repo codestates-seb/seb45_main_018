@@ -8,27 +8,27 @@ import Modal from '../components/atoms/Modal';
 import { useDispatch } from 'react-redux';
 import { openModal } from '../redux/slice/modalSlice';
 import { useNavigate } from 'react-router-dom';
-import { setToken, setUsername } from '../redux/slice/userSlice';
+import { setToken } from '../redux/slice/userSlice';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 
 // 아래 코드 검토 필요
-axios.interceptors.response.use(
-  response => response,
-  async error => {
-    const originalRequest = error.config;
-    if (error.response.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
-      const refreshToken = localStorage.getItem('refreshToken');
-      const res = await axios.post('YOUR_REFRESH_ENDPOINT', { refreshToken });
-      const newToken = res.data.accessToken;
-      localStorage.setItem('accessToken', newToken);
-      axios.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
-      return axios(originalRequest);
-    }
-    return Promise.reject(error);
-  },
-);
+// axios.interceptors.response.use(
+//   response => response,
+//   async error => {
+//     const originalRequest = error.config;
+//     if (error.response.status === 401 && !originalRequest._retry) {
+//       originalRequest._retry = true;
+//       const refreshToken = localStorage.getItem('refreshToken');
+//       const res = await axios.post('YOUR_REFRESH_ENDPOINT', { refreshToken });
+//       const newToken = res.data.accessToken;
+//       localStorage.setItem('accessToken', newToken);
+//       axios.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
+//       return axios(originalRequest);
+//     }
+//     return Promise.reject(error);
+//   },
+// );
 
 function LoginPage() {
   type ApiState = {
@@ -58,7 +58,7 @@ function LoginPage() {
     // const pwdToSend = password || '123456'; // 비밀번호 상태 값을 사용합니다.
 
     try {
-      const response = await axios.post(APIURL, {
+      const response = await axios.post(`${APIURL}/login`, {
         email: email,
         password: password,
       });
@@ -67,7 +67,7 @@ function LoginPage() {
       console.log(password);
 
       if (response.status === 200) {
-        const { accessToken, refreshToken, username } = response.data;
+        const { accessToken, refreshToken } = response.data;
         // (수정사항) 1. 다시 user 정보 get 새로..
         // (수정사항) 2. 유저정보조회 시: id로 검색
 
@@ -77,7 +77,7 @@ function LoginPage() {
         console.log(refreshToken); //추후 삭제
 
         dispatch(setToken(accessToken));
-        dispatch(setUsername(username));
+        // dispatch(setUsername(username));
         dispatch(login());
 
         navigate('/');
@@ -90,6 +90,12 @@ function LoginPage() {
       console.error('로그인 에러:', error); }
     }
   };
+
+
+
+
+
+  
 
   return (
     <Container>

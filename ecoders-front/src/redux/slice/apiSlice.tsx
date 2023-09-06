@@ -2,8 +2,9 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  APIURL: 'https://686c3178-ea4b-453f-a252-b2d06e0a9ebc.mock.pstmn.io/login'
+  APIURL: "https://d920b6e3-f965-44a1-82fd-b19047e52a79.mock.pstmn.io"
 };
+
 
 const apiSlice = createSlice({
   name: 'api',

@@ -17,7 +17,7 @@ const Header: React.FC = () => {
   const dispatch = useDispatch();
   const isLoggedIn = useSelector((state: RootState) => state.login.isLoggedIn);
   const username = useSelector((state: RootState) => state.user.username); // username 상태 가져오기
-  const stamp = useSelector((state: RootState) => state.user.stamp); // username 상태 가져오기
+  const stamp = useSelector((state: RootState) => state.user.stamp); // stamp 상태 가져오기
 
   type ApiState = {
     api: {
@@ -40,26 +40,18 @@ const Header: React.FC = () => {
       //     console.log(username)
       //     navigate('/');
       //   }
-      // } 
-      
-      
-      
-      try{
-      axios.get(`${APIURL}/member`)
-      .then(response => {
-        const { username, stamp } = response.data;
-        console.log(response.data)
-        console.log(username, stamp); // 이렇게 같은 스코프 내에서 호출
-        dispatch(setUsername(response.data.username));
-        dispatch(setStamp(response.data.stamp));
-                console.log(username, stamp); // 이렇게 같은 스코프 내에서 호출
+      // }
 
-      });
-    }
-      
-      
-      
-      catch (error: any) {
+      try {
+        axios.get(`${APIURL}/member`).then(response => {
+          // const { username, stamp } = response.data;
+          console.log(response.data);
+          console.log(username, stamp); // 이렇게 같은 스코프 내에서 호출
+          dispatch(setUsername(response.data.username));
+          dispatch(setStamp(response.data.stamp));
+          console.log(username, stamp); // 이렇게 같은 스코프 내에서 호출
+        });
+      } catch (error: any) {
         if (error.response?.status === 401) {
           alert('로그인에 실패했습니다.');
         } else {

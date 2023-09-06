@@ -131,7 +131,12 @@ function Signup () {
                 confirmPassword: '',
             };
 
-            const response = await axios.post('https://5843db23-3410-49dd-8ef6-3f35040f9951.mock.pstmn.io/auth/signup', newformData);
+            const response = await axios.post('http://ec2-13-209-89-195.ap-northeast-2.compute.amazonaws.com:8080/auth/signup', newformData, {
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            }
+            );
 
             // 이미 존재하는 이매일 일때
             if (response.status === 403) {

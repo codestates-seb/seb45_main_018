@@ -1,4 +1,4 @@
-import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
+import { configureStore } from "@reduxjs/toolkit";
 import modalReducer from "../slice/modalSlice";
 import loginReducer from "../slice/loginSlice";
 import authReducer from "../slice/authSlice";

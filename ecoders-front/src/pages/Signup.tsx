@@ -62,22 +62,12 @@ function Signup () {
             newErrors.username = '닉네임을 입력하세요.';
         }
 
-        // 이미 존재하는 이매일 일때
-        /* if () {
-            newErrors.email = '이미 존재하는 이메일입니다.';
-        } */
-
         // 이메일이 형식에 맞지 않을 때
         const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
 
         if (formData.email && !emailRegex.test(formData.email)) {
             newErrors.email = '올바른 이메일 형식이 아닙니다.';
         }
-
-        // 이미 존재하는 닉네임일 때
-        /* if () {
-            newErrors.username = '이미 존재하는 닉네임입니다.';
-        } */
 
         // 닉네임이 형식에 맞지 않을 때
         if (formData.username.length > 20) {
@@ -136,7 +126,19 @@ function Signup () {
         }
 
         try {
-            const response = await axios.post('https://5843db23-3410-49dd-8ef6-3f35040f9951.mock.pstmn.io/auth/signup', formData);
+            const newformData = {
+                ...formData,
+                confirmPassword: '',
+            };
+
+            const response = await axios.post('https://5843db23-3410-49dd-8ef6-3f35040f9951.mock.pstmn.io/auth/signup', newformData);
+
+            // 이미 존재하는 이매일 일때
+            if (response.status === 403) {
+                errors.email = '이미 존재하는 이메일입니다.';
+                setErrors(errors);
+            }
+
             console.log(response.data);
             dispatch(registerSuccess(response.data.user));
             dispatch(openModal());

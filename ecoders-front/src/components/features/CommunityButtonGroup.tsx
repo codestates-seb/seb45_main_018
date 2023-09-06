@@ -27,7 +27,7 @@ const ButtonGroup = styled.div<leftSetting>`
   position: fixed;
   left: ${props => (props.left ? props.left : '75%')};
   top: 85%;
-  z-index: 2;
+  z-index: 0.5;
   button {
     margin: 5px;
   }

@@ -47,7 +47,7 @@ const Header: React.FC = () => {
       try{
       axios.get(`${APIURL}/member`)
       .then(response => {
-        // const { username, stamp } = response.data;
+        const { username, stamp } = response.data;
         console.log(response.data)
         console.log(username, stamp); // 이렇게 같은 스코프 내에서 호출
         dispatch(setUsername(response.data.username));

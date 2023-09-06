@@ -4,15 +4,56 @@ import { useNavigate } from 'react-router-dom';
 import CommonButton from '../atoms/CommonButton';
 import { AiOutlineHeart } from 'react-icons/ai';
 import CommunityButtonGroup from './CommunityButtonGroup';
-import { post, comment } from '../../pages/CommunityPostDetailPage';
+import CommonModal from '../atoms/CommonModal';
 
-const HeaderButtons = () => {
+import { useDispatch } from 'react-redux';
+import { closeModal, openModal } from '../../redux/slice/modalSlice';
+
+import { post, comment } from '../../pages/CommunityPostDetailPage';
+import { useState } from 'react';
+
+const HeaderButtons = ({ dummyData }: { dummyData: post }) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  function postModifyHandler() {
+    // 게시물 정보와 함께 postwrite로 이동
+    navigate(`/community/postwrite`, { state: { dummyData } });
+  }
+
+  function postDeleteHandler() {
+    // 게시글 삭제 요청 처리 후 게시판으로 이동
+    navigate(`/community`);
+  }
+
+  function postDeleteModalHandler() {
+    dispatch(openModal());
+  }
+
   return (
     <div className="header-buttons">
-      <CommonButton width="50px" fontSize={0.5} hoverBgColor="#7092bf" hoverColor="white">
+      {/* 삭제 예 -> 서버에 delete 요청 */}
+      <CommonModal className="post-delete">
+        <div>해당 게시글을 삭제하시겠습니까?</div>
+        <ModalButtons>
+          <CommonButton onClick={postDeleteHandler}>예</CommonButton>
+          <CommonButton
+            onClick={() => {
+              dispatch(closeModal());
+            }}>
+            아니요
+          </CommonButton>
+        </ModalButtons>
+      </CommonModal>
+
+      <CommonButton width="50px" fontSize={0.5} hoverBgColor="#7092bf" hoverColor="white" onClick={postModifyHandler}>
         수정
       </CommonButton>
-      <CommonButton width="50px" fontSize={0.5} hoverBgColor="#7092bf" hoverColor="white">
+      <CommonButton
+        width="50px"
+        fontSize={0.5}
+        hoverBgColor="#7092bf"
+        hoverColor="white"
+        onClick={postDeleteModalHandler}>
         삭제
       </CommonButton>
     </div>
@@ -39,12 +80,30 @@ function CommentDetail({ comment }: { comment: Array<comment> }) {
 }
 
 function CommentAdd() {
+  const [comment, setComment] = useState('');
+
+  function changeCommentHandler(event: React.ChangeEvent<HTMLTextAreaElement>) {
+    setComment((event.target as HTMLTextAreaElement).value);
+  }
+  // 댓글 등록 버튼 클릭 함수
+  function submitCommentHandler() {
+    console.log(comment);
+  }
   return (
     <div className="post-comment-add">
       <div className="post-comment-add-user">User</div>
-      <textarea className="post-comment-add-content" placeholder="댓글을 남겨주세요"></textarea>
+      <textarea
+        className="post-comment-add-content"
+        placeholder="댓글을 남겨주세요"
+        value={comment}
+        onChange={changeCommentHandler}></textarea>
       <div className="post-comment-submit">
-        <CommonButton width="50px" fontSize={0.5} hoverBgColor="#7092bf" hoverColor="white">
+        <CommonButton
+          width="50px"
+          fontSize={0.5}
+          hoverBgColor="#7092bf"
+          hoverColor="white"
+          onClick={submitCommentHandler}>
           등록
         </CommonButton>
       </div>
@@ -64,7 +123,7 @@ function PostDetail({ dummyData }: { dummyData: post }) {
         <h2>{dummyData.title}</h2>
         <div className="header-detail">
           <div className="post-date">{dummyData.date}</div>
-          <HeaderButtons />
+          <HeaderButtons dummyData={dummyData} />
         </div>
       </PostDetailHeader>
       <PostDetailContent>
@@ -220,5 +279,15 @@ const PostFooter = styled.div`
     margin-top: 5px;
     display: flex;
     justify-content: right;
+  }
+`;
+
+const ModalButtons = styled.div`
+  display: flex;
+  justify-content: space-around;
+  margin-top: 20px;
+  button {
+    width: 100px;
+    margin: 0px 10px;
   }
 `;

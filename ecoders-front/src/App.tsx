@@ -19,7 +19,7 @@ function App() {
             <Route path="/myinfo" element={<MyInfo />} />
             <Route path="/service" element={<Service />}/>
             <Route path="/contact" element={<Contact />}/>
-            <Route path="/ecohabit" element={<Ecohabit />}/>
+            <Route path="/eco-habit" element={<Ecohabit />}/>
 
             {/* <Route element={NotFound} /> */}
           </Routes>

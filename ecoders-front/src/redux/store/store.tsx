@@ -1,12 +1,14 @@
 import { configureStore } from "@reduxjs/toolkit";
 import modalReducer from "../slice/modalSlice";
 import loginReducer from "../slice/loginSlice";
+import missionReducer from '../slice/missionSlice';
 
 // configureStore를 사용하여 스토어를 설정
 const store = configureStore({
     reducer: {                      // reducer 속성에는 reducer들을 포함
         modal: modalReducer,
         login: loginReducer,
+        missions: missionReducer,
         // 다른 reducer들 추가 가능
     },
 });

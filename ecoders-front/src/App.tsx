@@ -5,7 +5,7 @@ import './App.css';
 import Main from './pages/Main';
 import Footer from './components/atoms/Footer';
 import Header from './components/atoms/Header';
-// import MyInfo from './pages/Myinfo';
+import MyInfo from './pages/Myinfo';
 import Service from './pages/Service';
 import Contact from './pages/Contact';
 import LoginPage from './pages/LoginPage';
@@ -17,7 +17,7 @@ function App() {
         <Header />
           <Routes>
             <Route path="/" element={<Main />} />
-            {/* <Route path="/myinfo" element={<MyInfo />} /> */}
+            <Route path="/myinfo" element={<MyInfo />} />
             <Route path="/service" element={<Service />}/>
             <Route path="/contact" element={<Contact />}/>
             <Route path="/login" element={<LoginPage />} />

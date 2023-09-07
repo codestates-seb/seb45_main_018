@@ -3,45 +3,69 @@ import { PiStarFourFill } from "react-icons/pi";
 import { FiSettings } from "react-icons/fi";
 import Button from "../components/atoms/Button";
 import MissionForm from "../components/features/MissionForm";
+import { useDispatch } from "react-redux";
+import { openModal } from "../redux/slice/modalSlice";
+import Modal from "../components/atoms/Modal";
 
 function Ecohabit () {
+    const dispatch = useDispatch();
+
+    const statusOpenHandler = () => {
+        dispatch(openModal());
+    }
+
+    const settingOpenHandler = () => {
+        dispatch(openModal());
+    }
     return (
         <Container>
             <ContentsContiner>
                 <StampContainer>
                     <div>
-                        <div className="mission-title">
+                        <Title>
                             <PiStarFourFill style={{color: '#D3F169'}}/>
                             Stamps of Week!
-                        </div>
+                        </Title>
                         <CommonButton
-                            className="my-stamp-status">나의 스탬프 현황</CommonButton>
+                            className="my-stamp-status"
+                            onClick={statusOpenHandler}>나의 스탬프 현황</CommonButton>
                     </div>
                     <div className="week-stamps">
                         주간 스탬프
                     </div>
                 </StampContainer>
+                <Modal className="stamp-status-modal">모달입니다.</Modal>
                 <MyMissionContainer>
-                    <div>
-                        <div>
+                    <TitleBox>
+                        <Title>
                             <PiStarFourFill style={{color: '#D3F169'}}/>
                             나만의 미션!
+                        </Title>
+                        <div className="button-box">
+                            <CommonButton className="add-mission">+</CommonButton>
                         </div>
-                        <CommonButton className="add-mission">+</CommonButton>
-                        <CommonButton className="reset-mission">R</CommonButton>
-                    </div>
+                        <div className="button-box">
+                            <CommonButton className="reset-mission">R</CommonButton>
+                        </div>
+                    </TitleBox>
                     <div>
                         <MissionForm></MissionForm>
                     </div>
                 </MyMissionContainer>
                 <TodayMissionContainer>
-                    <div>
-                        <PiStarFourFill style={{color: '#D3F169'}}/>
-                        오늘의 미션!
-                        <FiSettings />
-                    </div>
-                    <div>미션 박스들</div>
+                    <TitleBox>
+                        <Title>
+                            <PiStarFourFill style={{color: '#D3F169'}}/>
+                            오늘의 미션!
+                        </Title>
+                        <div className="setting-box"
+                            onClick={settingOpenHandler}>
+                            <FiSettings style={{color: '#CCCCCC'}} />
+                        </div>
+                    </TitleBox>
+                    <div className="todays-mission">미션 박스들</div>
                 </TodayMissionContainer>
+                <Modal className="setting-modal">설정 모달입니다.</Modal>
             </ContentsContiner>
         </Container>
     )
@@ -60,24 +84,24 @@ const ContentsContiner = styled.div`
     border-left: 1px solid black;
     border-right: 1px solid black;
     width: 60rem;
-    padding: 0px 24px;
+    height: 100vh;
+    padding: 46px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 5rem;
+
 `;
 
 const StampContainer = styled.div`
     display: flex;
     flex-direction: column;
+    gap: 1.5rem;
 
     div {
         display: flex;
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
-
-        &.mission-title {
-            font-size: 32px;
-            font-weight: 600;
-            line-height: normal;
-        }
 
         &.week-stamps {
             width: 650px;
@@ -90,24 +114,85 @@ const StampContainer = styled.div`
 const MyMissionContainer = styled.div`
     display: flex;
     flex-direction: column;
+    gap: 1.5rem;
 
     div {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
+
+        &.button-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            text-align: center;
+            line-height: normal;
+            cursor: pointer;
+        }
     }
 `;
 
 const TodayMissionContainer = styled.div`
     display: flex;
     flex-direction: column;
+    gap: 1.5rem;
+
+    div {
+        &.setting-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            text-align: center;
+            line-height: normal;
+            font-size: 25px;
+            cursor: pointer;
+        }
+
+        &.todays-mission {
+            height: 200px;
+            background-color: aliceblue;
+        }
+    }
 `;
 
 const CommonButton = styled(Button)`
+    text-align: center;
+    line-height: normal;
 
     &.my-stamp-status {
         width: 150px;
         padding: 10px;
+        background-color: #000;
+        color: #fff;
+
+        &:hover {
+            background-color: #D4E2F1;
+        }
     }
-`
+
+    &.add-mission {
+        background-color: #D4E2F1;
+        border: none;
+        color: #fff;
+        font-size: 20px;
+    }
+
+    &.reset-mission {
+        background-color: #D4E2F1;
+        border: none;
+        color: #fff;
+    }
+`;
+
+const Title = styled.div`
+    font-size: 32px;
+    font-weight: 600;
+    line-height: normal;
+`;
+
+const TitleBox = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+`;

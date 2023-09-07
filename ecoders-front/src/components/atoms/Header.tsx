@@ -19,6 +19,7 @@ const Header: React.FC = () => {
   }
 
   const handleLogout = () => {
+    navigate('/login')
     dispatch(logout());
   }
 
@@ -28,6 +29,10 @@ const Header: React.FC = () => {
 
   const navigateToMyInfo = () => {
     navigate('/myinfo');
+  };
+
+  const navigateToSignUp = () => {
+    navigate('/signup');
   };
 
 
@@ -74,7 +79,7 @@ const Header: React.FC = () => {
           ) : (
             <>
               <LoginButton onClick={handleLogin}>Login</LoginButton>
-              <CreateAccountButton>Create Account</CreateAccountButton>
+              <CreateAccountButton onClick={navigateToSignUp} >Create Account</CreateAccountButton>
             </>
           )}
         </HeaderProfileContainer>

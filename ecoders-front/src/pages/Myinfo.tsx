@@ -113,7 +113,7 @@ const MyInfo = () => {
             </StampBadgeTitleContainer>
             <UserBadgeContainer>
               <UserBadge>북극곰 연인</UserBadge> 
-              {/* 어떻게 불러올 것인지 고민하기 */}
+              {/* 어떻게 불러올 것인지 고민하기  -> grid 찾아보기 */}
               <UserBadge>가까운 거리 탐험가</UserBadge>
               <UserBadge>스탬프 수집가</UserBadge>
             </UserBadgeContainer>

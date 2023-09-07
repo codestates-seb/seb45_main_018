@@ -73,7 +73,7 @@ function LoginPage() {
         // (수정사항) 2. 유저정보조회 시: id로 검색
         const authHeader = response.headers['authorization'];
         const refreshHeader = response.headers['refresh-token'];
-        const ID = response.headers['member-ID']
+        const ID = response.headers['memberId']
     
         let accessToken, refreshToken;
     

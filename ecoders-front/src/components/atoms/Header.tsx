@@ -16,6 +16,7 @@ const Header: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const isLoggedIn = useSelector((state: RootState) => state.login.isLoggedIn);
+  const memberId = useSelector((state: RootState) => state.user.id ) 
   const username = useSelector((state: RootState) => state.user.username); // username 상태 가져오기
   const stamp = useSelector((state: RootState) => state.user.stamp); // stamp 상태 가져오기
 
@@ -43,12 +44,12 @@ const Header: React.FC = () => {
       // }
 
       try {
-        axios.get(`${APIURL}/member`).then(response => {
+        axios.get(`${APIURL}/member/${memberId}`).then(response => {
           // const { username, stamp } = response.data;
           console.log(response.data);
           console.log(username, stamp); // 이렇게 같은 스코프 내에서 호출
-          dispatch(setUsername(response.data.username));
-          dispatch(setStamp(response.data.stamp));
+          dispatch(setUsername(response.data['username']));
+          dispatch(setStamp(response.data['stamp']));
           console.log(username, stamp); // 이렇게 같은 스코프 내에서 호출
         });
       } catch (error: any) {

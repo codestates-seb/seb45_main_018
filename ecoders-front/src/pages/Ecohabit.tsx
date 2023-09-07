@@ -1,22 +1,55 @@
 import { styled } from "styled-components";
 import { PiStarFourFill } from "react-icons/pi";
 import { FiSettings } from "react-icons/fi";
+import { MdOutlineKeyboardArrowUp, MdAdd } from "react-icons/md";
 import Button from "../components/atoms/Button";
-import MissionForm from "../components/features/MissionForm";
+import MissionForm from "../components/atoms/MissionForm";
 import { useDispatch } from "react-redux";
 import { openModal } from "../redux/slice/modalSlice";
 import Modal from "../components/atoms/Modal";
+import { useEffect, useState } from "react";
+import MyMissionList from "../components/features/MyMissionList";
+import TodaysMissionList from "../components/features/TodaysMissionList";
+import { fetchTodaysMissions } from "../redux/slice/missionSlice";
+import logo from "../assets/Logo.png"
 
 function Ecohabit () {
     const dispatch = useDispatch();
 
+    const [ isMissionFormVisible, setIsMissionFormVisible ] = useState(false);
+
     const statusOpenHandler = () => {
-        dispatch(openModal());
-    }
+        dispatch(openModal("stampStatusModal"));
+    };
 
     const settingOpenHandler = () => {
-        dispatch(openModal());
-    }
+        dispatch(openModal("settingModal"));
+    };
+
+    // 입력 창 보이는 핸들러
+    const addMissionHandler = () => {
+        setIsMissionFormVisible(!isMissionFormVisible);
+    };
+
+    // 리스트 리셋 핸들러
+    const resetMissionHandler = () => {
+
+    };
+
+    // 오늘의 미션 데이터 받아오기
+    // useEffect(() => {
+    //     const fetchMissions = async () => {
+    //         try {
+    //             const action = fetchTodaysMissions();
+    //             await dispatch(action);
+    //         } catch (error: any) {
+    //             console.error('에러', error)
+    //         }
+    //     };
+
+    //     fetchMissions();
+    // }, [dispatch]); //action type 오류 찾아보기...
+
     return (
         <Container>
             <ContentsContiner>
@@ -34,7 +67,7 @@ function Ecohabit () {
                         주간 스탬프
                     </div>
                 </StampContainer>
-                <Modal className="stamp-status-modal">모달입니다.</Modal>
+                <CommonModal modalType="stampStatusModal">스탬프 현황 모달입니다.</CommonModal>
                 <MyMissionContainer>
                     <TitleBox>
                         <Title>
@@ -42,15 +75,18 @@ function Ecohabit () {
                             나만의 미션!
                         </Title>
                         <div className="button-box">
-                            <CommonButton className="add-mission">+</CommonButton>
+                            <CommonButton className="add-mission" onClick={addMissionHandler}>{!isMissionFormVisible ? (<MdAdd />) : (<MdOutlineKeyboardArrowUp />)}</CommonButton>
                         </div>
                         <div className="button-box">
-                            <CommonButton className="reset-mission">R</CommonButton>
+                            <CommonButton className="reset-mission"
+                                onClick={resetMissionHandler}>R</CommonButton>
                         </div>
                     </TitleBox>
-                    <div>
-                        <MissionForm></MissionForm>
-                    </div>
+                    {isMissionFormVisible && (
+                        <div>
+                            <MissionForm></MissionForm>
+                        </div>)}
+                    <MyMissionList />
                 </MyMissionContainer>
                 <TodayMissionContainer>
                     <TitleBox>
@@ -63,9 +99,26 @@ function Ecohabit () {
                             <FiSettings style={{color: '#CCCCCC'}} />
                         </div>
                     </TitleBox>
-                    <div className="todays-mission">미션 박스들</div>
+                    <div className="todays-mission">
+                        <TodaysMissionList />
+                    </div>
                 </TodayMissionContainer>
-                <Modal className="setting-modal">설정 모달입니다.</Modal>
+                <CommonModal modalType="settingModal">
+                    <ModalConent>
+                        <Logo src={logo} />
+                        <div className="text-content">오늘의 미션 갯수를 설정할 수 있습니다! 원하시는 갯수를 선택해 주세요! </div>
+                        <SelectBox>
+                            <Select>
+                                <option value="one">1개</option>
+                                <option value="two">2개</option>
+                                <option value="three">3개</option>
+                                <option value="four">4개</option>
+                                <option value="five">5개</option>
+                            </Select>
+                        </SelectBox>
+                        <CommonButton className="setting-button">설정하기</CommonButton>
+                    </ModalConent>
+                </CommonModal>
             </ContentsContiner>
         </Container>
     )
@@ -124,7 +177,6 @@ const MyMissionContainer = styled.div`
             justify-content: center;
             width: 30px;
             height: 30px;
-            text-align: center;
             line-height: normal;
             cursor: pointer;
         }
@@ -183,6 +235,17 @@ const CommonButton = styled(Button)`
         border: none;
         color: #fff;
     }
+
+    &.setting-button {
+        background-color: #7092BF;
+        color: #fff;
+        border: none;
+        padding: 16px;
+
+        &:hover {
+            background-color: #D4E2F1;
+        }
+    }
 `;
 
 const Title = styled.div`
@@ -196,3 +259,42 @@ const TitleBox = styled.div`
     align-items: center;
     gap: 1rem;
 `;
+
+const Logo = styled.img`
+    width: 115px;
+`;
+
+const SelectBox = styled.div`
+    width: 80px;
+    border-radius: 10px;
+    border: 1px solid #5A5A5A;
+    background: #FFF;
+    display: flex;
+    justify-content: center;
+`;
+
+const Select = styled.select`
+    width: 60px;
+    padding: 10px;
+    border: none;
+`;
+
+const CommonModal = styled(Modal)`
+`;
+
+const ModalConent = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 14px;
+
+    div {
+        &.text-content {
+            text-align: center;
+            font-size: 16px;
+            font-weight: 400;
+            line-height: normal;
+        }
+    }
+`

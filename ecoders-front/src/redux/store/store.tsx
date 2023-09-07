@@ -2,6 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import modalReducer from "../slice/modalSlice";
 import loginReducer from "../slice/loginSlice";
 import missionReducer from '../slice/missionSlice';
+import authReducer from "../slice/authSlice";
 
 // configureStore를 사용하여 스토어를 설정
 const store = configureStore({
@@ -9,6 +10,7 @@ const store = configureStore({
         modal: modalReducer,
         login: loginReducer,
         missions: missionReducer,
+        auth: authReducer,
         // 다른 reducer들 추가 가능
     },
 });

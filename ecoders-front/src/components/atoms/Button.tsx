@@ -12,7 +12,7 @@ interface ButtonType {
     color?: string;
     hoverColor?: string;
     fontSize?: number;
-    children?: string;
+    children?: any;
     weight?: string;
     className?: string;
     onClick?: React.MouseEventHandler<HTMLButtonElement>;

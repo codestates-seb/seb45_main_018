@@ -7,13 +7,13 @@ interface Mission {
 }
 
 interface MissionState {
-    myMissions: Mission[];      // 나만의 미션
-    todayMissions: Mission[];   // 오늘의 미션
+    myMissions: Mission[];      // 나만의 미션 목록
+    todaysMissions: Mission[];   // 오늘의 미션 목록
 }
 
 const initialState: MissionState = {
     myMissions: [],
-    todayMissions: [],
+    todaysMissions: [],
 }
 
 const missionSlice = createSlice({
@@ -26,9 +26,15 @@ const missionSlice = createSlice({
         },
         setTodayMissions: (state, action: PayloadAction<Mission[]>) =>{
             // 오늘의 미션 목록 설정
-            state.todayMissions = action.payload;
+            state.todaysMissions = action.payload;
         },
     },
+    extraReducers: (builder) => {
+        builder.addCase(fetchTodaysMissions.fulfilled, (state, action) => {
+            // 오늘의 미션 데이터를 상태에 설정
+            state.todaysMissions = action.payload;
+        });
+    }
 });
 
 export const { addMyMission, setTodayMissions } = missionSlice.actions;
@@ -37,7 +43,7 @@ export default missionSlice.reducer;
 
 // 오늘의 미션 가지고 오는 액션 생성자 함수
 // 랜덤으로 5개 들고 오는 거 어떻게 들고 올지 생각해야 함
-export const fetchTodayMissions = createAsyncThunk('missions/fetchTodayMissions', async () => {
+export const fetchTodaysMissions = createAsyncThunk('missions/fetchTodaysMissions', async () => {
     const response = await axios.get('api 주소');
     return response.data;
 })

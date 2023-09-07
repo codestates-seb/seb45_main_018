@@ -9,6 +9,8 @@ import MyInfo from './pages/Myinfo';
 import Service from './pages/Service';
 import Contact from './pages/Contact';
 import Ecohabit from './pages/Ecohabit';
+import LoginPage from './pages/LoginPage';
+import Signup from './pages/Signup';
 
 function App() {
   return (
@@ -20,7 +22,8 @@ function App() {
             <Route path="/service" element={<Service />}/>
             <Route path="/contact" element={<Contact />}/>
             <Route path="/eco-habit" element={<Ecohabit />}/>
-
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/signup" element={<Signup />} />
             {/* <Route element={NotFound} /> */}
           </Routes>
       </BrowserRouter>

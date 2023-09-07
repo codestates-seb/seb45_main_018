@@ -21,11 +21,11 @@ const PostWriteHeader = () => {
     </div>
   );
 };
-
-const PostWriteBody = ({ dummyData }: { dummyData: post }) => {
+// const PostWriteBody = ({ dummyData }: { dummyData: post }) => {
+const PostWriteBody = () => {
   const editorRef = useRef<Editor>(null);
 
-  console.log(dummyData.content);
+  // console.log(dummyData.content);
   const submitButtonClickHandler = () => {
     const content = editorRef.current?.getInstance();
     const data = editorRef.current?.getInstance().getHTML() || '';
@@ -71,14 +71,16 @@ const PostWriteBody = ({ dummyData }: { dummyData: post }) => {
     </div>
   );
 };
-
-function PostWrite({ dummyData }: { dummyData: post }) {
-  console.log(dummyData);
+//수정 로직.. 미완성
+// function PostWrite({ dummyData }: { dummyData: post }) {
+function PostWrite() {
+  // console.log(dummyData);
   return (
     <PostWriteLayout>
       <PostWriteForm>
         <PostWriteHeader />
-        <PostWriteBody dummyData={dummyData} />
+        {/* <PostWriteBody dummyData={dummyData} /> */}
+        <PostWriteBody />
       </PostWriteForm>
     </PostWriteLayout>
   );

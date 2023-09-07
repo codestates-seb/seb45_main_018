@@ -1,10 +1,10 @@
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 
-import CommonButton from '../atoms/CommonButton';
+import Button from '../atoms/Button';
 import { AiOutlineHeart } from 'react-icons/ai';
 import CommunityButtonGroup from './CommunityButtonGroup';
-import CommonModal from '../atoms/CommonModal';
+import Modal from '../atoms/Modal';
 
 import { useDispatch } from 'react-redux';
 import { closeModal, openModal } from '../../redux/slice/modalSlice';
@@ -32,30 +32,25 @@ const HeaderButtons = ({ dummyData }: { dummyData: post }) => {
   return (
     <div className="header-buttons">
       {/* 삭제 예 -> 서버에 delete 요청 */}
-      <CommonModal className="post-delete">
+      <Modal className="post-delete">
         <div>해당 게시글을 삭제하시겠습니까?</div>
         <ModalButtons>
-          <CommonButton onClick={postDeleteHandler}>예</CommonButton>
-          <CommonButton
+          <Button onClick={postDeleteHandler}>예</Button>
+          <Button
             onClick={() => {
               dispatch(closeModal());
             }}>
             아니요
-          </CommonButton>
+          </Button>
         </ModalButtons>
-      </CommonModal>
+      </Modal>
 
-      <CommonButton width="50px" fontSize={0.5} hoverBgColor="#7092bf" hoverColor="white" onClick={postModifyHandler}>
+      <Button width="50px" fontSize={0.5} hoverBgColor="#7092bf" hoverColor="white" onClick={postModifyHandler}>
         수정
-      </CommonButton>
-      <CommonButton
-        width="50px"
-        fontSize={0.5}
-        hoverBgColor="#7092bf"
-        hoverColor="white"
-        onClick={postDeleteModalHandler}>
+      </Button>
+      <Button width="50px" fontSize={0.5} hoverBgColor="#7092bf" hoverColor="white" onClick={postDeleteModalHandler}>
         삭제
-      </CommonButton>
+      </Button>
     </div>
   );
 };
@@ -98,14 +93,9 @@ function CommentAdd() {
         value={comment}
         onChange={changeCommentHandler}></textarea>
       <div className="post-comment-submit">
-        <CommonButton
-          width="50px"
-          fontSize={0.5}
-          hoverBgColor="#7092bf"
-          hoverColor="white"
-          onClick={submitCommentHandler}>
+        <Button width="50px" fontSize={0.5} hoverBgColor="#7092bf" hoverColor="white" onClick={submitCommentHandler}>
           등록
-        </CommonButton>
+        </Button>
       </div>
     </div>
   );
@@ -136,7 +126,7 @@ function PostDetail({ dummyData }: { dummyData: post }) {
           <AiOutlineHeart />
           <div>{dummyData.likeCount}</div>
         </div>
-        <CommonButton
+        <Button
           width="65px"
           height="30px"
           borderRadius="15px"
@@ -145,7 +135,7 @@ function PostDetail({ dummyData }: { dummyData: post }) {
           hoverColor="white"
           onClick={goToCommunityHandler}>
           목록
-        </CommonButton>
+        </Button>
       </PostDetailFooter>
 
       <PostFooter>

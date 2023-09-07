@@ -7,7 +7,7 @@ import { Editor } from '@toast-ui/react-editor';
 import '@toast-ui/editor/dist/toastui-editor.css';
 
 import { post, comment } from '../../pages/CommunityPostDetailPage';
-import CommonButton from '../atoms/CommonButton';
+import Button from '../atoms/Button';
 
 const PostWriteHeader = () => {
   return (
@@ -59,14 +59,14 @@ const PostWriteBody = ({ dummyData }: { dummyData: post }) => {
         // }}
       />
       <div className="submit-button-container">
-        <CommonButton
+        <Button
           width="80px"
           fontSize={0.5}
           hoverBgColor="#7092bf"
           hoverColor="white"
           onClick={submitButtonClickHandler}>
           등록
-        </CommonButton>
+        </Button>
       </div>
     </div>
   );

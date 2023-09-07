@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 
 import BoardCard from './BoardCard';
 import CommunityButtonGroup from './CommunityButtonGroup';
-import CommonButton from '../atoms/CommonButton';
+import Button from '../atoms/Button';
 
 export interface card {
   userName: string;
@@ -128,17 +128,16 @@ function Board() {
             {categoryOption.map((item, index) => {
               return (
                 <>
-                  <CommonButton
+                  <Button
                     key={index}
                     className={category === item ? 'clicked-category' : ''}
                     width="60px"
                     fontSize={0.5}
                     hoverBgColor="#7092bf"
                     hoverColor="white"
-                    value={item}
                     onClick={changeCategoryHandler}>
                     {item}
-                  </CommonButton>
+                  </Button>
                 </>
               );
             })}

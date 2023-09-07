@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import { setToken } from '../redux/slice/userSlice';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
+import { setId } from '../redux/slice/userSlice';
 
 // 아래 코드 검토 필요
 // axios.interceptors.response.use(
@@ -58,7 +59,7 @@ function LoginPage() {
     // const pwdToSend = password || '123456'; // 비밀번호 상태 값을 사용합니다.
 
     try {
-      const response = await axios.post(`${APIURL}/login`, {
+      const response = await axios.post(`${APIURL}/auth/login`, {
         email: email,
         password: password,
       });
@@ -67,17 +68,39 @@ function LoginPage() {
       console.log(password);
 
       if (response.status === 200) {
-        const { accessToken, refreshToken } = response.data;
+        // const { accessToken, refreshToken } = response.data;
         // (수정사항) 1. 다시 user 정보 get 새로..
         // (수정사항) 2. 유저정보조회 시: id로 검색
+        const authHeader = response.headers['authorization'];
+        const refreshHeader = response.headers['refresh-token'];
+        const ID = response.headers['member-ID']
+    
+        let accessToken, refreshToken;
+    
+        // Authorization 헤더 값에서 "Bearer " 제거
+        if (authHeader) {
+            accessToken = authHeader;
+        }
+    
+        // Refresh-Token 헤더 값 할당
+        if (refreshHeader) {
+            refreshToken = refreshHeader;
+        }
+    
+        console.log(accessToken);  // 액세스 토큰 값
+        console.log(refreshToken);  // 리프레시 토큰 값
 
         localStorage.setItem('accessToken', accessToken);
         localStorage.setItem('refreshToken', refreshToken);
+        localStorage.setItem('id', ID);
+
         console.log(accessToken); //추후 삭제
         console.log(refreshToken); //추후 삭제
+        console.log(ID); //추후 삭제
 
         dispatch(setToken(accessToken));
         // dispatch(setUsername(username));
+        dispatch(setId(ID));
         dispatch(login());
 
         navigate('/');

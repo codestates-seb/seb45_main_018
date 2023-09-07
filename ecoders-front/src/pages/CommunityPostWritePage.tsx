@@ -5,7 +5,8 @@ function CommunityPostWritePage() {
   const { state } = useLocation();
   // 게시물..정보 전달까지.. 이걸 다시 editor에 뿌려줄 수 있나?
   console.log(state);
-  return <PostWrite />;
+  console.log(state.dummyData);
+  return <PostWrite dummyData={state.dummyData} />;
 }
 
 export default CommunityPostWritePage;

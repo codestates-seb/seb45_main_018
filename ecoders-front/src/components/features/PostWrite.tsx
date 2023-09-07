@@ -6,6 +6,7 @@ import 'react-quill/dist/quill.snow.css';
 import { Editor } from '@toast-ui/react-editor';
 import '@toast-ui/editor/dist/toastui-editor.css';
 
+import { post, comment } from '../../pages/CommunityPostDetailPage';
 import CommonButton from '../atoms/CommonButton';
 
 const PostWriteHeader = () => {
@@ -21,11 +22,16 @@ const PostWriteHeader = () => {
   );
 };
 
-const PostWriteBody = () => {
+const PostWriteBody = ({ dummyData }: { dummyData: post }) => {
   const editorRef = useRef<Editor>(null);
 
+  console.log(dummyData.content);
   const submitButtonClickHandler = () => {
+    const content = editorRef.current?.getInstance();
     const data = editorRef.current?.getInstance().getHTML() || '';
+    // markdown..
+    const data2 = content.getMarkdown();
+    console.log(data2);
     console.log(data);
   };
   type HookCallback = (url: string, text?: string) => void;
@@ -37,11 +43,11 @@ const PostWriteBody = () => {
     // callback(url, 'alt text');
     return false;
   };
-
+  toString();
   return (
     <div className="post-write-body">
       <Editor
-        initialValue=""
+        initialValue={'dummyData.content'}
         height="550px"
         initialEditType="wysiwyg"
         hideModeSwitch={true}
@@ -66,12 +72,13 @@ const PostWriteBody = () => {
   );
 };
 
-function PostWrite() {
+function PostWrite({ dummyData }: { dummyData: post }) {
+  console.log(dummyData);
   return (
     <PostWriteLayout>
       <PostWriteForm>
         <PostWriteHeader />
-        <PostWriteBody />
+        <PostWriteBody dummyData={dummyData} />
       </PostWriteForm>
     </PostWriteLayout>
   );

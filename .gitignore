@@ -12,3 +12,4 @@ ecoders-backend/*.ipr
 ecoders-backend/out/
 ecoders-backend/src/main/**/out/
 ecoders-backend/src/test/**/out/
+ecoders-backend/Dockerfile

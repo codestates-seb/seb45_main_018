@@ -1,4 +1,3 @@
-import React from "react";
 import styled from "styled-components";
 import { FiX } from "react-icons/fi";
 import { useDispatch } from "react-redux";
@@ -7,11 +6,11 @@ import { RootState } from "../../redux/store/store";
 import { closeModal } from "../../redux/slice/modalSlice";
 
 interface ModalType {
-    children?: React.ReactNode;
+    children? : any;
     className?: string;
 }
 
-function CommonModal (props: ModalType) {
+function Modal (props: ModalType) {
     const dispatch = useDispatch();
     const isOpen = useSelector((state: RootState) => state.modal.isOpen);
 
@@ -36,7 +35,7 @@ function CommonModal (props: ModalType) {
     )
 };
 
-export default CommonModal;
+export default Modal;
 
 const Container = styled.div`
     display: flex;

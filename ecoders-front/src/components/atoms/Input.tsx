@@ -18,13 +18,13 @@ interface InputType {
     onChange?: (e: any) => void;
 }
 
-function CommonInput (props: InputType) {
+function Input (props: InputType) {
     return (
         <InputBox {...props} />
     )
 }
 
-export default CommonInput;
+export default Input;
 
 const InputBox = styled.input<InputType>`
     padding: ${(props) => (props.padding ? props.padding : '8px 8px')};

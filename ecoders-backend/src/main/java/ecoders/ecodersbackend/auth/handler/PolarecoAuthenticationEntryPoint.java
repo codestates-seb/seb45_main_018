@@ -1,6 +1,6 @@
 package ecoders.ecodersbackend.auth.handler;
 
-import ecoders.ecodersbackend.exception.response.ErrorResponder;
+import ecoders.ecodersbackend.exception.response.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -26,6 +26,6 @@ public class PolarecoAuthenticationEntryPoint implements AuthenticationEntryPoin
         Exception exception = (Exception) request.getAttribute("exception");
         String logMessage = exception == null ? authException.getMessage() : exception.getMessage();
         log.warn("Authentication Exception: {}", logMessage);
-        ErrorResponder.sendErrorResponse(response, MEMBER_JWT_AUTHENTICATION_FAILED);
+        ErrorResponse.send(response, MEMBER_JWT_AUTHENTICATION_FAILED);
     }
 }

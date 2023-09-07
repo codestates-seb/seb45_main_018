@@ -1,6 +1,6 @@
 package ecoders.ecodersbackend.auth.handler;
 
-import ecoders.ecodersbackend.exception.response.ErrorResponder;
+import ecoders.ecodersbackend.exception.response.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
@@ -24,6 +24,6 @@ public class PolarecoAccessDeniedHandler implements AccessDeniedHandler {
         Exception exception = (Exception) request.getAttribute("exception");
         String logMessage = exception == null ? accessDeniedException.getMessage() : exception.getMessage();
         log.warn("Authentication Exception: {}", logMessage);
-        ErrorResponder.sendErrorResponse(response, MEMBER_JWT_AUTHENTICATION_FAILED);
+        ErrorResponse.send(response, MEMBER_JWT_AUTHENTICATION_FAILED);
     }
 }

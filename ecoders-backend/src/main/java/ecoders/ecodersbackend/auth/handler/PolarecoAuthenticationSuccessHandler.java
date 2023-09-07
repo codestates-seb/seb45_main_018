@@ -29,6 +29,7 @@ public class PolarecoAuthenticationSuccessHandler implements AuthenticationSucce
         String refreshToken = jwtProvider.generateRefreshToken(memberDetails.getId());
         response.setHeader("Authorization", "Bearer " + accessToken);
         response.setHeader("Refresh-Token", "Bearer " + refreshToken);
+        response.setHeader("Member-ID", Long.toString(memberDetails.getId()));
         log.info("Authenticated successfully");
     }
 }

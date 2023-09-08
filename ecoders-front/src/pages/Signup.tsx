@@ -111,7 +111,7 @@ function Signup () {
     // 로그인 페이지로 이동
     const linkToLoginPageHandler = () => {
         navigate("/login");
-        dispatch(closeModal()); // 모달이 열려 있지 않게 함
+        dispatch(closeModal("")); // 모달이 열려 있지 않게 함
     };
 
     // submit 함수
@@ -146,7 +146,7 @@ function Signup () {
 
             console.log(response.data);
             dispatch(registerSuccess(response.data.user));
-            dispatch(openModal());
+            dispatch(openModal("sendingMailModal"));
         } catch (err: any) {
             dispatch(registerFail(err.response.data.error));
         }
@@ -200,7 +200,7 @@ function Signup () {
                             <ButtonWrapper>
                                 <SubmitButton
                                     className="sign-up-submit">Sign up</SubmitButton>
-                                    <SignUpModal>
+                                    <SignUpModal modalType="sendingMailModal">
                                         <div className="modal-cont-wrapper">
                                             <p className="modal-content">회원가입 인증 메일이 전송되었습니다. 메일함을 확인해주세요.</p>
                                             <div>

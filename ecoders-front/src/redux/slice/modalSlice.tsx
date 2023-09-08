@@ -1,22 +1,29 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 interface ModalState {
-    isOpen: boolean;
+    modals: Record<string, boolean>; // 여러 모달 관리
 }
 
 const initialState: ModalState = {
-    isOpen: false,
+    modals: {
+        // 여기에 여러 모달을 추가, 초기 상태 설정
+        stampStatusModal: false,
+        settingModal: false,
+        modifyModal: false,
+        sendingMailModal: false,
+        findPwModal: false,
+    }
 };
 
 const modalSlice = createSlice({
     name: 'modal',
     initialState,
     reducers: {
-        openModal: (state) => {
-            state.isOpen = true;
+        openModal: (state, action: PayloadAction<string>) => {
+            state.modals[action.payload] = true;
         },
-        closeModal: (state) => {
-            state.isOpen = false;
+        closeModal: (state, action: PayloadAction<string>) => {
+            state.modals[action.payload] = false;
         }
     },
 });

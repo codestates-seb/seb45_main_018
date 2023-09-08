@@ -4,6 +4,7 @@ import axios from "axios";
 interface Mission {
     id: number;
     text: string;
+    completed: boolean;
 }
 
 interface MissionState {
@@ -28,6 +29,12 @@ const missionSlice = createSlice({
             // 오늘의 미션 목록 설정
             state.todaysMissions = action.payload;
         },
+        completeMyMission: (state, action: PayloadAction<number>) => {
+            const mission = state.myMissions.find((m) => m.id === action.payload);
+            if (mission) {
+                mission.completed = true;
+            }
+        }
     },
     extraReducers: (builder) => {
         builder.addCase(fetchTodaysMissions.fulfilled, (state, action) => {
@@ -37,7 +44,7 @@ const missionSlice = createSlice({
     }
 });
 
-export const { addMyMission, setTodayMissions } = missionSlice.actions;
+export const { addMyMission, setTodayMissions, completeMyMission } = missionSlice.actions;
 
 export default missionSlice.reducer;
 

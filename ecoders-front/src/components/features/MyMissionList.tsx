@@ -1,6 +1,9 @@
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../redux/store/store";
 import { styled } from "styled-components";
+import Button from "../atoms/Button";
+import { completeMyMission } from "../../redux/slice/missionSlice";
+
 
 
 interface MyMissionListProps {
@@ -8,13 +11,27 @@ interface MyMissionListProps {
 }
 
 function MyMissionList () {
+    const dispatch = useDispatch();
+
     const myMissions = useSelector((state: RootState) => state.missions.myMissions);
+
+    const missionDoneHandler = (event: React.MouseEvent<HTMLButtonElement>) => {
+        const missionId = parseInt(event.currentTarget.parentElement?.getAttribute("data-mission-id") || "", 10);
+
+    if (!isNaN(missionId)) {
+      // 미션 완료 액션 디스패치
+      dispatch(completeMyMission(missionId));
+    }
+    }
 
     return (
         <Container>
             <MissionList>
                 {myMissions.map((mission) => (
-                    <Mission key={mission.id}>{mission.text}</Mission>
+                    <Mission key={mission.id}
+                        data-mission-id={mission.id}>{mission.text}
+                    <DoneButton onClick={missionDoneHandler} />
+                    </Mission>
                 ))}
             </MissionList>
         </Container>
@@ -45,4 +62,16 @@ const Mission = styled.li`
     justify-content: space-between;
     align-items: center;
     border-radius: 20px;
-`
+`;
+
+const DoneButton = styled(Button)`
+    width: 15px;
+    height: 15px;
+    background-color: #FF9999;
+    border: none;
+    cursor: pointer;
+
+    &:hover {
+        background-color: #D4FFC0;
+    }
+`;

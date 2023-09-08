@@ -3,9 +3,9 @@ import { RootState } from "../../redux/store/store";
 import { styled } from "styled-components";
 
 
-interface MyMissionListProps {
+// interface MyMissionListProps {
 
-}
+// }
 
 function MyMissionList () {
     const myMissions = useSelector((state: RootState) => state.missions.myMissions);

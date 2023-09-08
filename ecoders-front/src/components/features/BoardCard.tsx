@@ -11,6 +11,7 @@ function BoardCard({ dummyData }: { dummyData: Array<card> }) {
   function goToDetailHandeler(event: React.MouseEvent<HTMLDivElement>, index: number) {
     //detaial페이지로 이동
     navigate(`/community/postdetail/${index}`);
+    console.log(event)
   }
   return (
     <div className="board-card-container">

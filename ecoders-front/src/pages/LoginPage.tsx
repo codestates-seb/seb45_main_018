@@ -73,9 +73,9 @@ function LoginPage() {
         // (수정사항) 2. 유저정보조회 시: id로 검색
         const authHeader = response.headers['authorization'];
         const refreshHeader = response.headers['refresh-token'];
-        const ID = response.headers['memberId']
+        const IDHeader = response.headers['Member-ID']
     
-        let accessToken, refreshToken;
+        let accessToken, refreshToken, id;
     
         // Authorization 헤더 값에서 "Bearer " 제거
         if (authHeader) {
@@ -86,21 +86,25 @@ function LoginPage() {
         if (refreshHeader) {
             refreshToken = refreshHeader;
         }
+
+        if (IDHeader) {
+          id = IDHeader;
+      } 
     
         console.log(accessToken);  // 액세스 토큰 값
         console.log(refreshToken);  // 리프레시 토큰 값
 
         localStorage.setItem('accessToken', accessToken);
         localStorage.setItem('refreshToken', refreshToken);
-        localStorage.setItem('id', ID);
+        localStorage.setItem('id', id);
 
         console.log(accessToken); //추후 삭제
         console.log(refreshToken); //추후 삭제
-        console.log(ID); //추후 삭제
+        console.log(id); //추후 삭제
 
         dispatch(setToken(accessToken));
         // dispatch(setUsername(username));
-        dispatch(setId(ID));
+        dispatch(setId(id));
         dispatch(login());
 
         navigate('/');

@@ -2,7 +2,7 @@ name: Client Start
 
 on:
   push:
-    branches: [main, feDev]
+    branches: [main, feDev] 
 
 jobs:
   build:

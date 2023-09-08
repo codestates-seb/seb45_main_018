@@ -1,6 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import modalReducer from "../slice/modalSlice";
 import loginReducer from "../slice/loginSlice";
+import missionReducer from '../slice/missionSlice';
 import authReducer from "../slice/authSlice";
 import userReducer from "../slice/userSlice"
 import apiReducer from "../slice/apiSlice"
@@ -10,6 +11,7 @@ const store = configureStore({
     reducer: {                      // reducer 속성에는 reducer들을 포함
         modal: modalReducer,
         login: loginReducer,
+        missions: missionReducer,
         auth: authReducer,
         user: userReducer,
         api: apiReducer,

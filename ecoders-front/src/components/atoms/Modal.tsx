@@ -1,21 +1,21 @@
 import styled from "styled-components";
 import { FiX } from "react-icons/fi";
-import { useDispatch } from "react-redux";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store/store";
 import { closeModal } from "../../redux/slice/modalSlice";
 
-interface ModalType {
+interface ModalProps {
+    modalType: string; // 모달 유형 전달
     children? : any;
     className?: string;
 }
 
-function Modal (props: ModalType) {
+function Modal (props: ModalProps) {
     const dispatch = useDispatch();
-    const isOpen = useSelector((state: RootState) => state.modal.isOpen);
+    const isOpen = useSelector((state: RootState) => state.modal.modals[props.modalType]);
 
     const handleClose = () => {
-        dispatch(closeModal());
+        dispatch(closeModal(props.modalType));
     };
 
     return (

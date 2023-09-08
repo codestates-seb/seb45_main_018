@@ -8,6 +8,7 @@ import '@toast-ui/editor/dist/toastui-editor.css';
 
 import { post, comment } from '../../pages/CommunityPostDetailPage';
 import Button from '../atoms/Button';
+import axios from 'axios';
 
 const PostWriteHeader = () => {
   return (
@@ -38,25 +39,46 @@ const PostWriteBody = () => {
   //서버로 보내는 로직
   const uploadImageHandler = async (blob: Blob | File, callback: HookCallback) => {
     console.log(blob);
+    //blob : 자바스크립트 파일 객체
     // uploadImage가 그 서버로 보내는 함수인것 같아요..1
     // const url = await uploadImage(blob);
     // callback(url, 'alt text');
+    const formData = new FormData();
+    formData.append('image', blob);
+
+    axios({
+      method: 'post',
+      url: '/writeTest.do', // 적절한 엔드포인트로 변경해야 합니다.
+      data: formData,
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    })
+      .then(response => {
+        const imageUrl = `/images/${response.data.filename}`;
+        callback(imageUrl, 'img');
+      })
+      .catch(error => {
+        console.error('axios 이미지 업로드 실패', error);
+        callback('image_load_fail', 'image_load_fail');
+      });
     return false;
   };
+
   toString();
   return (
     <div className="post-write-body">
       <Editor
-        initialValue={'dummyData.content'}
+        initialValue={''}
         height="550px"
         initialEditType="wysiwyg"
         hideModeSwitch={true}
         useCommandShortcut={false}
         ref={editorRef}
         placeholder="content"
-        // hooks={{
-        //   addImageBlobHook: uploadImageHandler,
-        // }}
+        hooks={{
+          addImageBlobHook: uploadImageHandler,
+        }}
       />
       <div className="submit-button-container">
         <Button

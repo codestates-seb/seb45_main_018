@@ -16,31 +16,27 @@ import LoginPage from './pages/LoginPage';
 import Signup from './pages/Signup';
 
 function App() {
-
-
   return (
     <>
       {' '}
       <BrowserRouter>
         <Header />
-
-          <Routes>
-            <Route path="/" element={<Main />} />
-            <Route path="/myinfo" element={<MyInfo />} />
-            <Route path="/service" element={<Service />}/>
-            <Route path="/contact" element={<Contact />}/>
-            <Route path="/eco-habit" element={<Ecohabit />}/>
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/signup" element={<Signup />} />
+        <Routes>
+          <Route path="/" element={<Main />} />
+          <Route path="/myinfo" element={<MyInfo />} />
+          <Route path="/service" element={<Service />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/eco-habit" element={<Ecohabit />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<Signup />} />
           <Route path="/community" element={<CommunityPage />} />
-        <Route path="/community/postwrite" element={<CommunityPostWritePage />} />
-        <Route path="/community/postdetail/:postnumber" element={<CommunityPostDetailPage />} />
-        {/* <Route element={NotFound} /> */}
+          <Route path="/community/postwrite" element={<CommunityPostWritePage />} />
+          <Route path="/community/postdetail/:postnumber" element={<CommunityPostDetailPage />} />
+          {/* <Route element={NotFound} /> */}
         </Routes>
       </BrowserRouter>
       <Footer />
     </>
-    
   );
 }
 

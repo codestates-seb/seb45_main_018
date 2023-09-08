@@ -59,6 +59,28 @@ const MyInfo = () => {
       });
   }, []);
 
+  const day = ['Mon', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat', 'Sun'];
+  const DayComponent = day.map(a => {
+    return (
+      <DayHillContainer>
+        <DayContainer>
+          <Day>{a}</Day>
+          <img src={hills} width="67px" height="67px" />
+        </DayContainer>
+      </DayHillContainer>
+    );
+  });
+
+  const badge = ['북극곰 연인', '가까운 거리 탐험가', '스탬프 수집가'];
+  const BadgeComponent = badge.map((a) => {
+    return (
+      <UserBadgeContainer>
+        <UserBadge>{a}</UserBadge>
+        {/* 어떻게 불러올 것인지 고민하기  -> grid 찾아보기 */}
+      </UserBadgeContainer>
+    );
+  });
+
   return (
     <div>
       <MyInfoContainer>
@@ -75,48 +97,16 @@ const MyInfo = () => {
               <MyInfoTitle>Stamps: 알록달록 지구를 채워주세요!</MyInfoTitle>
             </StampBadgeTitleContainer>
             <img src={hills} width="220px" height="220px" />
-            <DayHillContainer>
-              <DayContainer>
-                <Day>Mon</Day>
-                <img src={hills} width="67px" height="67px" />
-              </DayContainer>
-              <DayContainer>
-                <Day>Tue</Day>
-                <img src={hills} width="67px" height="67px" />
-              </DayContainer>
-              <DayContainer>
-                <Day>Wed</Day>
-                <img src={hills} width="67px" height="67px" />
-              </DayContainer>
-              <DayContainer>
-                <Day>Thur</Day>
-                <img src={hills} width="67px" height="67px" />
-              </DayContainer>
-              <DayContainer>
-                <Day>Fri</Day>
-                <img src={hills} width="67px" height="67px" />
-              </DayContainer>
-              <DayContainer>
-                <Day>Sat</Day>
-                <img src={hills} width="67px" height="67px" />
-              </DayContainer>
-              <DayContainer>
-                <Day>Sun</Day>
-                <img src={hills} width="67px" height="67px" />
-              </DayContainer>
-            </DayHillContainer>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>{DayComponent}</div>
           </StampContainer>
           <BadgeContainer>
             <StampBadgeTitleContainer>
               <img src={shiningImg} width="30px" height="30px" />
               <MyInfoTitle>Badges</MyInfoTitle>
             </StampBadgeTitleContainer>
-            <UserBadgeContainer>
-              <UserBadge>북극곰 연인</UserBadge> 
-              {/* 어떻게 불러올 것인지 고민하기  -> grid 찾아보기 */}
-              <UserBadge>가까운 거리 탐험가</UserBadge>
-              <UserBadge>스탬프 수집가</UserBadge>
-            </UserBadgeContainer>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              {BadgeComponent}
+            </div>
           </BadgeContainer>
         </StampBadgeContainer>
       </MyInfoContainer>
@@ -245,22 +235,22 @@ const BadgeContainer = styled.div`
   margin-left: 20px;
 `;
 
-const UserBadgeContainer = styled.div `
-display: flex;
-width: 642px;
-height: auto;
-margin-top: 40px;
-gap: 16px;
-`
+const UserBadgeContainer = styled.div`
+  display: flex;
+  width: 642px;
+  height: auto;
+  margin-top: 40px;
+  gap: 16px;
+`;
 const UserBadge = styled.div`
-display: flex;
-align-items: center;
-justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-family: 'Syne', sans-serif;
   font-weight: bold;
-width: 203px;
-height: 60px;
-border-radius: 10px;
-background-color: #FEFEFE;
-box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
-`
+  width: 203px;
+  height: 60px;
+  border-radius: 10px;
+  background-color: #fefefe;
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+`;

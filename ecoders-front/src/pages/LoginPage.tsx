@@ -49,7 +49,8 @@ function LoginPage() {
   };
 
   const modalOpenHandler = () => {
-        dispatch(openModal("findPwModal"));
+    dispatch(openModal('findPwModal'));
+  };
 
   const loginHandler = async (e: any) => {
     e.preventDefault();
@@ -101,6 +102,7 @@ function LoginPage() {
         // dispatch(setUsername(username));
         dispatch(setId(ID));
         dispatch(login());
+
         navigate('/');
       } 
     } catch (error: any) {
@@ -111,6 +113,10 @@ function LoginPage() {
       console.error('로그인 에러:', error); }
     }
   };
+
+
+
+
 
   
 
@@ -139,7 +145,7 @@ function LoginPage() {
               <div className="forgot-pw" onClick={modalOpenHandler}>
                 비밀번호 찾기
               </div>
-              <PwModal modalType="findPwModal">
+              <PwModal modalType='findPwModal'>
                 <div className="modal-cont-wrapper">
                   <div className="modal-title">비밀번호 찾기</div>
                   <p className="modal-content">

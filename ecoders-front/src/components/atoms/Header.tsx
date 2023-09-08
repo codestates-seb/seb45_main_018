@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import logo from '../../assets/Logo.png';
 import { useDispatch } from 'react-redux';
-import { login } from '../../redux/slice/loginSlice';
+// import { login } from '../../redux/slice/loginSlice';
 import { logout } from '../../redux/slice/loginSlice';
 import profileImg from '../../assets/ProfileImage.svg';
 import { useSelector } from 'react-redux';

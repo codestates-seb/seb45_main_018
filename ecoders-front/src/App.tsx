@@ -21,7 +21,6 @@ function App() {
       {' '}
       <BrowserRouter>
         <Header />
-
         <Routes>
           <Route path="/" element={<Main />} />
           <Route path="/myinfo" element={<MyInfo />} />

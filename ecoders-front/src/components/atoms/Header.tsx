@@ -8,17 +8,91 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/store/store';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { useEffect } from 'react';
+import { setUsername, setStamp } from '../../redux/slice/userSlice';
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const isLoggedIn = useSelector((state: RootState) => state.login.isLoggedIn);
+  const memberId = useSelector((state: RootState) => state.user.id ) 
+  const username = useSelector((state: RootState) => state.user.username); // username 상태 가져오기
+  const stamp = useSelector((state: RootState) => state.user.stamp); // stamp 상태 가져오기
 
-  const handleLogin = () => {
-    dispatch(login());
+  type ApiState = {
+    api: {
+      APIURL: string;
+    };
   };
 
+  const APIURL = useSelector((state: ApiState) => state.api.APIURL);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      // try {
+      //   const response = await axios.get(`${APIURL}/member`);
+      //   if (response.status === 200) {
+      //     const { username, stamp } = response.data;
+      //     console.log(username, stamp)
+      //     console.log(response.data)
+      //     dispatch(setUsername(username));
+      //     // dispatch(setStamp(`${stamp}`));
+      //     console.log(username)
+      //     navigate('/');
+      //   }
+      // }
+
+      try {
+        axios.get(`${APIURL}/member/${memberId}`).then(response => {
+          // const { username, stamp } = response.data;
+          console.log(response.data);
+          console.log(username, stamp); // 이렇게 같은 스코프 내에서 호출
+          dispatch(setUsername(response.data['username']));
+          dispatch(setStamp(response.data['stamp']));
+          console.log(username, stamp); // 이렇게 같은 스코프 내에서 호출
+        });
+      } catch (error: any) {
+        if (error.response?.status === 401) {
+          alert('로그인에 실패했습니다.');
+        } else {
+          alert('서버 오류가 발생했습니다.');
+          console.error('로그인 에러:', error);
+        }
+      }
+    };
+
+    fetchData(); // 비동기 함수 실행
+  }, [isLoggedIn]);
+
+  //   try {
+  //     const response = await axios.get(`${APIURL}/member`);
+
+  //     if (response.status === 200) {
+  //       const { username, stamp } = response.data;
+  //       // (수정사항) 1. 다시 user 정보 get 새로..
+  //       // (수정사항) 2. 유저정보조회 시: id로 검색
+
+  //       dispatch(setUsername(username));
+  //       dispatch(setStamp(stamp));
+
+  //       navigate('/');
+  //     }
+  //   } catch (error: any) {
+  //     if(error.response.status === 401) {
+  //       alert('로그인에 실패했습니다.')
+  //     } else {
+  //     alert('서버 오류가 발생했습니다.');
+  //     console.error('로그인 에러:', error); }
+  //   }
+  // };
+
+  // const handleLogin = () => {
+  //   dispatch(login());
+  // }
+
   const handleLogout = () => {
+    navigate('/login')
     dispatch(logout());
   };
 
@@ -30,6 +104,10 @@ const Header: React.FC = () => {
     navigate('/myinfo');
   };
 
+  const navigateToSignUp = () => {
+    navigate('/signup');
+  };
+  
   return (
     <>
       <HeaderContainer>
@@ -67,13 +145,18 @@ const Header: React.FC = () => {
           {isLoggedIn ? (
             <>
               <HeaderProfilePic src={profileImg} onClick={navigateToMyInfo} />
-              <UsernameButton onClick={navigateToMyInfo}>Username</UsernameButton>
+              <UsernameButton onClick={navigateToMyInfo}>{username}</UsernameButton>
               <LogoutButton onClick={handleLogout}>Logout</LogoutButton>
             </>
           ) : (
             <>
-              <LoginButton onClick={handleLogin}>Login</LoginButton>
-              <CreateAccountButton>Create Account</CreateAccountButton>
+              <LoginButton
+                onClick={() => {
+                  navigate('/login');
+                }}>
+                Login
+              </LoginButton>
+              <CreateAccountButton onClick={navigateToSignUp} >Create Account</CreateAccountButton>
             </>
           )}
         </HeaderProfileContainer>
@@ -209,6 +292,7 @@ const ButtonStyle = styled.button`
 `;
 
 const UsernameButton = styled(ButtonStyle)`
+  font-size: 20px;
   background-color: #ffffff;
   border: 1px solid #1a1a1a;
   color: #1a1a1a;

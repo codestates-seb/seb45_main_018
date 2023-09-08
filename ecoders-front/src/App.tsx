@@ -8,11 +8,13 @@ import Header from './components/atoms/Header';
 import MyInfo from './pages/Myinfo';
 import Service from './pages/Service';
 import Contact from './pages/Contact';
+
 import CommunityPage from './pages/CommunityPage';
 import CommunityPostWritePage from './pages/CommunityPostWritePage';
 import CommunityPostDetailPage from './pages/CommunityPostDetailPage';
+
 import LoginPage from './pages/LoginPage';
-import SignupPage from './pages/SignupPage';
+import Signup from './pages/Signup';
 
 function App() {
   return (

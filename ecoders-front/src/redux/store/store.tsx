@@ -1,4 +1,4 @@
-import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
+import { configureStore } from "@reduxjs/toolkit";
 import modalReducer from "../slice/modalSlice";
 import loginReducer from "../slice/loginSlice";
 import authReducer from "../slice/authSlice";
@@ -25,7 +25,5 @@ export type RootState = ReturnType<typeof store.getState>;
 
 // AppDispatch라는 타입 정의 -> dispatch 메서드의 타입 나타냄
 export type AppDispatch = typeof store.dispatch;
-
-export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, RootState, unknown, Action<string>>;
 
 export default store;

@@ -6,43 +6,150 @@ import Modal from "../components/atoms/Modal";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { closeModal, openModal } from "../redux/slice/modalSlice";
-import React, { useState } from "react";
-import { registerUser } from "../redux/slice/authSlice";
+import { useState } from "react";
+import { registerFail, registerStart, registerSuccess } from "../redux/slice/authSlice";
+import axios from "axios";
 
-interface SignUpProps {
-    username?: string;
-    email?: string;
-    password?: string;
-}
 
-function SignupPage (props: SignUpProps) {
-    const [ formData, setFormData ] = useState({
-        username: '',
-        email: '',
-        password: '',
-    });
+interface ErrorObject {
+    email: string | null | undefined;
+    password: string | null | undefined;
+    confirmPassword: string | null | undefined;
+    username: string | null | undefined;
+  }
+
+function Signup () {
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
-    const linkToLoginPageHandler = () => {
-        navigate("/login");
-        dispatch(closeModal());
-    };
+    // input 상태
+    const [ formData, setFormData ] = useState({
+        email: '',
+        password: '',
+        confirmPassword: '',
+        username: '',
+    });
 
-    const valueHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // 유효성 검사용 input 상태
+    const [errors, setErrors] = useState<ErrorObject>({
+        email: null,
+        password: null,
+        confirmPassword: null,
+        username: null,
+    });
+
+    // 유효성 검사 함수
+    const validateForm = (): boolean => {
+        const newErrors: ErrorObject = {
+            email: null,
+            password: null,
+            confirmPassword: null,
+            username: null,
+          };
+
+        // input에 값을 입력하지 않았을 경우
+        if (!formData.email) {
+            newErrors.email = '이메일을 입력하세요.';
+        }
+        if (!formData.password) {
+            newErrors.password = '비밀번호를 입력하세요.';
+        }
+        if (!formData.confirmPassword) {
+            newErrors.confirmPassword = '비밀번호를 다시 한 번 입력하세요.';
+        }
+        if (!formData.username) {
+            newErrors.username = '닉네임을 입력하세요.';
+        }
+
+        // 이메일이 형식에 맞지 않을 때
+        const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+
+        if (formData.email && !emailRegex.test(formData.email)) {
+            newErrors.email = '올바른 이메일 형식이 아닙니다.';
+        }
+
+        // 닉네임이 형식에 맞지 않을 때
+        if (formData.username.length > 20) {
+            newErrors.username = '닉네임은 20자 이하로 설정하세요.';
+        }
+
+        // 비밀번호가 형식에 맞지 않을 때
+        const passwordRegex = /^(?![0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*()_+])[A-Za-z0-9!@#$%^&*()_+]{8,}$/;
+
+        if (formData.password) {
+            newErrors.password = !passwordRegex.test(formData.password)
+                ? /^[0-9]/.test(formData.password)
+                    ? '비밀번호는 숫자로 시작할 수 없습니다.'
+                    : formData.password.length < 8
+                    ? '비밀번호는 8자 이상이어야 합니다.'
+                    : undefined
+                : undefined;
+        }
+
+        // 비밀번호가 일치하지 않을 때
+        if (formData.password !== formData.confirmPassword) {
+            newErrors.confirmPassword = '비밀번호가 일치하지 않습니다.';
+        }
+
+        setErrors(newErrors);
+
+        // 오류가 없다면
+        return Object.values(newErrors).every((error) =>!error);
+    }
+
+    // onChange
+    const changeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
-        console.log(formData)
         setFormData({
             ...formData,
             [name]: value,
         });
+
     };
 
-    const onSubmitHandler = (e: React.FormEvent) => {
+    // 로그인 페이지로 이동
+    const linkToLoginPageHandler = () => {
+        navigate("/login");
+        dispatch(closeModal()); // 모달이 열려 있지 않게 함
+    };
+
+    // submit 함수
+    const onSubmitHandler = async (e: React.FormEvent) => {
         e.preventDefault();
-        /* dispatch(registerUser(formData)); // 오류가 나는 부분 */
-        dispatch(openModal());
+        dispatch(registerStart());
+
+        // 유효성 검사
+        const isValid = validateForm();
+        if(!isValid) {
+            return;
+        }
+
+        try {
+            const newformData = {
+                ...formData,
+                confirmPassword: '',
+            };
+
+            const response = await axios.post('http://ec2-13-209-89-195.ap-northeast-2.compute.amazonaws.com:8080/auth/signup', newformData, {
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            }
+            );
+
+            // 이미 존재하는 이매일 일때
+            if (response.status === 403) {
+                errors.email = '이미 존재하는 이메일입니다.';
+                setErrors(errors);
+            }
+
+            console.log(response.data);
+            dispatch(registerSuccess(response.data.user));
+            dispatch(openModal());
+        } catch (err: any) {
+            dispatch(registerFail(err.response.data.error));
+        }
     };
 
     return (
@@ -53,30 +160,43 @@ function SignupPage (props: SignUpProps) {
                     <Title>SIGN UP</Title>
                     <div className="sign-up-text">구글 간편 로그인으로 회원가입 및 로그인이 가능합니다.</div>
                     <FormContainer>
-                        <SignUpForm onSubmit={onSubmitHandler}>
+                        <SignUpForm onSubmit={onSubmitHandler} noValidate>
                             <Input
                                 className="email-input"
                                 placeholder="이메일"
                                 type="email"
+                                name="email"
                                 value={formData.email}
-                                onChange={valueHandler} />
+                                onChange={changeHandler}
+                                />
+                                {errors.email && <ErrorText>{errors.email}</ErrorText>}
                             <Input
                                 className="password-input"
                                 placeholder="비밀번호"
                                 type="password"
+                                name="password"
                                 value={formData.password}
-                                onChange={valueHandler}/>
+                                onChange={changeHandler}
+                                />
+                                {errors.password && <ErrorText>{errors.password}</ErrorText>}
                             <Input
                                 className="password-check-input"
                                 placeholder="비밀번호 확인"
-                                type="password" />
+                                type="password"
+                                name="confirmPassword"
+                                value={formData.confirmPassword}
+                                onChange={changeHandler}
+                                />
+                                {errors.confirmPassword && <ErrorText>{errors.confirmPassword}</ErrorText>}
                             <Input
                                 className="username-input"
                                 placeholder="닉네임"
                                 type="text"
+                                name="username"
                                 value={formData.username}
-                                onChange={valueHandler}
+                                onChange={changeHandler}
                                 />
+                                {errors.username && <ErrorText>{errors.username}</ErrorText>}
                             <ButtonWrapper>
                                 <SubmitButton
                                     className="sign-up-submit">Sign up</SubmitButton>
@@ -102,7 +222,7 @@ function SignupPage (props: SignUpProps) {
     )
 }
 
-export default SignupPage;
+export default Signup;
 
 const Container = styled.section`
     display: flex;
@@ -251,4 +371,10 @@ const IsUser = styled.div`
     font-weight: 400;
     line-height: normal;
     cursor: pointer;
+`;
+
+const ErrorText = styled.div`
+  color: red;
+  font-size: 12px;
+  text-align: left;
 `;

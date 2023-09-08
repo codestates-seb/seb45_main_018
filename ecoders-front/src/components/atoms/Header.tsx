@@ -1,26 +1,26 @@
 import styled from 'styled-components';
 import logo from '../../assets/Logo.png';
-import { useDispatch } from "react-redux";
-import { login } from "../../redux/slice/loginSlice";
-import { logout } from "../../redux/slice/loginSlice";
+import { useDispatch } from 'react-redux';
+import { login } from '../../redux/slice/loginSlice';
+import { logout } from '../../redux/slice/loginSlice';
 import profileImg from '../../assets/ProfileImage.svg';
-import { useSelector } from "react-redux";
-import { RootState } from "../../redux/store/store";
+import { useSelector } from 'react-redux';
+import { RootState } from '../../redux/store/store';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const isLoggedIn = useSelector((state: RootState) => state.login.isLoggedIn)
+  const isLoggedIn = useSelector((state: RootState) => state.login.isLoggedIn);
 
   const handleLogin = () => {
     dispatch(login());
-  }
+  };
 
   const handleLogout = () => {
     dispatch(logout());
-  }
+  };
 
   const navigateToMain = () => {
     navigate('/');
@@ -29,7 +29,6 @@ const Header: React.FC = () => {
   const navigateToMyInfo = () => {
     navigate('/myinfo');
   };
-
 
   return (
     <>
@@ -86,6 +85,7 @@ const Header: React.FC = () => {
 export default Header;
 
 const HeaderContainer = styled.div`
+  position: fixed;
   transform: scale(0.65); // 이 줄을 추가
   display: flex;
   justify-content: space-between;
@@ -98,6 +98,7 @@ const HeaderContainer = styled.div`
   border: none;
   padding-left: 80px;
   padding-right: 80px;
+  /* position: sticky; */
 
   @media (max-width: 1152px) {
     // 화면 크기가 1056px 이하일 때
@@ -113,7 +114,6 @@ const HeaderContainer = styled.div`
     // 화면 크기가 480px 이하일 때
     transform: scale(0.25); // 이 줄을 추가
   }
-
 `;
 
 const MenuContainer = styled.div`
@@ -210,7 +210,7 @@ const ButtonStyle = styled.button`
 
 const UsernameButton = styled(ButtonStyle)`
   background-color: #ffffff;
-  border: 1px solid #1A1A1A; 
+  border: 1px solid #1a1a1a;
   color: #1a1a1a;
   margin-left: 10px;
   margin-right: 10px;
@@ -223,6 +223,6 @@ const LoginButton = styled(ButtonStyle)``;
 const CreateAccountButton = styled(ButtonStyle)`
   background-color: #ffffff;
   color: #1a1a1a;
-  border: 1px solid #1A1A1A;
+  border: 1px solid #1a1a1a;
   margin-left: 10px;
 `;

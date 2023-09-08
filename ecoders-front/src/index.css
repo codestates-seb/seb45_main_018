@@ -1,13 +1,14 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Noto+Sans+KR:wght@300;400&family=Yeon+Sung&display=swap');
+/* @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Noto+Sans+KR:wght@300;400&family=Yeon+Sung&display=swap');
 
-body, html {
+body,
+html {
   margin: 0;
   display: flex;
   flex-direction: column;
   place-items: center;
   min-width: 320px;
 }
-
+*/
 * {
   margin: 0;
   padding: 0;

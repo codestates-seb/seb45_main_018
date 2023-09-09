@@ -32,9 +32,9 @@ const missionSlice = createSlice({
         completeMyMission: (state, action: PayloadAction<number>) => {
             const mission = state.myMissions.find((m) => m.id === action.payload);
             if (mission) {
-                mission.completed = true;
+                mission.completed = !mission.completed;
             }
-        }
+        },
     },
     extraReducers: (builder) => {
         builder.addCase(fetchTodaysMissions.fulfilled, (state, action) => {

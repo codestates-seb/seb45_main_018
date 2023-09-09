@@ -18,7 +18,7 @@ function MissionForm () {
         if (text.trim() === '') return;
 
         // 새로운 미션 객체 생성, id에 날짜는 임시
-        const newMission = { id: Date.now(), text };
+        const newMission = { id: Date.now(), text, completed: false };
 
         // 나만의 미션 추가 액션 디스패치
         dispatch(addMyMission(newMission));

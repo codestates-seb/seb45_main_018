@@ -7,11 +7,11 @@ import MissionForm from "../components/atoms/MissionForm";
 import { useDispatch } from "react-redux";
 import { openModal } from "../redux/slice/modalSlice";
 import Modal from "../components/atoms/Modal";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import MyMissionList from "../components/features/MyMissionList";
 import TodaysMissionList from "../components/features/TodaysMissionList";
-import { fetchTodaysMissions } from "../redux/slice/missionSlice";
 import logo from "../assets/Logo.png"
+import { setMyMissions } from "../redux/slice/missionSlice";
 
 function Ecohabit () {
     const dispatch = useDispatch();
@@ -33,22 +33,8 @@ function Ecohabit () {
 
     // 리스트 리셋 핸들러
     const resetMissionHandler = () => {
-
+        dispatch(setMyMissions([]));
     };
-
-    // 오늘의 미션 데이터 받아오기
-    // useEffect(() => {
-    //     const fetchMissions = async () => {
-    //         try {
-    //             const action = fetchTodaysMissions();
-    //             await dispatch(action);
-    //         } catch (error: any) {
-    //             console.error('에러', error)
-    //         }
-    //     };
-
-    //     fetchMissions();
-    // }, [dispatch]); //action type 오류 찾아보기...
 
     return (
         <Container>
@@ -203,7 +189,6 @@ const TodayMissionContainer = styled.div`
 
         &.todays-mission {
             height: 200px;
-            background-color: aliceblue;
         }
     }
 `;

@@ -1,15 +1,21 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 
-interface Mission {
-    id: number;
+interface MyMission {
+    my_mission_id: number;
+    text: string;
+    completed: boolean;
+}
+
+interface TodayMission {
+    today_mission_id: number;
     text: string;
     completed: boolean;
 }
 
 interface MissionState {
-    myMissions: Mission[];      // 나만의 미션 목록
-    todaysMissions: Mission[];   // 오늘의 미션 목록
+    myMissions: MyMission[];      // 나만의 미션 목록
+    todaysMissions: TodayMission[];   // 오늘의 미션 목록
 }
 
 const initialState: MissionState = {
@@ -21,20 +27,29 @@ const missionSlice = createSlice({
     name: 'missions',
     initialState,
     reducers: {
-        addMyMission: (state, action: PayloadAction<Mission>) => {
+        addMyMission: (state, action: PayloadAction<MyMission>) => {
             // 나만의 미션 목록에 새로운 미션 추가
             state.myMissions.push(action.payload);
         },
-        setTodayMissions: (state, action: PayloadAction<Mission[]>) =>{
+        setTodayMissions: (state, action: PayloadAction<TodayMission[]>) =>{
             // 오늘의 미션 목록 설정
             state.todaysMissions = action.payload;
         },
         completeMyMission: (state, action: PayloadAction<number>) => {
-            const mission = state.myMissions.find((m) => m.id === action.payload);
+            const mission = state.myMissions.find((m) => m.my_mission_id === action.payload);
             if (mission) {
                 mission.completed = !mission.completed;
             }
         },
+        setMyMissions: (state, action: PayloadAction<MyMission[]>) => {
+            state.myMissions = action.payload;
+        },
+        completeTodayMission: (state, action: PayloadAction<number>) => {
+            const mission = state.todaysMissions.find((m) => m.today_mission_id === action.payload);
+            if (mission) {
+                mission.completed = !mission.completed;
+            }
+        }
     },
     extraReducers: (builder) => {
         builder.addCase(fetchTodaysMissions.fulfilled, (state, action) => {
@@ -44,13 +59,36 @@ const missionSlice = createSlice({
     }
 });
 
-export const { addMyMission, setTodayMissions, completeMyMission } = missionSlice.actions;
+export const { addMyMission, setTodayMissions, completeMyMission, setMyMissions, completeTodayMission } = missionSlice.actions;
 
 export default missionSlice.reducer;
 
 // 오늘의 미션 가지고 오는 액션 생성자 함수
 // 랜덤으로 5개 들고 오는 거 어떻게 들고 올지 생각해야 함
 export const fetchTodaysMissions = createAsyncThunk('missions/fetchTodaysMissions', async () => {
-    const response = await axios.get('api 주소');
-    return response.data;
-})
+    const response = await axios.get('https://4345e16a-fdc3-4d6f-8760-0b3b56303a85.mock.pstmn.io/mission/today_mission');
+    const allMissions = response.data;
+
+    // 랜덤 5개
+    const randomMissions: number[] = [];
+    while (randomMissions.length < 5) {
+        const randomIndex = Math.floor(Math.random() * allMissions.length);
+        if (!randomMissions.includes(randomIndex)) {
+            randomMissions.push(randomIndex);
+        }
+    }
+
+    const todaysMissions: TodayMission[] = randomMissions.map((index) => allMissions[index]);
+
+    return todaysMissions;
+});
+
+export const updateMyMissionText = createAsyncThunk(
+    'missions/updateMyMissionText',
+    async (payload: { missionId: number; newText: string }) => {
+        const response = await axios.put(`/${payload.missionId}`, {
+            text: payload.newText,
+        });
+        return response.data;
+    }
+);

@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
 import { addMyMission } from "../../redux/slice/missionSlice";
 import { RootState } from "../../redux/store/store";
+import axios from "axios";
 
 
 function MissionForm () {
@@ -13,20 +14,40 @@ function MissionForm () {
 
     const [ text, setText ] = useState('');
 
-    const missionHandler = () => {
+    const apiUrl = 'https://4345e16a-fdc3-4d6f-8760-0b3b56303a85.mock.pstmn.io/mission/my_mission';
+
+    const postMission = async (missionData: { my_mission_id: number; text: string; completed: boolean; }) => {
+        try {
+            const response = await axios.post(apiUrl, missionData);
+            console.log(response.data);
+            return response.data;
+        } catch (error: any) {
+            console.error('post 도중 오류 발생', error);
+            throw error;
+        }
+    }
+
+    const missionHandler = async () => {
         // 빈 문자열은 추가하지 않음
         if (text.trim() === '') return;
 
         // 새로운 미션 객체 생성, id에 날짜는 임시
-        const newMission = { id: Date.now(), text, completed: false };
+        const newMission = { my_mission_id: Date.now(), text, completed: false };
 
-        // 나만의 미션 추가 액션 디스패치
-        dispatch(addMyMission(newMission));
+        try {
+            await postMission(newMission);
 
-        // 입력 값 초기화
-        setText('');
+             // 나만의 미션 추가 액션 디스패치
+            dispatch(addMyMission(newMission));
 
-        console.log("My Missions:", myMissions);
+            // 입력 값 초기화
+            setText('');
+
+            console.log("My Missions:", myMissions);
+        } catch (error) {
+            console.error('미션 추가 중 오류:', error);
+        }
+
     }
 
     const changeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {

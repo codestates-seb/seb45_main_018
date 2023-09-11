@@ -26,19 +26,19 @@ const HeaderButtons = ({ dummyData }: { dummyData: post }) => {
   }
 
   function postDeleteModalHandler() {
-    dispatch(openModal());
+    dispatch(openModal('deleteModal'));
   }
 
   return (
     <div className="header-buttons">
       {/* 삭제 예 -> 서버에 delete 요청 */}
-      <Modal className="post-delete">
+      <Modal className="post-delete" modalType="deleteModal">
         <div>해당 게시글을 삭제하시겠습니까?</div>
         <ModalButtons>
           <Button onClick={postDeleteHandler}>예</Button>
           <Button
             onClick={() => {
-              dispatch(closeModal());
+              dispatch(closeModal('deleteModal'));
             }}>
             아니요
           </Button>

@@ -16,7 +16,7 @@ interface ErrorObject {
     password: string | null | undefined;
     confirmPassword: string | null | undefined;
     username: string | null | undefined;
-  }
+}
 
 function Signup () {
 

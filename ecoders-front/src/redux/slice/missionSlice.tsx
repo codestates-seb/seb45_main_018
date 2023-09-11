@@ -11,16 +11,19 @@ interface TodayMission {
     today_mission_id: number;
     text: string;
     completed: boolean;
+    completedMissionCount: number;
 }
 
 interface MissionState {
     myMissions: MyMission[];      // 나만의 미션 목록
     todaysMissions: TodayMission[];   // 오늘의 미션 목록
+    completedMissionsCount: number;
 }
 
 const initialState: MissionState = {
     myMissions: [],
     todaysMissions: [],
+    completedMissionsCount: 0
 }
 
 const missionSlice = createSlice({
@@ -48,6 +51,8 @@ const missionSlice = createSlice({
             const mission = state.todaysMissions.find((m) => m.today_mission_id === action.payload);
             if (mission) {
                 mission.completed = !mission.completed;
+
+                state.completedMissionsCount = state.todaysMissions.filter((m) => m.completed).length;
             }
         }
     },
@@ -65,6 +70,8 @@ export default missionSlice.reducer;
 
 // 오늘의 미션 가지고 오는 액션 생성자 함수
 // 랜덤으로 5개 들고 오는 거 어떻게 들고 올지 생각해야 함
+// 유저가 설정한 갯수를 서버에 보내기 put이나 patch
+
 export const fetchTodaysMissions = createAsyncThunk('missions/fetchTodaysMissions', async () => {
     const response = await axios.get('https://4345e16a-fdc3-4d6f-8760-0b3b56303a85.mock.pstmn.io/mission/today_mission');
     const allMissions = response.data;

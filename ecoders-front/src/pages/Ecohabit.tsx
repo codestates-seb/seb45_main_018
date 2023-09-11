@@ -12,6 +12,7 @@ import MyMissionList from "../components/features/MyMissionList";
 import TodaysMissionList from "../components/features/TodaysMissionList";
 import logo from "../assets/Logo.png"
 import { setMyMissions } from "../redux/slice/missionSlice";
+import Stamp from "../components/features/Stamp";
 
 function Ecohabit () {
     const dispatch = useDispatch();
@@ -51,6 +52,7 @@ function Ecohabit () {
                     </div>
                     <div className="week-stamps">
                         주간 스탬프
+                        <Stamp />
                     </div>
                 </StampContainer>
                 <CommonModal modalType="stampStatusModal">스탬프 현황 모달입니다.</CommonModal>

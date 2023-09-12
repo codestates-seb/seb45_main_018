@@ -13,7 +13,8 @@ public enum ExceptionCode {
     AUTHENTICATION_METHOD_NOT_ALLOWED(METHOD_NOT_ALLOWED, "Authentication method not allowed"),
     AUTHENTICATION_FAILED(UNAUTHORIZED, "JWT authentication failed"),
     EXPIRED_ACCESS_TOKEN(UNAUTHORIZED, "Expired access token"),
-    EXPIRED_REFRESH_TOKEN(UNAUTHORIZED, "Expired refresh token");
+    EXPIRED_REFRESH_TOKEN(UNAUTHORIZED, "Expired refresh token"),
+    POST_NOT_FOUND(NOT_FOUND, "Post not found");
 
     private final HttpStatus httpStatus;
 

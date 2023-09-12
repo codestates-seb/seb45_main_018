@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store/store';
 import Button from '../components/atoms/Button';
 import styled from 'styled-components';
-
+import googleicon from '../assets/google-icon.png';
 
 
 interface GLoginProps {
@@ -29,8 +29,11 @@ const GLogin: React.FC<GLoginProps> = () => {
             onSuccess={onSuccess}
             onFailure={onFailure}
             render={(renderProps) => (
-            <SubmitButton onClick={renderProps.onClick} className="google-login-submit">Log in with google</SubmitButton>
-            )}
+                <div>
+            <SubmitButton onClick={renderProps.onClick} className="google-login-submit"> 
+            <GoogleLogo src={googleicon} />
+            Log in with google</SubmitButton>
+            </div>)}
             cookiePolicy={'single_host_origin'}
             isSignedIn={true}
             />
@@ -42,7 +45,11 @@ export default GLogin
 
 
 const SubmitButton = styled(Button)`
-  padding: 16px;
+display:flex;
+justify-content: center;
+align-items: center;
+height: 50px;
+padding: 16px;
 
   &.login-submit {
     background-color: #7092bf;
@@ -73,4 +80,10 @@ const SubmitButton = styled(Button)`
       background-color: #d4e2f1;
     }
   }
+`;
+
+const GoogleLogo = styled.img`
+  width: 20px;
+  height: auto;
+  margin: 5px;
 `;

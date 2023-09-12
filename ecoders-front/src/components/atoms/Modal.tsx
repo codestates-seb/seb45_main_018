@@ -8,6 +8,11 @@ interface ModalProps {
     modalType: string; // 모달 유형 전달
     children? : any;
     className?: string;
+    onClick?: React.MouseEventHandler<HTMLButtonElement>;
+    onKeyPress?: React.KeyboardEventHandler<HTMLButtonElement>;
+    onKeyDown?: React.KeyboardEventHandler<HTMLButtonElement>;
+    onKeyUp?: React.KeyboardEventHandler<HTMLButtonElement>;
+
 }
 
 function Modal (props: ModalProps) {

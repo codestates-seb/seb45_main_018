@@ -5,32 +5,28 @@ import { useDispatch } from 'react-redux';
 import { logout } from '../../redux/slice/loginSlice';
 import profileImg from '../../assets/ProfileImage.svg';
 import { useSelector } from 'react-redux';
-import { RootState } from '../../redux/store/store';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useEffect } from 'react';
 import { setUsername, setStamp } from '../../redux/slice/userSlice';
+import { RootState } from '../../redux/store/store';
+import Modal from './Modal';
+import { openModal, closeModal } from "../../redux/slice/modalSlice";
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const isLoggedIn = useSelector((state: RootState) => state.login.isLoggedIn);
-  const memberId = useSelector((state: RootState) => state.user.id ) 
+  const memberId = useSelector((state: RootState) => state.user.id);
   const username = useSelector((state: RootState) => state.user.username); // username 상태 가져오기
   const stamp = useSelector((state: RootState) => state.user.stamp); // stamp 상태 가져오기
+  const APIURL = useSelector((state: RootState) => state.api.APIURL);
+
 
   // logout: {APIURL}/auth/logout -> delete -> accesstoken, refreshtoken, Id 요청
- // Header css : 재설정
- // main 이미지 수정
-
-  type ApiState = {
-    api: {
-      APIURL: string;
-    };
-  };
-
-  const APIURL = useSelector((state: ApiState) => state.api.APIURL);
+  // Header css : 재설정
+  // main 이미지 수정
 
   useEffect(() => {
     const fetchData = async () => {
@@ -96,7 +92,7 @@ const Header: React.FC = () => {
   // }
 
   const handleLogout = () => {
-    navigate('/login')
+    navigate('/login');
     dispatch(logout());
   };
 
@@ -111,7 +107,22 @@ const Header: React.FC = () => {
   const navigateToSignUp = () => {
     navigate('/signup');
   };
+
+  const modalcloseHandler = () => {
+  dispatch(closeModal('loginModal'));
+  };
+
+  const loginModalState = useSelector((state:RootState) => state.modal.modals.loginModal)
+
+  useEffect(()=> {
+    if(!loginModalState) {
+      navigate('/login')
+    }
+  }, [loginModalState]);
   
+  const modalOpenHandler = () => {
+    dispatch(openModal('loginModal'));
+  };
   return (
     <>
       <HeaderContainer>
@@ -125,12 +136,23 @@ const Header: React.FC = () => {
               }}>
               Services
             </MenuTab>
-            <MenuTab
-              onClick={() => {
-                navigate('/eco-habit');
-              }}>
-              Eco-Habit
-            </MenuTab>
+
+            {isLoggedIn ? (
+              <MenuTab
+                onClick={() => {
+                  navigate('/eco-habit');
+                }}>
+                Eco-Habit
+              </MenuTab>
+            ) : (
+              <>
+              <MenuTab  
+                onClick={modalOpenHandler}>
+                Eco-Habit
+              </MenuTab>
+              </>
+            )}
+
             <MenuTab
               onClick={() => {
                 navigate('community');
@@ -160,11 +182,14 @@ const Header: React.FC = () => {
                 }}>
                 Login
               </LoginButton>
-              <CreateAccountButton onClick={navigateToSignUp} >Create Account</CreateAccountButton>
+              <CreateAccountButton onClick={navigateToSignUp}>Create Account</CreateAccountButton>
             </>
           )}
         </HeaderProfileContainer>
       </HeaderContainer>
+      {/* 키눌렀을 때 왜 작동안하는지 모르겠음. 글씨 가운데 정렬하는 법?*/}
+      <AlertModal modalType='loginModal' onKeyUp={modalcloseHandler}>로그인이 필요한 서비스입니다.</AlertModal>
+
     </>
   );
 };
@@ -313,4 +338,37 @@ const CreateAccountButton = styled(ButtonStyle)`
   color: #1a1a1a;
   border: 1px solid #1a1a1a;
   margin-left: 10px;
+`;
+
+const AlertModal = styled(Modal)`
+    width: 25rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1rem;
+    padding-bottom: 4rem;
+    
+
+    div > .modal-cont-wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+
+        > .modal-title {
+            font-family: 'Inter';
+            font-size: 24px;
+            font-weight: 400;
+            line-height: normal;
+            text-align: center;
+            
+        }
+
+    }
+
+    p {
+        text-align: center;
+        font-family: Inter;
+        font-size: 14px;
+        line-height: normal;
+    }
 `;

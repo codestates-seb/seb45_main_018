@@ -12,6 +12,7 @@ const initialState: ModalState = {
         modifyModal: false,
         sendingMailModal: false,
         findPwModal: false,
+        loginModal: false, //추가함
     }
 };
 
@@ -24,7 +25,7 @@ const modalSlice = createSlice({
         },
         closeModal: (state, action: PayloadAction<string>) => {
             state.modals[action.payload] = false;
-        }
+        },
     },
 });
 

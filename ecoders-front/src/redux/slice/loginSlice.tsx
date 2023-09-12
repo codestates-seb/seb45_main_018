@@ -20,6 +20,9 @@ const loginSlice= createSlice({
         },
         logout: (state) => {
             state.isLoggedIn = false;
+            localStorage.removeItem('accessToken');
+            localStorage.removeItem('refreshToken');
+            localStorage.removeItem('MemberId') 
         },
         clientId: (state, action) => {
             state.clientId = action.payload;

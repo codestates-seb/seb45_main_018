@@ -2,6 +2,7 @@ package ecoders.ecodersbackend.auth.dto;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 public class AuthDto {
 
@@ -17,6 +18,7 @@ public class AuthDto {
 
     @Getter
     @Setter
+    @ToString
     public static class LoginDto {
 
         private String email;

@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static ecoders.ecodersbackend.exception.code.ExceptionCode.MEMBER_JWT_AUTHENTICATION_FAILED;
+import static ecoders.ecodersbackend.exception.code.ExceptionCode.AUTHENTICATION_FAILED;
 
 @Slf4j
 public class PolarecoAccessDeniedHandler implements AccessDeniedHandler {
@@ -24,6 +24,6 @@ public class PolarecoAccessDeniedHandler implements AccessDeniedHandler {
         Exception exception = (Exception) request.getAttribute("exception");
         String logMessage = exception == null ? accessDeniedException.getMessage() : exception.getMessage();
         log.warn("Authentication Exception: {}", logMessage);
-        ErrorResponse.send(response, MEMBER_JWT_AUTHENTICATION_FAILED);
+        ErrorResponse.send(response, AUTHENTICATION_FAILED);
     }
 }

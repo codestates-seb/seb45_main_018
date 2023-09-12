@@ -12,23 +12,23 @@ import javax.persistence.*;
 public class Member {
 
     @Id
-    private long id;
+    protected long id;
 
     @Column(nullable = false)
-    private String username;
+    protected String username;
 
     @Column(nullable = false, unique = true)
-    private String email;
+    protected String email;
 
     @Column(nullable = true)
-    private String password;
+    protected String password;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private AuthType authType;
+    protected AuthType authType;
 
     @Column(nullable = false)
-    private boolean isVerified;
+    protected boolean isVerified;
 
     @Getter
     public enum AuthType {

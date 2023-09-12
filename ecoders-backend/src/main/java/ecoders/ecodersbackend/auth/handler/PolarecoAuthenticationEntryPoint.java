@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static ecoders.ecodersbackend.exception.code.ExceptionCode.MEMBER_JWT_AUTHENTICATION_FAILED;
+import static ecoders.ecodersbackend.exception.code.ExceptionCode.AUTHENTICATION_FAILED;
 
 @Slf4j
 @Component
@@ -26,6 +26,6 @@ public class PolarecoAuthenticationEntryPoint implements AuthenticationEntryPoin
         Exception exception = (Exception) request.getAttribute("exception");
         String logMessage = exception == null ? authException.getMessage() : exception.getMessage();
         log.warn("Authentication Exception: {}", logMessage);
-        ErrorResponse.send(response, MEMBER_JWT_AUTHENTICATION_FAILED);
+        ErrorResponse.send(response, AUTHENTICATION_FAILED);
     }
 }

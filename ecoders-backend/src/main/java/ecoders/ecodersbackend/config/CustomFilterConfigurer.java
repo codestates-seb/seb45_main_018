@@ -19,17 +19,14 @@ public class CustomFilterConfigurer extends AbstractHttpConfigurer<CustomFilterC
 
     private final JwtProvider jwtProvider;
 
-    private final PolarecoAuthorityUtils polarecoAuthorityUtils;
-
     @Override
     public void configure(HttpSecurity builder) throws Exception {
         AuthenticationManager authenticationManager = builder.getSharedObject(AuthenticationManager.class);
         JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(authenticationManager);
-        jwtAuthenticationFilter.setRequiresAuthenticationRequestMatcher(
-            new AntPathRequestMatcher("/auth/login", "POST"));
+        jwtAuthenticationFilter.setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher("/auth/login", "POST"));
         jwtAuthenticationFilter.setAuthenticationSuccessHandler(new PolarecoAuthenticationSuccessHandler(jwtProvider));
         jwtAuthenticationFilter.setAuthenticationFailureHandler(new PolarecoAuthenticationFailureHandler());
-        JwtVerificationFilter jwtVerificationFilter = new JwtVerificationFilter(jwtProvider, polarecoAuthorityUtils);
+        JwtVerificationFilter jwtVerificationFilter = new JwtVerificationFilter(jwtProvider);
         builder.addFilter(jwtAuthenticationFilter)
             .addFilterAfter(jwtVerificationFilter, JwtAuthenticationFilter.class);
     }

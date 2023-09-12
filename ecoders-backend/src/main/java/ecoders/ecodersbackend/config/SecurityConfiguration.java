@@ -11,6 +11,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -34,6 +35,7 @@ public class SecurityConfiguration {
             .exceptionHandling()
             .authenticationEntryPoint(new PolarecoAuthenticationEntryPoint())
             .accessDeniedHandler(new PolarecoAccessDeniedHandler())
+            .and().logout().logoutRequestMatcher(new AntPathRequestMatcher("/auth/logout", "DELETE"))
             .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and().authorizeHttpRequests(registry -> registry
                 .anyRequest().permitAll()
@@ -45,10 +47,10 @@ public class SecurityConfiguration {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.setAllowedOrigins(List.of("http://polareco-deploy.s3-website.ap-northeast-2.amazonaws.com", "*"));
+        corsConfiguration.setAllowedOrigins(List.of("http://polareco-deploy.s3-website.ap-northeast-2.amazonaws.com"));
         corsConfiguration.setAllowedMethods(List.of("POST", "GET", "PATCH", "DELETE", "OPTIONS"));
         corsConfiguration.setAllowedHeaders(List.of("*"));
-        corsConfiguration.setExposedHeaders(List.of("Authorization", "Refresh-Token"));
+        corsConfiguration.setExposedHeaders(List.of("Authorization", "Refresh-Token", "Member-ID"));
         UrlBasedCorsConfigurationSource corsConfigurationSource = new UrlBasedCorsConfigurationSource();
         corsConfigurationSource.registerCorsConfiguration("/**", corsConfiguration);
         return corsConfigurationSource;

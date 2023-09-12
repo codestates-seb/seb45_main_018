@@ -1,6 +1,6 @@
 package ecoders.ecodersbackend.auth.jwt;
 
-import ecoders.ecodersbackend.auth.service.PolarecoMemberDetails;
+import ecoders.ecodersbackend.domain.member.service.MemberService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -13,6 +13,10 @@ import java.util.Date;
 
 @Component
 public class JwtProvider {
+
+    public static final String HEADER_AUTHORIZATION = "Authorization";
+
+    public static final String HEADER_REFRESH_TOKEN = "Refresh-Token";
 
     private final Key secretKey;
 
@@ -30,38 +34,36 @@ public class JwtProvider {
         this.refreshTokenExpirationMinutes = refreshTokenExpirationMinutes;
     }
 
-    public String generateAccessToken(PolarecoMemberDetails memberDetails) {
-        return Jwts.builder()
-            .setSubject(memberDetails.getId() + "-access-token")
-            .claim("id", memberDetails.getId())
-            .claim("username", memberDetails.getUsername())
-            .claim("email", memberDetails.getEmail())
-            .claim("auth-type", memberDetails.getAuthType())
-            .claim("is-verified", memberDetails.isVerified())
-            .setIssuedAt(new Date())
-            .setExpiration(getExpiration(accessTokenExpirationMinutes))
-            .signWith(secretKey)
-            .compact();
+    public String generateAccessToken(Claims claims) {
+        return generateToken(claims, accessTokenExpirationMinutes);
     }
 
-    public String generateRefreshToken(long memberId) {
-        return Jwts.builder()
-            .setSubject(memberId + "-refresh-token")
-            .setIssuedAt(new Date())
-            .setExpiration(getExpiration(refreshTokenExpirationMinutes))
-            .signWith(secretKey)
-            .compact();
+    public String generateRefreshToken(Claims claims) {
+        return generateToken(claims, refreshTokenExpirationMinutes);
     }
 
-    private Date getExpiration(int expirationMinutes) {
-        return new Date(System.currentTimeMillis() + expirationMinutes * 60000L);
+    private String generateToken(Claims claims, int expirationMinutes) {
+        return Jwts.builder()
+            .setClaims(claims)
+            .setIssuedAt(new Date())
+            .setExpiration(new Date(System.currentTimeMillis() + expirationMinutes * 60000L))
+            .signWith(secretKey)
+            .compact();
     }
 
     public Claims getClaims(String token) {
         return Jwts.parserBuilder()
             .setSigningKey(secretKey)
             .build()
-            .parseClaimsJws(token)
+            .parseClaimsJws(removePrefix(token))
             .getBody();
+    }
+
+    private String removePrefix(String bearerToken) {
+        return bearerToken.replace("Bearer ", "");
+    }
+
+    public String getEmailFromToken(String token) {
+        return (String) getClaims(token).get("email");
     }
 }

@@ -13,6 +13,7 @@ const initialState: ModalState = {
     sendingMailModal: false,
     findPwModal: false,
     deleteModal: false,
+    postModal: false,
   },
 };
 

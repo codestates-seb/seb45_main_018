@@ -20,6 +20,10 @@ const Header: React.FC = () => {
   const username = useSelector((state: RootState) => state.user.username); // username 상태 가져오기
   const stamp = useSelector((state: RootState) => state.user.stamp); // stamp 상태 가져오기
 
+  // logout: {APIURL}/auth/logout -> delete -> accesstoken, refreshtoken, Id 요청
+ // Header css : 재설정
+ // main 이미지 수정
+
   type ApiState = {
     api: {
       APIURL: string;
@@ -44,7 +48,7 @@ const Header: React.FC = () => {
       // }
 
       try {
-        axios.get(`${APIURL}/member/${memberId}`).then(response => {
+        axios.get(`${APIURL}/members/${memberId}`).then(response => {
           // const { username, stamp } = response.data;
           console.log(response.data);
           console.log(username, stamp); // 이렇게 같은 스코프 내에서 호출

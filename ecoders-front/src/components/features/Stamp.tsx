@@ -15,9 +15,6 @@ function Stamp () {
   return (
     <div>
         <div>
-            <p>완료된 미션 수: {completedMissionsCount}</p>
-        </div>
-        <div>
             <svg xmlns="http://www.w3.org/2000/svg" width="82" height="82" viewBox="0 0 82 82">
             <path
                 className='stamp-background'

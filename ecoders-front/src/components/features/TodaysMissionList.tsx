@@ -8,6 +8,7 @@ import { useAppDispatch } from "../../redux/hooks/useAppDispatch";
 import Button from "../atoms/Button";
 import { BsFillCheckCircleFill } from "react-icons/bs";
 import { completeTodayMission } from "../../redux/slice/missionSlice";
+import axios from "axios";
 
 
 function TodaysMissionList () {
@@ -19,21 +20,32 @@ function TodaysMissionList () {
         dispatch(fetchTodaysMissions());
     }, [dispatch]);
 
-    const missionDoneHandler = (event: React.MouseEvent<HTMLLIElement | HTMLButtonElement | HTMLDivElement, MouseEvent>) => {
+
+    const missionDoneHandler = async (event: React.MouseEvent<HTMLLIElement | HTMLButtonElement | HTMLDivElement, MouseEvent>) => {
         // 클릭된 요소에서 data-mission-id 값을 가져오기
         const todayMissionId = parseInt((event.target as HTMLElement).getAttribute("data-today-mission-id") || "", 10);
 
         if (!isNaN(todayMissionId)) {
         // 미션 완료 액션 디스패치
-        console.log(`Clicked on mission with ID ${todayMissionId}`);
         dispatch(completeTodayMission(todayMissionId));
+        // patch로 요청
+        try {
+            const mission = todaysMissions.find((m) => m.today_mission_id === todayMissionId);
+            if (mission) {
+                await axios.patch('api주소'), {
+                    completed: mission.completed
+                }
+            }
+        } catch (error) {
+            console.error("요청을 보내는 도중 에러가 발생했습니다.", error);
+        }
         }
     };
 
     return (
         <Container>
             <MissionList>
-                {todaysMissions.map((mission) => (
+                {todaysMissions && todaysMissions.map((mission) => (
                     <React.Fragment key={mission.today_mission_id}>
                         {mission.completed ? (
                             <CompletedMission

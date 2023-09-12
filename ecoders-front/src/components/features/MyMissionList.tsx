@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store/store";
 import { styled } from "styled-components";
 import Button from "../atoms/Button";
-import { completeMyMission, updateMyMissionText } from "../../redux/slice/missionSlice";
+import { completeMyMission, updateMyMissionText, deleteMyMission } from "../../redux/slice/missionSlice";
 import { BsFillCheckCircleFill, BsPencilSquare, BsTrash3Fill } from "react-icons/bs";
 import { FaCircleArrowUp } from "react-icons/fa6";
 import { useAppDispatch } from "../../redux/hooks/useAppDispatch";
@@ -42,6 +42,7 @@ function MyMissionList () {
     const saveHandler = (missionId: number) => {
         if (editedText !== null) {
             // 미션 텍스트를 업데이트
+            // put이나 patch로
             dispatch(updateMyMissionText({ missionId, newText: editedText }));
             setEditedMissionId(null);
             setEditedText(null);
@@ -57,6 +58,9 @@ function MyMissionList () {
         }
     }, [editedMissionId]);
 
+    const deleteHandler = (missionId: number) => {
+        dispatch(deleteMyMission(missionId))
+    }
 
     return (
         <Container>
@@ -104,7 +108,7 @@ function MyMissionList () {
                                 )}
                                         <IconWrapper className="icon-wrapper">
                                             <EditIcon onClick={() => editHandler(mission.my_mission_id, mission.text)}/>
-                                            <DeleteIcon />
+                                            <DeleteIcon onClick={() => deleteHandler(mission.my_mission_id)} />
                                         </IconWrapper>
                                         <CompletedButton onClick={missionDoneHandler} />
                             </Mission>

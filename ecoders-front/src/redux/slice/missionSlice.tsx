@@ -54,7 +54,10 @@ const missionSlice = createSlice({
 
                 state.completedMissionsCount = state.todaysMissions.filter((m) => m.completed).length;
             }
-        }
+        },
+        deleteMyMission: (state, action: PayloadAction<number>) => {
+            state.myMissions = state.myMissions.filter((m) => m.my_mission_id !== action.payload);
+        },
     },
     extraReducers: (builder) => {
         builder.addCase(fetchTodaysMissions.fulfilled, (state, action) => {
@@ -64,7 +67,7 @@ const missionSlice = createSlice({
     }
 });
 
-export const { addMyMission, setTodayMissions, completeMyMission, setMyMissions, completeTodayMission } = missionSlice.actions;
+export const { addMyMission, setTodayMissions, completeMyMission, setMyMissions, completeTodayMission, deleteMyMission } = missionSlice.actions;
 
 export default missionSlice.reducer;
 
@@ -73,21 +76,14 @@ export default missionSlice.reducer;
 // 유저가 설정한 갯수를 서버에 보내기 put이나 patch
 
 export const fetchTodaysMissions = createAsyncThunk('missions/fetchTodaysMissions', async () => {
-    const response = await axios.get('https://4345e16a-fdc3-4d6f-8760-0b3b56303a85.mock.pstmn.io/mission/today_mission');
-    const allMissions = response.data;
-
-    // 랜덤 5개
-    const randomMissions: number[] = [];
-    while (randomMissions.length < 5) {
-        const randomIndex = Math.floor(Math.random() * allMissions.length);
-        if (!randomMissions.includes(randomIndex)) {
-            randomMissions.push(randomIndex);
-        }
+    try {
+        const response = await axios.get('https://4345e16a-fdc3-4d6f-8760-0b3b56303a85.mock.pstmn.io/mission/today_mission');
+        console.log(response.data.todaysMissions)
+        return response.data.todaysMissions;
+    } catch (error) {
+        console.error("오늘의 미션을 가져오는 도중 에러가 발생하였습니다.", error);
+        throw error;
     }
-
-    const todaysMissions: TodayMission[] = randomMissions.map((index) => allMissions[index]);
-
-    return todaysMissions;
 });
 
 export const updateMyMissionText = createAsyncThunk(

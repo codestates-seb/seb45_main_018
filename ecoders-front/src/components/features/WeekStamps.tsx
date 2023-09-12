@@ -1,9 +1,13 @@
+import React from 'react';
+import Stamp from './Stamp'; // Import your Stamp component here
+
+function WeekStamps() {
 
 
-function WeekStamps () {
-    return (
-        <div></div>
-    )
+  return (
+    <div>
+    </div>
+  );
 }
 
 export default WeekStamps;

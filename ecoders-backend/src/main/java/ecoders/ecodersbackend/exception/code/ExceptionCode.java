@@ -10,9 +10,11 @@ public enum ExceptionCode {
 
     MEMBER_ALREADY_EXISTS(FORBIDDEN, "Member already exists"),
     MEMBER_NOT_FOUND(NOT_FOUND, "Member not found"),
-    POST_NOT_FOUND(NOT_FOUND, "Post not found"),
-    JWT_AUTHENTICATION_METHOD_NOT_ALLOWED(METHOD_NOT_ALLOWED, "Authentication method not allowed"),
-    MEMBER_JWT_AUTHENTICATION_FAILED(UNAUTHORIZED, "JWT authentication failed");
+    AUTHENTICATION_METHOD_NOT_ALLOWED(METHOD_NOT_ALLOWED, "Authentication method not allowed"),
+    AUTHENTICATION_FAILED(UNAUTHORIZED, "JWT authentication failed"),
+    EXPIRED_ACCESS_TOKEN(UNAUTHORIZED, "Expired access token"),
+    EXPIRED_REFRESH_TOKEN(UNAUTHORIZED, "Expired refresh token"),
+    POST_NOT_FOUND(NOT_FOUND, "Post not found");
 
     private final HttpStatus httpStatus;
 

@@ -2,7 +2,9 @@ package ecoders.ecodersbackend.post;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RequestMapping("/posts")
@@ -21,15 +23,27 @@ public class PostController {
     @PostMapping
     public ResponseEntity post(@RequestBody PostDto.PostCreateDto postDto){
 
-        String imageUrl = postService.uploadImage(postDto.getImageUrl());
-
         Post newPost = new Post();
         newPost.setTitle(postDto.getTitle());
         newPost.setContent(postDto.getContent());
-        newPost.setImageUrl(imageUrl);
+        newPost.setCategory(postDto.getCategory());
+        newPost.setThumbnailUrl(postDto.getThumbnailUrl());
+
         postRepository.save(newPost);
 
         return ResponseEntity.ok("Post successfully created.");
+    }
+
+    @PostMapping("/uploadImage")
+    public ResponseEntity<String> uploadImage(@RequestHeader("Content-Type") String contentType,
+                                              @RequestParam("imageFile") MultipartFile imageFile){
+        try{
+        String imageUrl = postService.uploadImage(imageFile);
+        return ResponseEntity.ok(imageUrl);
+    } catch (Exception e){
+        e.printStackTrace();
+        return ResponseEntity.status(500).body("Image upload failed");
+        }
     }
 
 

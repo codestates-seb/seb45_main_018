@@ -10,6 +10,7 @@ public enum ExceptionCode {
 
     MEMBER_ALREADY_EXISTS(FORBIDDEN, "Member already exists"),
     MEMBER_NOT_FOUND(NOT_FOUND, "Member not found"),
+    POST_NOT_FOUND(NOT_FOUND, "Post not found"),
     JWT_AUTHENTICATION_METHOD_NOT_ALLOWED(METHOD_NOT_ALLOWED, "Authentication method not allowed"),
     MEMBER_JWT_AUTHENTICATION_FAILED(UNAUTHORIZED, "JWT authentication failed");
 

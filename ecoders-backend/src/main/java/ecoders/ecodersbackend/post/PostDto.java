@@ -11,7 +11,9 @@ public class PostDto {
 
         private String title;
         private String content;
-        private String imageUrl;
+        private String category;
+        private String thumbnailUrl;
+
     }
 
     @Getter

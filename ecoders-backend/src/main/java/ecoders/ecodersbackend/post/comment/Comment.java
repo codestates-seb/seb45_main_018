@@ -1,7 +1,8 @@
-package ecoders.ecodersbackend.post;
+package ecoders.ecodersbackend.post.comment;
 
 import ecoders.ecodersbackend.audit.Auditable;
-import ecoders.ecodersbackend.post.comment.Comment;
+import ecoders.ecodersbackend.domain.member.entity.Member;
+import ecoders.ecodersbackend.post.Post;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,8 +10,6 @@ import lombok.Setter;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Setter
@@ -18,28 +17,21 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-public class Post extends Auditable {
+public class Comment extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long postId;
-
-    @Column(nullable = false)
-    private String title;
+    private long commentId;
 
     @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
 
-    @Column
-    private String category;
+    @ManyToOne
+    @JoinColumn(name = "POST_ID")
+    private Post post;
 
-    @Column
-    private long views;
+    @ManyToOne
+    @JoinColumn(name = "MEMBER_ID")
+    private Member member;
 
-    @Column
-    private String thumbnailUrl;
-
-
-   @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-   private List<Comment> comments = new ArrayList<>();
 
 }

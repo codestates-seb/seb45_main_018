@@ -194,7 +194,8 @@ const Header: React.FC = () => {
       {/* 키눌렀을 때 왜 작동안하는지 모르겠음. 글씨 가운데 정렬하는 법?*/}
 
 
-      { 
+      {
+      // 헤더 백그라운드 추 
       // loginModalState는 모달의 활성화 상태를 나타내는 state로 가정합니다.
       // 실제 앱에서 해당 state나 로직에 따라 조건을 적절히 조절해야 합니다.
       loginModalState && (

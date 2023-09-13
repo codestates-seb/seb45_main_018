@@ -114,11 +114,12 @@ const Header: React.FC = () => {
 
   const loginModalState = useSelector((state:RootState) => state.modal.modals.loginModal)
 
-  useEffect(()=> {
-    if(!loginModalState) {
-      navigate('/login')
-    }
-  }, [loginModalState]);
+  //chatting 구현 이후 살리기
+  // useEffect(()=> {
+  //   if(!loginModalState) {
+  //     navigate('/login')
+  //   }
+  // }, [loginModalState]);
   
   const modalOpenHandler = () => {
     dispatch(openModal('loginModal'));

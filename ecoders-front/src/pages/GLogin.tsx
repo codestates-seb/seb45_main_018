@@ -16,6 +16,7 @@ const GLogin: React.FC<GLoginProps> = () => {
     const clientId = useSelector((state: RootState) => state.login.clientId);
     const onSuccess = (res:any) => {
         console.log("로그인 성공! 현재 유저: ", res.profileObj);
+       
     }
 
     const onFailure = (res: any) => {

@@ -14,6 +14,7 @@ import CommunityPage from './pages/CommunityPage';
 import CommunityPostDetailPage from './pages/CommunityPostDetailPage';
 import LoginPage from './pages/LoginPage';
 import Signup from './pages/Signup';
+import Chat from './pages/Chat/Chat';
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/community" element={<CommunityPage />} />
+          <Route path="/chat" element={<Chat />} />
           {/* <Route path="/community/postwrite" element={<CommunityPostWritePage />} /> */}
           <Route path="/community/postdetail/:postnumber" element={<CommunityPostDetailPage />} />
           {/* <Route element={NotFound} /> */}

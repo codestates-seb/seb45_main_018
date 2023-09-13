@@ -14,11 +14,13 @@ function MissionForm () {
 
     const [ text, setText ] = useState('');
 
-    const apiUrl = 'https://4345e16a-fdc3-4d6f-8760-0b3b56303a85.mock.pstmn.io/mission/my_mission';
-
     const postMission = async (missionData: { my_mission_id: number; text: string; completed: boolean; }) => {
         try {
-            const response = await axios.post(apiUrl, missionData);
+            const response = await axios.post('https://4345e16a-fdc3-4d6f-8760-0b3b56303a85.mock.pstmn.io/mission/my_mission', missionData, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('accessToken')}`
+                }
+            });
             console.log(response.data);
             return response.data;
         } catch (error: any) {

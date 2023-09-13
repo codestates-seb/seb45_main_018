@@ -24,6 +24,7 @@ function TodaysMissionList () {
     const missionDoneHandler = async (event: React.MouseEvent<HTMLLIElement | HTMLButtonElement | HTMLDivElement, MouseEvent>) => {
         // 클릭된 요소에서 data-mission-id 값을 가져오기
         const todayMissionId = parseInt((event.target as HTMLElement).getAttribute("data-today-mission-id") || "", 10);
+        console.log(todayMissionId)
 
         if (!isNaN(todayMissionId)) {
         // 미션 완료 액션 디스패치
@@ -32,9 +33,14 @@ function TodaysMissionList () {
         try {
             const mission = todaysMissions.find((m) => m.today_mission_id === todayMissionId);
             if (mission) {
-                await axios.patch('api주소'), {
-                    completed: mission.completed
-                }
+                const response = await axios.patch(`https://4345e16a-fdc3-4d6f-8760-0b3b56303a85.mock.pstmn.io/mission/today_mission/${todayMissionId}`, {
+                    completed: !mission.completed
+                }, {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('accessToken')}`
+                    }
+                })
+                console.log(response.data)
             }
         } catch (error) {
             console.error("요청을 보내는 도중 에러가 발생했습니다.", error);

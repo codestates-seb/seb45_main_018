@@ -22,6 +22,10 @@ function SettingModal () {
         try {
             const response = await axios.post("api 주소", {
                 option: option,  // 개수에 대한 변수명임
+            }, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('accessToken')}`
+                }
             });
 
             dispatch(setTodayMissions(response.data.todayMissions));

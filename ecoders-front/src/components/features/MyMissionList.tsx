@@ -7,6 +7,7 @@ import { completeMyMission, updateMyMissionText, deleteMyMission } from "../../r
 import { BsFillCheckCircleFill, BsPencilSquare, BsTrash3Fill } from "react-icons/bs";
 import { FaCircleArrowUp } from "react-icons/fa6";
 import { useAppDispatch } from "../../redux/hooks/useAppDispatch";
+import axios from "axios";
 
 
 function MyMissionList () {
@@ -14,17 +15,36 @@ function MyMissionList () {
 
     const myMissions = useSelector((state: RootState) => state.missions.myMissions);
 
+    const accessToken = localStorage.getItem('accessToken');
+
     const [ editedText, setEditedText ] = useState<string | null>(null);
     const [ editedMissionId, setEditedMissionId ] = useState<number | null>(null);
 
-    const missionDoneHandler = (event: React.MouseEvent<HTMLLIElement | HTMLButtonElement | HTMLDivElement, MouseEvent>) => {
+    const missionDoneHandler = async (event: React.MouseEvent<HTMLLIElement | HTMLButtonElement | HTMLDivElement, MouseEvent>) => {
         // 클릭된 요소에서 data-mission-id 값을 가져오기
         const missionId = parseInt((event.target as HTMLElement).getAttribute("data-mission-id") || "", 10);
 
         if (!isNaN(missionId)) {
-        // 미션 완료 액션 디스패치
-        console.log(`Clicked on mission with ID ${missionId}`);
-        dispatch(completeMyMission(missionId));
+            // 미션 완료 액션 디스패치
+            console.log(`Clicked on mission with ID ${missionId}`);
+            dispatch(completeMyMission(missionId));
+
+            try {
+                const mission = myMissions.find((m) => m.my_mission_id === missionId);
+
+                if (mission) {
+                   const response = await axios.patch(`https://4345e16a-fdc3-4d6f-8760-0b3b56303a85.mock.pstmn.io/mission/my_mission/${missionId}`, {
+                        completed: !mission.completed
+                    }, {
+                        headers: {
+                            Authorization: `Bearer ${localStorage.getItem('accessToken')}`
+                        }
+                    })
+                    console.log(response.data);
+                }
+            } catch (error) {
+                console.error("요청을 보내는 도중 에러가 발생했습니다.", error);
+            }
         }
     };
 
@@ -39,13 +59,34 @@ function MyMissionList () {
         setEditedText(event.target.value);
     };
 
-    const saveHandler = (missionId: number) => {
+    const saveHandler = async (missionId: number) => {
         if (editedText !== null) {
             // 미션 텍스트를 업데이트
             // put이나 patch로
-            dispatch(updateMyMissionText({ missionId, newText: editedText }));
-            setEditedMissionId(null);
-            setEditedText(null);
+
+            try {
+                const mission = myMissions.find((m) => m.my_mission_id === missionId);
+
+                if (mission) {
+                    const response = await axios.patch(`https://4345e16a-fdc3-4d6f-8760-0b3b56303a85.mock.pstmn.io/mission/my_mission/${missionId}`, {
+                        text: editedText
+                    }, {
+                        headers: {
+                            Authorization: `Bearer ${accessToken}`
+                        }
+                    })
+                    console.log({
+                        text: editedText
+                    })
+                    console.log(response.data)
+                    dispatch(updateMyMissionText({ missionId, newText: editedText }));
+                    setEditedMissionId(null);
+                    setEditedText(null);
+                }
+            } catch (error) {
+                console.error("요청을 보내는 도중 에러가 발생했습니다.", error);
+            }
+
         }
     };
 
@@ -58,8 +99,18 @@ function MyMissionList () {
         }
     }, [editedMissionId]);
 
-    const deleteHandler = (missionId: number) => {
-        dispatch(deleteMyMission(missionId))
+    const deleteHandler = async (missionId: number) => {
+
+        try {
+            await axios.delete(`https://4345e16a-fdc3-4d6f-8760-0b3b56303a85.mock.pstmn.io/mission/my_mission/${missionId}`, {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`
+                }
+            });
+            dispatch(deleteMyMission(missionId));
+        } catch (error) {
+            console.error("요청을 보내는 도중 에러가 발생했습니다.", error);
+        }
     }
 
     return (

@@ -77,7 +77,11 @@ export default missionSlice.reducer;
 
 export const fetchTodaysMissions = createAsyncThunk('missions/fetchTodaysMissions', async () => {
     try {
-        const response = await axios.get('https://4345e16a-fdc3-4d6f-8760-0b3b56303a85.mock.pstmn.io/mission/today_mission');
+        const response = await axios.get('https://4345e16a-fdc3-4d6f-8760-0b3b56303a85.mock.pstmn.io/mission/today_mission', {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('accessToken')}`
+            }
+        });
         console.log(response.data.todaysMissions)
         return response.data.todaysMissions;
     } catch (error) {
@@ -89,8 +93,12 @@ export const fetchTodaysMissions = createAsyncThunk('missions/fetchTodaysMission
 export const updateMyMissionText = createAsyncThunk(
     'missions/updateMyMissionText',
     async (payload: { missionId: number; newText: string }) => {
-        const response = await axios.put(`/${payload.missionId}`, {
+        const response = await axios.patch(`/${payload.missionId}`, {
             text: payload.newText,
+        }, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('accessToken')}`
+            }
         });
         return response.data;
     }

@@ -195,7 +195,7 @@ const Header: React.FC = () => {
 
 
       {
-      // 헤더 백그라운드 추 
+      // 헤더모달백그라운드 추가 및 클릭 시 closeHandler 연결 
       // loginModalState는 모달의 활성화 상태를 나타내는 state로 가정합니다.
       // 실제 앱에서 해당 state나 로직에 따라 조건을 적절히 조절해야 합니다.
       loginModalState && (

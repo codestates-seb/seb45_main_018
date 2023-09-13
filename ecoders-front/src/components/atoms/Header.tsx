@@ -110,6 +110,7 @@ const Header: React.FC = () => {
 
   const modalcloseHandler = () => {
   dispatch(closeModal('loginModal'));
+  navigate('/login')
   };
 
   const loginModalState = useSelector((state:RootState) => state.modal.modals.loginModal)
@@ -126,6 +127,7 @@ const Header: React.FC = () => {
   };
   return (
     <>
+    <Entire>
       <HeaderContainer>
         <MenuContainer>
           <HeaderLogo src={logo} onClick={navigateToMain} />
@@ -148,7 +150,8 @@ const Header: React.FC = () => {
             ) : (
               <>
               <MenuTab  
-                onClick={modalOpenHandler}>
+                onClick={() => {modalOpenHandler();}}>
+                  
                 Eco-Habit
               </MenuTab>
               </>
@@ -189,24 +192,39 @@ const Header: React.FC = () => {
         </HeaderProfileContainer>
       </HeaderContainer>
       {/* 키눌렀을 때 왜 작동안하는지 모르겠음. 글씨 가운데 정렬하는 법?*/}
-      <AlertModal modalType='loginModal' onKeyUp={modalcloseHandler}>로그인이 필요한 서비스입니다.</AlertModal>
 
+
+      { 
+      // loginModalState는 모달의 활성화 상태를 나타내는 state로 가정합니다.
+      // 실제 앱에서 해당 state나 로직에 따라 조건을 적절히 조절해야 합니다.
+      loginModalState && (
+        <AlertModalBackground onClick={modalcloseHandler}>
+      <AlertModal modalType='loginModal' onClick={() => {modalcloseHandler()}}>로그인이 필요한 서비스입니다.</AlertModal>
+        </AlertModalBackground>
+      )
+    }
+      </Entire>
     </>
   );
 };
 
 export default Header;
 
+const Entire = styled.div`
+display: flex;
+justify-content: center;
+`
+
 const HeaderContainer = styled.div`
   position: fixed;
-  transform: scale(0.65); // 이 줄을 추가
+  /* transform: scale(0.65); // 이 줄을 추가 */
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 100%;
   max-width: 1920px;
   min-width: 960px;
-  height: 70px;
+  height: 100px;
   background-color: #ffffff;
   border: none;
   padding-left: 80px;
@@ -215,12 +233,12 @@ const HeaderContainer = styled.div`
 
   @media (max-width: 1152px) {
     // 화면 크기가 1056px 이하일 때
-    transform: scale(0.6); // 이 줄을 추가
+    /* transform: scale(0.6); // 이 줄을 추가 */
   }
 
   @media (max-width: 768px) {
     // 화면 크기가 768px 이하일 때
-    transform: scale(0.4); // 이 줄을 추가
+    /* transform: scale(0.4); // 이 줄을 추가 */
   }
 
   @media (max-width: 480px) {
@@ -372,4 +390,17 @@ const AlertModal = styled(Modal)`
         font-size: 14px;
         line-height: normal;
     }
+`;
+
+const AlertModalBackground = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.5); // 반투명 배경 추가
 `;

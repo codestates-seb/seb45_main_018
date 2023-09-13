@@ -9,10 +9,6 @@ interface ModalProps {
     children? : any;
     className?: string;
     onClick?: React.MouseEventHandler<HTMLButtonElement>;
-    onKeyPress?: React.KeyboardEventHandler<HTMLButtonElement>;
-    onKeyDown?: React.KeyboardEventHandler<HTMLButtonElement>;
-    onKeyUp?: React.KeyboardEventHandler<HTMLButtonElement>;
-
 }
 
 function Modal (props: ModalProps) {
@@ -30,7 +26,7 @@ function Modal (props: ModalProps) {
                 <Overlay onClick={handleClose}/>
                 <Content {...props}>
                     <IconBox>
-                        <FiX className="close-icon" onClick={handleClose}/>
+                        <FiX className="close-icon" onClick={handleClose} />
                     </IconBox>
                     <TextBox>{props.children}</TextBox>
                 </Content>

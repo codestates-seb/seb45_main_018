@@ -115,6 +115,10 @@ const ChatContent = ({ currentRoomId, currentUserId }) => {
 export default ChatContent;
 
 const MessagesContainer = styled.div`
+border: #E5E5E5 solid 1px;
+border-radius: 20px;
+padding: 20px;
+
 height: 800px;
   display: flex;
   flex-direction: column;
@@ -161,11 +165,13 @@ const InputContainer = styled.div`
   background-color: #f4f4f4;
   min-height: 45px;
   padding-right: 20px;
+  padding-top: 10px;
+  padding-bottom: 10px;
 `;
 
 const InputText = styled.textarea`
   border-radius: 20px;
-  padding-top: 30px;
+  padding-top: 20px;
   padding-left: 20px;
   padding-bottom: 15px;
   width: 100%;

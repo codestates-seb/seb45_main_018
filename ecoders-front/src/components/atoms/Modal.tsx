@@ -5,7 +5,7 @@ import { RootState } from "../../redux/store/store";
 import { closeModal } from "../../redux/slice/modalSlice";
 
 interface ModalProps {
-    modalType: string; // 모달 유형 전달
+    modaltype: string; // 모달 유형 전달
     children? : any;
     className?: string;
     onClick?: React.MouseEventHandler<HTMLButtonElement>;
@@ -13,10 +13,10 @@ interface ModalProps {
 
 function Modal (props: ModalProps) {
     const dispatch = useDispatch();
-    const isOpen = useSelector((state: RootState) => state.modal.modals[props.modalType]);
+    const isOpen = useSelector((state: RootState) => state.modal.modals[props.modaltype]);
 
     const handleClose = () => {
-        dispatch(closeModal(props.modalType));
+        dispatch(closeModal(props.modaltype));
     };
 
     return (

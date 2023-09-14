@@ -5,7 +5,7 @@ export const userSlice = createSlice({
     initialState: {
         accessToken: null,
         username: 'user',
-        id: 0,
+        id: '',
         stamp: 0
     },
     reducers: {

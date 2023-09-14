@@ -13,6 +13,7 @@ const Service = () => {
 
   return (
         <>
+        <Container>
           <StyledImage src={Services} />
           <ButtonImage
             src={isHovered ? JoinHoverButton : JoinButton}
@@ -20,12 +21,19 @@ const Service = () => {
             onMouseOut={() => setIsHovered(false)}
             onClick={() => navigate('/signup')}
           />
+          </Container>
         </>
   );
 };
 
 export default Service;
 
+const Container = styled.div`
+display: flex;
+flex-direction: column;
+align-items: center;
+margin-bottom: 120px;
+`
 
 
 const StyledImage = styled.img`

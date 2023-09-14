@@ -1,32 +1,32 @@
 import styled from 'styled-components';
 import logo from '../../assets/Logo.png';
 import { useDispatch } from 'react-redux';
-import { login } from '../../redux/slice/loginSlice';
+// import { login } from '../../redux/slice/loginSlice';
 import { logout } from '../../redux/slice/loginSlice';
 import profileImg from '../../assets/ProfileImage.svg';
 import { useSelector } from 'react-redux';
-import { RootState } from '../../redux/store/store';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useEffect } from 'react';
 import { setUsername, setStamp } from '../../redux/slice/userSlice';
+import { RootState } from '../../redux/store/store';
+import Modal from './Modal';
+import { openModal, closeModal } from "../../redux/slice/modalSlice";
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const isLoggedIn = useSelector((state: RootState) => state.login.isLoggedIn);
-  const memberId = useSelector((state: RootState) => state.user.id ) 
+  const memberId = useSelector((state: RootState) => state.user.id);
   const username = useSelector((state: RootState) => state.user.username); // username 상태 가져오기
   const stamp = useSelector((state: RootState) => state.user.stamp); // stamp 상태 가져오기
+  const APIURL = useSelector((state: RootState) => state.api.APIURL);
 
-  type ApiState = {
-    api: {
-      APIURL: string;
-    };
-  };
 
-  const APIURL = useSelector((state: ApiState) => state.api.APIURL);
+  // logout: {APIURL}/auth/logout -> delete -> accesstoken, refreshtoken, Id 요청
+  // Header css : 재설정
+  // main 이미지 수정
 
   useEffect(() => {
     const fetchData = async () => {
@@ -44,7 +44,7 @@ const Header: React.FC = () => {
       // }
 
       try {
-        axios.get(`${APIURL}/member/${memberId}`).then(response => {
+        axios.get(`${APIURL}/members/${memberId}`).then(response => {
           // const { username, stamp } = response.data;
           console.log(response.data);
           console.log(username, stamp); // 이렇게 같은 스코프 내에서 호출
@@ -92,7 +92,7 @@ const Header: React.FC = () => {
   // }
 
   const handleLogout = () => {
-    navigate('/login')
+    navigate('/login');
     dispatch(logout());
   };
 
@@ -107,9 +107,27 @@ const Header: React.FC = () => {
   const navigateToSignUp = () => {
     navigate('/signup');
   };
+
+  const modalcloseHandler = () => {
+  dispatch(closeModal('loginModal'));
+  navigate('/login')
+  };
+
+  const loginModalState = useSelector((state:RootState) => state.modal.modals.loginModal)
+
+  //chatting 구현 이후 살리기
+  // useEffect(()=> {
+  //   if(!loginModalState) {
+  //     navigate('/login')
+  //   }
+  // }, [loginModalState]);
   
+  const modalOpenHandler = () => {
+    dispatch(openModal('loginModal'));
+  };
   return (
     <>
+    <Entire>
       <HeaderContainer>
         <MenuContainer>
           <HeaderLogo src={logo} onClick={navigateToMain} />
@@ -121,12 +139,24 @@ const Header: React.FC = () => {
               }}>
               Services
             </MenuTab>
-            <MenuTab
-              onClick={() => {
-                navigate('/eco-habit');
-              }}>
-              Eco-Habit
-            </MenuTab>
+
+            {isLoggedIn ? (
+              <MenuTab
+                onClick={() => {
+                  navigate('/eco-habit');
+                }}>
+                Eco-Habit
+              </MenuTab>
+            ) : (
+              <>
+              <MenuTab  
+                onClick={() => {modalOpenHandler();}}>
+                  
+                Eco-Habit
+              </MenuTab>
+              </>
+            )}
+
             <MenuTab
               onClick={() => {
                 navigate('community');
@@ -156,27 +186,46 @@ const Header: React.FC = () => {
                 }}>
                 Login
               </LoginButton>
-              <CreateAccountButton onClick={navigateToSignUp} >Create Account</CreateAccountButton>
+              <CreateAccountButton onClick={navigateToSignUp}>Create Account</CreateAccountButton>
             </>
           )}
         </HeaderProfileContainer>
       </HeaderContainer>
+      {/* 키눌렀을 때 왜 작동안하는지 모르겠음. 글씨 가운데 정렬하는 법?*/}
+
+
+      {
+      // 헤더모달백그라운드 추가 및 클릭 시 closeHandler 연결 
+      // loginModalState는 모달의 활성화 상태를 나타내는 state로 가정합니다.
+      // 실제 앱에서 해당 state나 로직에 따라 조건을 적절히 조절해야 합니다.
+      loginModalState && (
+        <AlertModalBackground onClick={modalcloseHandler}>
+      <AlertModal modalType='loginModal' onClick={() => {modalcloseHandler()}}>로그인이 필요한 서비스입니다.</AlertModal>
+        </AlertModalBackground>
+      )
+    }
+      </Entire>
     </>
   );
 };
 
 export default Header;
 
+const Entire = styled.div`
+display: flex;
+justify-content: center;
+`
+
 const HeaderContainer = styled.div`
   position: fixed;
-  transform: scale(0.65); // 이 줄을 추가
+  /* transform: scale(0.65); // 이 줄을 추가 */
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 100%;
   max-width: 1920px;
   min-width: 960px;
-  height: 70px;
+  height: 100px;
   background-color: #ffffff;
   border: none;
   padding-left: 80px;
@@ -185,12 +234,12 @@ const HeaderContainer = styled.div`
 
   @media (max-width: 1152px) {
     // 화면 크기가 1056px 이하일 때
-    transform: scale(0.6); // 이 줄을 추가
+    /* transform: scale(0.6); // 이 줄을 추가 */
   }
 
   @media (max-width: 768px) {
     // 화면 크기가 768px 이하일 때
-    transform: scale(0.4); // 이 줄을 추가
+    /* transform: scale(0.4); // 이 줄을 추가 */
   }
 
   @media (max-width: 480px) {
@@ -309,4 +358,50 @@ const CreateAccountButton = styled(ButtonStyle)`
   color: #1a1a1a;
   border: 1px solid #1a1a1a;
   margin-left: 10px;
+`;
+
+const AlertModal = styled(Modal)`
+    width: 25rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1rem;
+    padding-bottom: 4rem;
+    
+
+    div > .modal-cont-wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+
+        > .modal-title {
+            font-family: 'Inter';
+            font-size: 24px;
+            font-weight: 400;
+            line-height: normal;
+            text-align: center;
+            
+        }
+
+    }
+
+    p {
+        text-align: center;
+        font-family: Inter;
+        font-size: 14px;
+        line-height: normal;
+    }
+`;
+
+const AlertModalBackground = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.5); // 반투명 배경 추가
 `;

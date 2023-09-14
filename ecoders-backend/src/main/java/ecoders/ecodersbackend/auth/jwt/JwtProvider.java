@@ -2,6 +2,7 @@ package ecoders.ecodersbackend.auth.jwt;
 
 import ecoders.ecodersbackend.domain.member.service.MemberService;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;

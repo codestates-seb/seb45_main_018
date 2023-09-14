@@ -1,8 +1,13 @@
 // redux/slice/apiSlice.js
 import { createSlice } from '@reduxjs/toolkit';
 
-const initialState = {
-  APIURL: 'http:/ec2-13-209-89-195.ap-northeast-2.compute.amazonaws.com:8080',
+
+interface ApiState {
+  APIURL: string;
+}
+
+const initialState: ApiState = {
+  APIURL: 'http://ec2-13-209-89-195.ap-northeast-2.compute.amazonaws.com:8080',
 };
 
 const apiSlice = createSlice({

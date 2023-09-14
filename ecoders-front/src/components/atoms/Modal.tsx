@@ -8,6 +8,7 @@ interface ModalProps {
     modaltype: string; // 모달 유형 전달
     children? : any;
     className?: string;
+    onClick?: React.MouseEventHandler<HTMLButtonElement>;
 }
 
 function Modal (props: ModalProps) {
@@ -25,7 +26,7 @@ function Modal (props: ModalProps) {
                 <Overlay onClick={handleClose}/>
                 <Content {...props}>
                     <IconBox>
-                        <FiX className="close-icon" onClick={handleClose}/>
+                        <FiX className="close-icon" onClick={handleClose} />
                     </IconBox>
                     <TextBox>{props.children}</TextBox>
                 </Content>

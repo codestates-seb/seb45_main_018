@@ -4,6 +4,7 @@ import logo from '../../assets/Logo.png';
 const Footer: React.FC = () => {
   return (
     <>
+    <Container>
       <FooterContainer>
         <FooterInfoContainer>
           <FooterLogoSectionContainer>
@@ -12,8 +13,7 @@ const Footer: React.FC = () => {
               POLARECO
             </FooterLogoText>
             <FooterLogoContent>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit ut aliquam, purus sit amet luctus venenatis,
-              lectus magna fringilla urna
+              건강한 지구, 건강한 라이프 <br/>건강한 가치를 추구하는 에코 플랫폼 <br />폴라레코입니다.
             </FooterLogoContent>
           </FooterLogoSectionContainer>
           <FooterSectionContainer>
@@ -55,11 +55,17 @@ const Footer: React.FC = () => {
         <FooterLine />
         <RigthInfo>© 2023 Polareco - All Rights Reserved</RigthInfo>
       </FooterContainer>
+      </Container>
     </>
   );
 };
 
 export default Footer;
+
+const Container = styled.div`
+display:flex;
+justify-content: center;
+`
 
 const Logo = styled.img`
   width: 51px;
@@ -70,7 +76,7 @@ const Logo = styled.img`
 const FooterContainer = styled.div`
   margin: 0;
   padding: 0;
-  transform: scale(0.65); // 이 줄을 추가
+  /* transform: scale(0.65); // 이 줄을 추가 */
   max-width: 1920px;
   min-width: 960px;
   height: 738px;

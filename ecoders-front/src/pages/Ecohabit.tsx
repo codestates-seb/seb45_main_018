@@ -6,7 +6,6 @@ import Button from "../components/atoms/Button";
 import MissionForm from "../components/atoms/MissionForm";
 import { useDispatch } from "react-redux";
 import { openModal } from "../redux/slice/modalSlice";
-import Modal from "../components/atoms/Modal";
 import { useState } from "react";
 import MyMissionList from "../components/features/MyMissionList";
 import TodaysMissionList from "../components/features/TodaysMissionList";
@@ -99,6 +98,7 @@ function Ecohabit () {
         </Container>
     )
 }
+
 
 export default Ecohabit;
 
@@ -210,7 +210,6 @@ const CommonButton = styled(Button)`
         border: none;
         color: #fff;
     }
-
 `;
 
 const Title = styled.div`
@@ -223,7 +222,4 @@ const TitleBox = styled.div`
     display: flex;
     align-items: center;
     gap: 1rem;
-`;
-
-const CommonModal = styled(Modal)`
 `;

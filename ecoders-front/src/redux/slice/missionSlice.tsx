@@ -15,8 +15,8 @@ interface TodayMission {
 }
 
 interface MissionState {
-    myMissions: MyMission[];      // 나만의 미션 목록
-    todaysMissions: TodayMission[];   // 오늘의 미션 목록
+    myMissions: MyMission[];
+    todaysMissions: TodayMission[];
     completedMissionsCount: number;
 }
 
@@ -77,7 +77,7 @@ export default missionSlice.reducer;
 
 export const fetchTodaysMissions = createAsyncThunk('missions/fetchTodaysMissions', async () => {
     try {
-        const response = await axios.get('https://4345e16a-fdc3-4d6f-8760-0b3b56303a85.mock.pstmn.io/mission/today_mission', {
+        const response = await axios.get(`https://4345e16a-fdc3-4d6f-8760-0b3b56303a85.mock.pstmn.io/mission/today_mission/`, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('accessToken')}`
             }

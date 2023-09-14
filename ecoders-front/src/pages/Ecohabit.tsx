@@ -10,7 +10,6 @@ import { useState } from "react";
 import MyMissionList from "../components/features/MyMissionList";
 import TodaysMissionList from "../components/features/TodaysMissionList";
 import { setMyMissions } from "../redux/slice/missionSlice";
-import Stamp from "../components/features/Stamp";
 import SettingModal from "../components/features/SettingModal";
 import StatusModal from "../components/features/StatusModal";
 import WeekStamps from "../components/features/WeekStamps";
@@ -42,7 +41,7 @@ function Ecohabit () {
         <Container>
             <ContentsContiner>
                 <StampContainer>
-                    <div>
+                    <div className="title-wrapper">
                         <Title>
                             <PiStarFourFill style={{color: '#D3F169'}}/>
                             Stamps of Week!
@@ -51,10 +50,8 @@ function Ecohabit () {
                             className="my-stamp-status"
                             onClick={statusOpenHandler}>나의 스탬프 현황</CommonButton>
                     </div>
-                    <div className="week-stamps">
-                        주간 스탬프
+                    <div>
                         <WeekStamps />
-                        <Stamp />
                     </div>
                 </StampContainer>
                 <StatusModal />
@@ -103,10 +100,13 @@ function Ecohabit () {
 export default Ecohabit;
 
 const Container = styled.section`
+    margin-top: 90px;
     width: 100%;
     height: 100vh;
     display: flex;
+    flex-direction: column;
     justify-content: center;
+    align-items: center;
 `;
 
 const ContentsContiner = styled.div`
@@ -127,15 +127,20 @@ const StampContainer = styled.div`
     gap: 1.5rem;
 
     div {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+
+        &.title-wrapper {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+        }
 
         &.week-stamps {
             width: 650px;
             height: 100px;
-            background-color: aliceblue;
         }
     }
 `;

@@ -1,17 +1,15 @@
 import Modal from "../atoms/Modal";
 import { styled } from "styled-components";
-
-
-
+import MonthStamps from "./MonthStamps";
 
 function StatusModal () {
-
 
     return (
         <>
             <ModalStyle modaltype="stampStatusModal">
                 <ModalConent>
                     <div>스탬프 모달입니다.</div>
+                    <MonthStamps />
                 </ModalConent>
             </ModalStyle>
         </>

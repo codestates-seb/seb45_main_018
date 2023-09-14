@@ -29,6 +29,7 @@ function SettingModal () {
             });
 
             dispatch(setTodayMissions(response.data.todayMissions));
+            // 상태에 옵션값을 넣어서 미션슬라이스에서 요청
         } catch (error) {
             console.error("옵션 설정 중 에러가 발생했습니다.", error);
         }

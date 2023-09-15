@@ -22,6 +22,7 @@ function BoardCard({ data }: { data: Array<card> }) {
   function goToDetailHandeler(index: number) {
     //detaial페이지로 이동
     navigate(`/community/postdetail/${index}`);
+    console.log(event)
   }
   return (
     <div className="board-card-container">

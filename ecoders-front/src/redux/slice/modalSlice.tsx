@@ -12,6 +12,7 @@ const initialState: ModalState = {
     modifyModal: false,
     sendingMailModal: false,
     findPwModal: false,
+    loginModal: false, //추가함
     postModal: false,
     deletePostModal: false,
     deleteCommentModal: false,

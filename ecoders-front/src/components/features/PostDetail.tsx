@@ -1,5 +1,5 @@
-import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom';
+// import styled from 'styled-components';
+// import { useNavigate } from 'react-router-dom';
 
 import Button from '../atoms/Button';
 import { AiOutlineHeart, AiFillHeart } from 'react-icons/ai';
@@ -82,15 +82,15 @@ const HeaderButtons = ({ post }: { post: postData }) => {
         </ModalButtons>
       </Modal>
 
-      <Button width="50px" fontSize={0.5} hoverBgColor="#7092bf" hoverColor="white" onClick={postModifyHandler}>
-        수정
-      </Button>
-      <Button width="50px" fontSize={0.5} hoverBgColor="#7092bf" hoverColor="white" onClick={postDeleteModalHandler}>
-        삭제
-      </Button>
-    </div>
-  );
-};
+//       <Button width="50px" fontSize={0.5} hoverBgColor="#7092bf" hoverColor="white" onClick={postModifyHandler}>
+//         수정
+//       </Button>
+//       <Button width="50px" fontSize={0.5} hoverBgColor="#7092bf" hoverColor="white" onClick={postDeleteModalHandler}>
+//         삭제
+//       </Button>
+//     </div>
+//   );
+// };
 
 const CommentButtons = ({
   comment,
@@ -415,26 +415,26 @@ function PostDetail({ post }: { post: postData }) {
         )}
       </PostFooter>
 
-      <CommunityButtonGroup left="73%" />
-    </PostDetailLayout>
-  );
-}
+//       <CommunityButtonGroup left="73%" />
+//     </PostDetailLayout>
+//   );
+// }
 
-export default PostDetail;
+// export default PostDetail;
 
-const PostDetailLayout = styled.div`
-  width: 748px;
-  height: auto;
-  border: 1px solid #9a9fa1;
-  background-color: #eceff1;
-  margin: 0 auto;
-  padding: 20px;
-  border-radius: 15px;
-  justify-content: center;
-  @media all and (max-width: 770px) {
-    width: 80%;
-  }
-`;
+// const PostDetailLayout = styled.div`
+//   width: 748px;
+//   height: auto;
+//   border: 1px solid #9a9fa1;
+//   background-color: #eceff1;
+//   margin: 0 auto;
+//   padding: 20px;
+//   border-radius: 15px;
+//   justify-content: center;
+//   @media all and (max-width: 770px) {
+//     width: 80%;
+//   }
+// `;
 
 const PostDetailHeader = styled.div`
   padding: 15px;
@@ -461,13 +461,13 @@ const PostDetailHeader = styled.div`
   }
 `;
 
-const PostDetailContent = styled.div`
-  padding: 20px;
-  background-color: #fcfcfc;
-  border: 1px solid #a8adaf;
-  border-radius: 15px;
-  margin-bottom: 20px;
-`;
+// const PostDetailContent = styled.div`
+//   padding: 20px;
+//   background-color: #fcfcfc;
+//   border: 1px solid #a8adaf;
+//   border-radius: 15px;
+//   margin-bottom: 20px;
+// `;
 
 const PostDetailFooter = styled.div`
   padding: 10px;
@@ -561,12 +561,12 @@ const PostFooter = styled.div`
   }
 `;
 
-const ModalButtons = styled.div`
-  display: flex;
-  justify-content: space-around;
-  margin-top: 20px;
-  button {
-    width: 100px;
-    margin: 0px 10px;
-  }
-`;
+// const ModalButtons = styled.div`
+//   display: flex;
+//   justify-content: space-around;
+//   margin-top: 20px;
+//   button {
+//     width: 100px;
+//     margin: 0px 10px;
+//   }
+// `;

@@ -10,10 +10,11 @@ import Service from './pages/Service';
 import Contact from './pages/Contact';
 import Ecohabit from './pages/Ecohabit';
 import CommunityPage from './pages/CommunityPage';
-import CommunityPostWritePage from './pages/CommunityPostWritePage';
+// import CommunityPostWritePage from './pages/CommunityPostWritePage';
 import CommunityPostDetailPage from './pages/CommunityPostDetailPage';
 import LoginPage from './pages/LoginPage';
 import Signup from './pages/Signup';
+import Chat from './pages/Chat/Chat';
 
 function App() {
   return (
@@ -30,10 +31,12 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/community" element={<CommunityPage />} />
-          <Route path="/community/postwrite" element={<CommunityPostWritePage />} />
+          <Route path="/chat" element={<Chat />} />
+          {/* <Route path="/community/postwrite" element={<CommunityPostWritePage />} /> */}
           <Route path="/community/postdetail/:postnumber" element={<CommunityPostDetailPage />} />
           {/* <Route element={NotFound} /> */}
         </Routes>
+
       </BrowserRouter>
       <Footer />
     </>

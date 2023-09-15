@@ -6,12 +6,13 @@ import Button from "../components/atoms/Button";
 import MissionForm from "../components/atoms/MissionForm";
 import { useDispatch } from "react-redux";
 import { openModal } from "../redux/slice/modalSlice";
-import Modal from "../components/atoms/Modal";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import MyMissionList from "../components/features/MyMissionList";
 import TodaysMissionList from "../components/features/TodaysMissionList";
-import { fetchTodaysMissions } from "../redux/slice/missionSlice";
-import logo from "../assets/Logo.png"
+import { setMyMissions } from "../redux/slice/missionSlice";
+import SettingModal from "../components/features/SettingModal";
+import StatusModal from "../components/features/StatusModal";
+import WeekStamps from "../components/features/WeekStamps";
 
 function Ecohabit () {
     const dispatch = useDispatch();
@@ -33,28 +34,14 @@ function Ecohabit () {
 
     // 리스트 리셋 핸들러
     const resetMissionHandler = () => {
-
+        dispatch(setMyMissions([]));
     };
-
-    // 오늘의 미션 데이터 받아오기
-    // useEffect(() => {
-    //     const fetchMissions = async () => {
-    //         try {
-    //             const action = fetchTodaysMissions();
-    //             await dispatch(action);
-    //         } catch (error: any) {
-    //             console.error('에러', error)
-    //         }
-    //     };
-
-    //     fetchMissions();
-    // }, [dispatch]); //action type 오류 찾아보기...
 
     return (
         <Container>
             <ContentsContiner>
                 <StampContainer>
-                    <div>
+                    <div className="title-wrapper">
                         <Title>
                             <PiStarFourFill style={{color: '#D3F169'}}/>
                             Stamps of Week!
@@ -63,11 +50,11 @@ function Ecohabit () {
                             className="my-stamp-status"
                             onClick={statusOpenHandler}>나의 스탬프 현황</CommonButton>
                     </div>
-                    <div className="week-stamps">
-                        주간 스탬프
+                    <div>
+                        <WeekStamps />
                     </div>
                 </StampContainer>
-                <CommonModal modalType="stampStatusModal">스탬프 현황 모달입니다.</CommonModal>
+                <StatusModal />
                 <MyMissionContainer>
                     <TitleBox>
                         <Title>
@@ -103,34 +90,23 @@ function Ecohabit () {
                         <TodaysMissionList />
                     </div>
                 </TodayMissionContainer>
-                <CommonModal modalType="settingModal">
-                    <ModalConent>
-                        <Logo src={logo} />
-                        <div className="text-content">오늘의 미션 갯수를 설정할 수 있습니다! 원하시는 갯수를 선택해 주세요! </div>
-                        <SelectBox>
-                            <Select>
-                                <option value="one">1개</option>
-                                <option value="two">2개</option>
-                                <option value="three">3개</option>
-                                <option value="four">4개</option>
-                                <option value="five">5개</option>
-                            </Select>
-                        </SelectBox>
-                        <CommonButton className="setting-button">설정하기</CommonButton>
-                    </ModalConent>
-                </CommonModal>
+                <SettingModal />
             </ContentsContiner>
         </Container>
     )
 }
 
+
 export default Ecohabit;
 
 const Container = styled.section`
+    margin-top: 90px;
     width: 100%;
     height: 100vh;
     display: flex;
+    flex-direction: column;
     justify-content: center;
+    align-items: center;
 `;
 
 const ContentsContiner = styled.div`
@@ -151,15 +127,20 @@ const StampContainer = styled.div`
     gap: 1.5rem;
 
     div {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+
+        &.title-wrapper {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+        }
 
         &.week-stamps {
             width: 650px;
             height: 100px;
-            background-color: aliceblue;
         }
     }
 `;
@@ -203,7 +184,6 @@ const TodayMissionContainer = styled.div`
 
         &.todays-mission {
             height: 200px;
-            background-color: aliceblue;
         }
     }
 `;
@@ -235,17 +215,6 @@ const CommonButton = styled(Button)`
         border: none;
         color: #fff;
     }
-
-    &.setting-button {
-        background-color: #7092BF;
-        color: #fff;
-        border: none;
-        padding: 16px;
-
-        &:hover {
-            background-color: #D4E2F1;
-        }
-    }
 `;
 
 const Title = styled.div`
@@ -259,42 +228,3 @@ const TitleBox = styled.div`
     align-items: center;
     gap: 1rem;
 `;
-
-const Logo = styled.img`
-    width: 115px;
-`;
-
-const SelectBox = styled.div`
-    width: 80px;
-    border-radius: 10px;
-    border: 1px solid #5A5A5A;
-    background: #FFF;
-    display: flex;
-    justify-content: center;
-`;
-
-const Select = styled.select`
-    width: 60px;
-    padding: 10px;
-    border: none;
-`;
-
-const CommonModal = styled(Modal)`
-`;
-
-const ModalConent = styled.div`
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 14px;
-
-    div {
-        &.text-content {
-            text-align: center;
-            font-size: 16px;
-            font-weight: 400;
-            line-height: normal;
-        }
-    }
-`

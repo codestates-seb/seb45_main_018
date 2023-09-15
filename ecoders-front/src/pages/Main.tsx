@@ -24,10 +24,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { setUsername, setStamp } from '../redux/slice/userSlice';
 
-
-
 const Main = () => {
-
   type ApiState = {
     api: {
       APIURL: string;
@@ -42,25 +39,23 @@ const Main = () => {
   const [isHovered, setIsHovered] = useState(false);
   const navigate = useNavigate();
 
-
   useEffect(() => {
     // 로그인된 사용자의 정보를 가져오는 함수
     const fetchUserInfo = async () => {
       try {
-        const response = await axios.get(`${APIURL}/member`);  // 여기서 경로는 실제 사용자 정보를 가져오는 API의 경로로 변경해야 합니다.
+        const response = await axios.get(`${APIURL}/member`); // 여기서 경로는 실제 사용자 정보를 가져오는 API의 경로로 변경해야 합니다.
         setUsername(response.data.username);
-        console.log(username)
+        console.log(username);
         setStamp(response.data.stamp);
       } catch (error) {
-        console.error("사용자 정보를 가져오는데 실패했습니다.", error);
+        console.error('사용자 정보를 가져오는데 실패했습니다.', error);
       }
     };
 
     if (isLoggedIn) {
-      fetchUserInfo();  // 로그인된 사용자라면 정보를 가져옵니다.
+      fetchUserInfo(); // 로그인된 사용자라면 정보를 가져옵니다.
     }
   }, [isLoggedIn]);
-
 
   const [bearImage, setBearImage] = useState(Bear1); // BearImage의 초기 이미지를 설정
   const [stateImage, setStateImage] = useState(state1);
@@ -98,31 +93,40 @@ const Main = () => {
 
   return (
     <>
-      {isLoggedIn ? (
-        <>
-          <Wrapper>
-            <StyledImage src={LoginBG} />;
-            <BearState src={stateImage} />
-            <TextImage src={TextPolarbear} />
-            <BearImage src={bearImage} />
-            <ButtonImage
-              src={isHovered ? EcoHabitHoveringButton : EcoHabitButton}
-              onMouseOver={() => setIsHovered(true)}
-              onMouseOut={() => setIsHovered(false)}
-              onClick={() => navigate('/eco-habit')}
-            />
-          </Wrapper>
-        </>
-      ) : (
-        <>
-          <StyledImage src={LogoutMain} />;
-        </>
-      )}
+      <Container>
+        {isLoggedIn ? (
+          <>
+            <Wrapper>
+              <StyledImage src={LoginBG} />;
+              <BearState src={stateImage} />
+              <TextImage src={TextPolarbear} />
+              <BearImage src={bearImage} />
+              <ButtonImage
+                src={isHovered ? EcoHabitHoveringButton : EcoHabitButton}
+                onMouseOver={() => setIsHovered(true)}
+                onMouseOut={() => setIsHovered(false)}
+                onClick={() => navigate('/eco-habit')}
+              />
+            </Wrapper>
+          </>
+        ) : (
+          <>
+            <StyledImage src={LogoutMain} />;
+          </>
+        )}
+      </Container>
     </>
   );
 };
 
 export default Main;
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
 
 const Wrapper = styled.div`
   position: relative;

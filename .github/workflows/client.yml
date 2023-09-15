@@ -10,14 +10,14 @@
 
 #     steps:
 #       - name: Checkout source code.
-#         uses: actions/checkout@v3 
+#         uses: actions/checkout@v3
 
 #       - name: Install dependencies
 #         run: npm install --force
 #         working-directory: ./ecoders-front
 
 #       - name: Check Node v
-#         run: node -v 
+#         run: node -v
 #         working-directory: ./ecoders-front
 
 #       - name: Build

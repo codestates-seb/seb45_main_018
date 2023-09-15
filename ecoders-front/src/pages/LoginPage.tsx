@@ -12,6 +12,10 @@ import { setToken } from '../redux/slice/userSlice';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { setId } from '../redux/slice/userSlice';
+import GLogin from './GLogin';
+import { RootState } from '../redux/store/store';
+import { gapi } from 'gapi-script';
+import { useEffect } from 'react';
 
 // 아래 코드 검토 필요
 // axios.interceptors.response.use(
@@ -31,13 +35,12 @@ import { setId } from '../redux/slice/userSlice';
 //   },
 // );
 
+// 1. 추가할 것: 이메일 형식이 올바르지 않으면 오류 메시지 띄우기(유효성 검사)
+// 2. 공란이면 입력해달라고하기.
+
 function LoginPage() {
-  type ApiState = {
-    api: {
-      APIURL: string;
-    };
-  };
-  const APIURL = useSelector((state: ApiState) => state.api.APIURL);
+  const APIURL = useSelector((state: RootState) => state.api.APIURL);
+  const clientId = useSelector((state: RootState) => state.login.clientId);
 
   const [email, setEmail] = useState(''); // 이메일 상태와 업데이트 함수를 선언합니다.
   const [password, setPassword] = useState(''); // 비밀번호 상태와 업데이트 함수를 선언합니다.
@@ -51,6 +54,25 @@ function LoginPage() {
   const modalOpenHandler = () => {
     dispatch(openModal('findPwModal'));
   };
+
+  async function googleHandler() {
+    try {
+      useEffect(() => {
+        function start() {
+          gapi.client.init({
+            clientId: clientId,
+            scope: '',
+          });
+        }
+        gapi.load('client:auth2', start);
+      });
+
+      const accessToken = gapi.auth.getToken().access_token;
+      localStorage.setItem('accessToken', accessToken);
+    } catch {
+      alert('오류가 발생했습니다.');
+    }
+  }
 
   const loginHandler = async (e: any) => {
     e.preventDefault();
@@ -87,20 +109,26 @@ function LoginPage() {
           refreshToken = refreshHeader;
         }
 
+        //   if (idHeader) {
+        //     id = idHeader;
+        // } else {
+        //   id = 'id를 불러오지 못하였습니다.';
+        // }
+
         console.log(accessToken); // 액세스 토큰 값
         console.log(refreshToken); // 리프레시 토큰 값
 
         localStorage.setItem('accessToken', accessToken);
         localStorage.setItem('refreshToken', refreshToken);
-        localStorage.setItem('id', ID);
+        // localStorage.setItem('id', id);
 
         console.log(accessToken); //추후 삭제
         console.log(refreshToken); //추후 삭제
-        console.log(ID); //추후 삭제
+        console.log(id); //추후 삭제
 
         dispatch(setToken(accessToken));
         // dispatch(setUsername(username));
-        dispatch(setId(ID));
+        dispatch(setId(id));
         dispatch(login());
 
         navigate('/');
@@ -155,11 +183,14 @@ function LoginPage() {
                   </div>
                 </div>
               </PwModal>
+
               <ButtonWrapper>
                 <SubmitButton className="login-submit" onClick={loginHandler}>
                   Log in
                 </SubmitButton>
-                <SubmitButton className="google-login-submit">Log in with Google</SubmitButton>
+                {/* <SubmitButton className="google-login-submit"> */}
+                <GLogin onClick={googleHandler}>Log in with Google</GLogin>
+                {/* </SubmitButton> */}
               </ButtonWrapper>
             </LoginForm>
           </FormContainer>

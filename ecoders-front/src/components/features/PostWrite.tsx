@@ -7,12 +7,13 @@ import { closeModal, openModal } from '../../redux/slice/modalSlice';
 import { Editor } from '@toast-ui/react-editor';
 import '@toast-ui/editor/dist/toastui-editor.css';
 
-import { post, comment } from '../../pages/CommunityPostDetailPage';
+import { postData } from '../../pages/CommunityPostDetailPage';
 import Modal from '../atoms/Modal';
 import Button from '../atoms/Button';
 import axios from 'axios';
 
 import DefaultThumbnail from '../../assets/Default-Thumbnail.png';
+import Loading from '../sharedlayout/Loading';
 
 type ApiState = {
   api: {
@@ -20,23 +21,32 @@ type ApiState = {
   };
 };
 
-export interface postData {
-  title: string;
-  content: string;
-  imgeUrl: string | null;
-  category: string;
+type UserState = {
+  user: {
+    accessToken: string | null;
+    username: string;
+    id: number;
+    stamp: number;
+  };
+};
+
+export interface postWriteData {
+  title: string | undefined;
+  content: string | undefined;
+  thumbnailUrl: string | null;
+  category: string | undefined;
 }
 
 interface headerProps {
-  title: string;
-  category: string;
-  setTitle: React.Dispatch<React.SetStateAction<string>>;
-  setCategory: React.Dispatch<React.SetStateAction<string>>;
+  title: string | undefined;
+  category: string | undefined;
+  setTitle: React.Dispatch<React.SetStateAction<string | undefined>>;
+  setCategory: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
 interface bodyProps {
-  content: string;
+  content: string | undefined;
   thumbnailUrl: string | null;
-  setContent: React.Dispatch<React.SetStateAction<string>>;
+  setContent: React.Dispatch<React.SetStateAction<string | undefined>>;
   setThumbnailUrl: React.Dispatch<React.SetStateAction<string | null>>;
   setIsSubmit: React.Dispatch<React.SetStateAction<boolean>>;
 }
@@ -70,13 +80,21 @@ function PostWriteHeader({ headerData }: { headerData: headerProps }) {
     </div>
   );
 }
-// const PostWriteBody = ({ dummyData }: { dummyData: post })
+
 function PostWriteBody({ bodyData }: { bodyData: bodyProps }) {
   const editorRef = useRef<Editor>(null);
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    if (bodyData.content !== '') {
+      editorRef.current?.getInstance().setHTML(bodyData.content);
+    }
+  }, []);
+
   // 이미지 업로드 서버로 보내는 로직
   const APIURL = useSelector((state: ApiState) => state.api.APIURL);
+  const USERACCESSTOKEN = useSelector((state: UserState) => state.user.accessToken);
+
   type HookCallback = (url: string, text?: string) => void;
   const uploadImageHandler = async (blob: Blob | File, callback: HookCallback) => {
     console.log(blob);
@@ -87,11 +105,10 @@ function PostWriteBody({ bodyData }: { bodyData: bodyProps }) {
     axios({
       method: 'post',
       url: `${APIURL}/posts/uploadImage`, // 적절한 엔드포인트로 변경해야 합니다. (이거 맞나..?)
-      // test url
-      // url: 'http://ec2-3-39-194-121.ap-northeast-2.compute.amazonaws.com:8080/posts/uploadImage',
       data: formData,
       headers: {
         'Content-Type': 'multipart/form-data',
+        Authorization: `${USERACCESSTOKEN}`,
       },
     })
       .then(response => {
@@ -142,6 +159,7 @@ function PostWriteBody({ bodyData }: { bodyData: bodyProps }) {
     dispatch(closeModal('postModal'));
     bodyData.setIsSubmit(true);
   };
+
   return (
     <>
       {/* 등록 버튼 클릭시 모달 */}
@@ -159,7 +177,6 @@ function PostWriteBody({ bodyData }: { bodyData: bodyProps }) {
       </Modal>
       <div className="post-write-body">
         <Editor
-          initialValue={''}
           height="550px"
           initialEditType="wysiwyg"
           hideModeSwitch={true}
@@ -186,21 +203,32 @@ function PostWriteBody({ bodyData }: { bodyData: bodyProps }) {
   );
 }
 
-//수정 로직.. 미완성
-// function PostWrite({ dummyData }: { dummyData: post }) {
-function PostWrite() {
+function PostWrite({ postid, post }: { postid: number; post: postData }) {
+  console.log(postid);
   const navigate = useNavigate();
+  const USERACCESSTOKEN = useSelector((state: UserState) => state.user.accessToken);
   const APIURL = useSelector((state: ApiState) => state.api.APIURL);
 
   // console.log(dummyData);
-  const [title, setTitle] = useState<string>('');
-  const [category, setCategory] = useState<string>('');
-  const [content, setContent] = useState<string>('');
+  const [title, setTitle] = useState<string | undefined>('');
+  const [category, setCategory] = useState<string | undefined>('');
+  const [content, setContent] = useState<string | undefined>('');
   const [thumbnailUrl, setThumbnailUrl] = useState<string | null>('');
-
   const [isSubmit, setIsSubmit] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isModify, setIsModify] = useState<boolean>(false);
 
-  // if(수정 데이터 들어오면 처리하는 부분)
+  useEffect(() => {
+    if (postid !== 0) {
+      setTitle(post.title);
+      setCategory(post.category);
+      setContent(post.content);
+      setIsModify(true);
+      setIsLoading(false);
+    } else {
+      setIsLoading(false);
+    }
+  }, []);
 
   const headerData: headerProps = {
     title: title,
@@ -217,46 +245,78 @@ function PostWrite() {
     setIsSubmit: setIsSubmit,
   };
 
-  const postData: postData = {
+  const postData: postWriteData = {
     title: title,
     content: content,
-    imgeUrl: thumbnailUrl,
+    thumbnailUrl: thumbnailUrl,
     category: category,
   };
 
   useEffect(() => {
     if (isSubmit) {
-      const postD = JSON.stringify(postData);
-      console.log(postD);
-      navigate(`/community`);
-      axios({
-        method: 'post',
-        url: `${APIURL}/posts`,
-        data: JSON.stringify(postData),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-        .then(response => {
-          console.log('게시물 등록 성공');
-          if (response.status === 200) {
-            navigate(`/community`);
-          }
+      // 게시물 수정
+      if (isModify) {
+        const postD = JSON.stringify(postData);
+        console.log(postD);
+
+        axios({
+          method: 'patch',
+          url: `${APIURL}/posts/${postid}`,
+          data: JSON.stringify(postData),
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `${USERACCESSTOKEN}`,
+          },
         })
-        .catch(error => {
-          console.log(error);
-          console.log('게시물 등록 실패');
-        });
+          .then(response => {
+            console.log('게시물 수정 성공');
+            if (response.status === 200) {
+              navigate(`/community/postdetail/${postid}`);
+            }
+          })
+          .catch(error => {
+            console.log(error);
+            console.log('게시물 수정 실패');
+          });
+      }
+      // 게시물 등록
+      else {
+        const postD = JSON.stringify(postData);
+        console.log(postD);
+
+        axios({
+          method: 'post',
+          url: `${APIURL}/posts`,
+          data: JSON.stringify(postData),
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `${USERACCESSTOKEN}`,
+          },
+        })
+          .then(response => {
+            console.log('게시물 등록 성공');
+            if (response.status === 200) {
+              navigate(`/community`);
+            }
+          })
+          .catch(error => {
+            console.log(error);
+            console.log('게시물 등록 실패');
+          });
+      }
     }
   }, [isSubmit]);
 
   return (
     <PostWriteLayout>
-      <PostWriteForm>
-        <PostWriteHeader headerData={headerData} />
-        {/* <PostWriteBody dummyData={dummyData} /> */}
-        <PostWriteBody bodyData={bodyData} />
-      </PostWriteForm>
+      {isLoading ? (
+        <Loading />
+      ) : (
+        <PostWriteForm>
+          <PostWriteHeader headerData={headerData} />
+          <PostWriteBody bodyData={bodyData} />
+        </PostWriteForm>
+      )}
     </PostWriteLayout>
   );
 }

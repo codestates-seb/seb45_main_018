@@ -73,22 +73,22 @@ function LoginPage() {
         // (수정사항) 2. 유저정보조회 시: id로 검색
         const authHeader = response.headers['authorization'];
         const refreshHeader = response.headers['refresh-token'];
-        const ID = response.headers['memberId']
-    
+        const ID = response.headers['member-id'];
+
         let accessToken, refreshToken;
-    
+
         // Authorization 헤더 값에서 "Bearer " 제거
         if (authHeader) {
-            accessToken = authHeader;
+          accessToken = authHeader;
         }
-    
+
         // Refresh-Token 헤더 값 할당
         if (refreshHeader) {
-            refreshToken = refreshHeader;
+          refreshToken = refreshHeader;
         }
-    
-        console.log(accessToken);  // 액세스 토큰 값
-        console.log(refreshToken);  // 리프레시 토큰 값
+
+        console.log(accessToken); // 액세스 토큰 값
+        console.log(refreshToken); // 리프레시 토큰 값
 
         localStorage.setItem('accessToken', accessToken);
         localStorage.setItem('refreshToken', refreshToken);
@@ -104,21 +104,16 @@ function LoginPage() {
         dispatch(login());
 
         navigate('/');
-      } 
+      }
     } catch (error: any) {
-      if(error.response.status === 401) {
-        alert('로그인에 실패했습니다.')
+      if (error.response.status === 401) {
+        alert('로그인에 실패했습니다.');
       } else {
-      alert('서버 오류가 발생했습니다.');
-      console.error('로그인 에러:', error); }
+        alert('서버 오류가 발생했습니다.');
+        console.error('로그인 에러:', error);
+      }
     }
   };
-
-
-
-
-
-  
 
   return (
     <Container>
@@ -145,7 +140,7 @@ function LoginPage() {
               <div className="forgot-pw" onClick={modalOpenHandler}>
                 비밀번호 찾기
               </div>
-              <PwModal modalType='findPwModal'>
+              <PwModal modalType="findPwModal">
                 <div className="modal-cont-wrapper">
                   <div className="modal-title">비밀번호 찾기</div>
                   <p className="modal-content">

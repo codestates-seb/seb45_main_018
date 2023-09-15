@@ -1,41 +1,57 @@
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import { AiOutlineHeart } from 'react-icons/ai';
+import { AiOutlineHeart, AiFillHeart } from 'react-icons/ai';
+import { useSelector } from 'react-redux';
+import { card } from '../../pages/CommunityPage';
 
-import { card } from './Board';
+type UserState = {
+  user: {
+    accessToken: string | null;
+    username: string;
+    // id: string;
+    id: number;
+    stamp: number;
+  };
+};
 
-function BoardCard({ dummyData }: { dummyData: Array<card> }) {
+function BoardCard({ data }: { data: Array<card> }) {
+  const USERID = useSelector((state: UserState) => state.user.id);
   // console.log(dummyData);
   const navigate = useNavigate();
 
-  function goToDetailHandeler(event: React.MouseEvent<HTMLDivElement>, index: number) {
+  function goToDetailHandeler(index: number) {
     //detaial페이지로 이동
     navigate(`/community/postdetail/${index}`);
   }
   return (
     <div className="board-card-container">
-      {dummyData.map((item, index) => {
+      {data.map((item, index) => {
         return (
           <CardBody
             key={index}
             className="board-card"
-            onClick={event => {
-              goToDetailHandeler(event, index);
+            onClick={() => {
+              goToDetailHandeler(item.postId);
             }}>
             <div className="board-card-body">
               <div className="board-card-img-container">
-                <img src={item.imgUrl} />
+                <img src={item.thumbnailUrl} />
               </div>
               <CardCategory>{item.category}</CardCategory>
               <CardTitle>{item.title}</CardTitle>
               <CardUserLike>
-                <div className="user-name">{item.userName}</div>
+                <div className="user-name">{item.username}</div>
                 <div className="like-count">
-                  <AiOutlineHeart />
-                  <div>{item.likeCount}</div>
+                  {/* 좋아요 한 리스트에 포함되어있나..? */}
+                  {item.likedByUserIds.includes(USERID) ? (
+                    <AiFillHeart className="aifillheart" />
+                  ) : (
+                    <AiOutlineHeart className="aioutheart" />
+                  )}
+                  <div>{item.likes}</div>
                 </div>
               </CardUserLike>
-              <CardDate>{item.date}</CardDate>
+              <CardDate>{item.createdAt}</CardDate>
             </div>
           </CardBody>
         );
@@ -132,6 +148,12 @@ const CardUserLike = styled.div`
     margin: 0 5px;
     width: 16px;
     height: 16px;
+  }
+  div.like-count svg.aifillheart {
+    margin: 0 5px;
+    width: 16px;
+    height: 16px;
+    color: #e7325f;
   }
 `;
 const CardDate = styled.div`

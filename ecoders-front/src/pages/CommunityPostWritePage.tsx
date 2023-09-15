@@ -1,13 +1,46 @@
+import { useState, useEffect } from 'react';
+
 import PostWrite from '../components/features/PostWrite';
+
 import { useLocation } from 'react-router-dom';
 
+import { postData } from './CommunityPostDetailPage';
+
 function CommunityPostWritePage() {
-  // const { state } = useLocation();
-  // 게시물..정보 전달까지.. 이걸 다시 editor에 뿌려줄 수 있나?
-  // console.log(state);
-  // console.log(state.dummyData);
-  // <PostWrite dummyData={state.dummyData} />
-  return <PostWrite />;
+  const { state } = useLocation();
+  const [postid, setPostId] = useState<number>(0);
+  const [post, setPost] = useState<postData>({
+    // memberId: '',
+    memberId: 0,
+    postId: 0,
+    title: '',
+    content: '',
+    category: '',
+    thumbnailUrl: '',
+    username: '',
+    views: 0,
+    likes: 0,
+    createdAt: '',
+    updatedAt: '',
+    comments: [],
+    likedByUserIds: [],
+  });
+
+  if (state !== null) {
+    useEffect(() => {
+      console.log(state.post);
+      console.log(state.post.postId);
+      setPostId(state.post.postId);
+      setPost(state.post);
+    }, [postid]);
+  }
+  // <PostWrite post={state.dummyData} />
+
+  return (
+    <>
+      <PostWrite postid={postid} post={post} />:
+    </>
+  );
 }
 
 export default CommunityPostWritePage;

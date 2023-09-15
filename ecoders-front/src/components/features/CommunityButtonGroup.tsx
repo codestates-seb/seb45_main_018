@@ -1,20 +1,47 @@
 import { GoMoveToTop } from 'react-icons/go';
 import { styled } from 'styled-components';
 
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux/es/hooks/useSelector';
 
 interface leftSetting {
   left?: string;
 }
+
+type UserState = {
+  user: {
+    accessToken: string | null;
+    username: string;
+    id: string;
+    stamp: number;
+  };
+};
+
 function CommunityButtonGroup(props: leftSetting) {
+  const USERACCESSTOKEN = useSelector((state: UserState) => state.user.accessToken);
+  const navigate = useNavigate();
+
+  console.log(USERACCESSTOKEN);
   function moveToTopButtonClickHandler() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
+
+  function conFirmLoginHandler() {
+    if (confirm('회원만 이용 가능한 기능입니다. 로그인 하시겠습니까?')) {
+      navigate(`/login`);
+    }
+  }
+
   return (
     <ButtonGroup {...props}>
-      <Link to="/community/postwrite">
-        <HasWriteButton> + 글쓰기</HasWriteButton>
-      </Link>
+      {USERACCESSTOKEN !== null ? (
+        <Link to="/community/postwrite">
+          <HasWriteButton> + 글쓰기</HasWriteButton>
+        </Link>
+      ) : (
+        <HasWriteButton onClick={conFirmLoginHandler}> + 글쓰기</HasWriteButton>
+      )}
+
       <HasIconButton onClick={moveToTopButtonClickHandler}>
         <GoMoveToTop />
       </HasIconButton>

@@ -12,8 +12,9 @@ const initialState: ModalState = {
     modifyModal: false,
     sendingMailModal: false,
     findPwModal: false,
-    deleteModal: false,
     postModal: false,
+    deletePostModal: false,
+    deleteCommentModal: false,
   },
 };
 

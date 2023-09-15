@@ -9,10 +9,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.constraints.Positive;
+import java.util.UUID;
 
 import static ecoders.ecodersbackend.auth.jwt.JwtProvider.HEADER_AUTHORIZATION;
-import static ecoders.ecodersbackend.auth.jwt.JwtProvider.HEADER_REFRESH_TOKEN;
 
 @Slf4j
 @AllArgsConstructor
@@ -33,8 +32,8 @@ public class MemberController {
     }
 
     @GetMapping("/{member-id}")
-    public ResponseEntity<MemberDto.Response> getMember(@PathVariable("member-id") @Positive long memberId) {
-        Member member = memberService.findMemberById(memberId);
+    public ResponseEntity<MemberDto.Response> getMember(@PathVariable("member-id") UUID uuid) {
+        Member member = memberService.findMemberById(uuid);
         MemberDto.Response responseDto = MemberDto.Response.parse(member);
         return ResponseEntity.ok(responseDto);
     }

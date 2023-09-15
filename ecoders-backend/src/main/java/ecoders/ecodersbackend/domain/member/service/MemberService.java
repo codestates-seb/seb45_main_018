@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import static ecoders.ecodersbackend.exception.code.ExceptionCode.*;
 
@@ -20,22 +21,23 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
 
-    public long signup(Member member) {
+    public UUID signup(Member member) {
         checkExistingMemberByEmail(member.getEmail());
         return memberRepository.save(member).getId();
     }
 
-    public void checkExistingMemberByEmail(String email) {
-        memberRepository.findByEmail(email).ifPresent(member -> {
-            log.warn("Member already exists with email: {}", email);
-            throw new BusinessLogicException(MEMBER_ALREADY_EXISTS);
-        });
+    public Member googleLogin(Member member) {
+        try {
+            return findMemberByEmail(member.getEmail());
+        } catch (BusinessLogicException e) {
+            return memberRepository.save(member);
+        }
     }
 
-    public Member findMemberById(long memberId) {
-        Optional<Member> member = memberRepository.findById(memberId);
+    public Member findMemberById(UUID uuid) {
+        Optional<Member> member = memberRepository.findById(uuid);
         if (member.isEmpty()) {
-            log.warn("Member not found with id: {}", memberId);
+            log.warn("Member not found with id: {}", uuid);
             throw new BusinessLogicException(MEMBER_NOT_FOUND);
         }
         return member.get();
@@ -47,5 +49,13 @@ public class MemberService {
             throw new BusinessLogicException(MEMBER_NOT_FOUND);
         }
         return member.get();
+    }
+
+    private void checkExistingMemberByEmail(String email) {
+        Optional<Member> member = memberRepository.findByEmail(email);
+        if (member.isPresent()) {
+            log.warn("Member already exists with email: {}", email);
+            throw new BusinessLogicException(MEMBER_ALREADY_EXISTS);
+        }
     }
 }

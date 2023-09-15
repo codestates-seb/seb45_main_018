@@ -4,13 +4,15 @@ import ecoders.ecodersbackend.domain.member.entity.Member;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.util.UUID;
+
 public class MemberDto {
 
     @AllArgsConstructor
     @Getter
     public static final class Response {
 
-        private long id;
+        private UUID id;
 
         private String email;
 

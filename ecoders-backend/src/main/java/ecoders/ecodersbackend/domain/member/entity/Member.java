@@ -1,8 +1,10 @@
 package ecoders.ecodersbackend.domain.member.entity;
 
 import lombok.*;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.UUID;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -12,7 +14,10 @@ import javax.persistence.*;
 public class Member {
 
     @Id
-    protected long id;
+    @GeneratedValue(generator = "uuid2")
+    @GenericGenerator(name = "uuid2", strategy = "uuid2")
+    @Column(columnDefinition = "binary(16)")
+    protected UUID id;
 
     @Column(nullable = false)
     protected String username;

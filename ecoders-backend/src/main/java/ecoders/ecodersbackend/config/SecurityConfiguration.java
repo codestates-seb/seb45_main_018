@@ -18,6 +18,9 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
 
+import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.http.HttpMethod.POST;
+
 @AllArgsConstructor
 @Configuration
 public class SecurityConfiguration {
@@ -38,6 +41,13 @@ public class SecurityConfiguration {
             .and().logout().logoutRequestMatcher(new AntPathRequestMatcher("/auth/logout", "DELETE"))
             .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and().authorizeHttpRequests(registry -> registry
+                .antMatchers(POST, "/auth/").permitAll()
+                .antMatchers(GET, "/members/my-info").hasAnyRole("UNVERIFIED", "VERIFIED")
+                .antMatchers(GET, "/members/").permitAll()
+                .antMatchers(POST, "/mission/my-mission").hasAnyRole("UNVERIFIED", "VERIFIED")
+                .antMatchers(POST, "/posts/uploadImage").hasRole("VERIFIED")
+                .antMatchers(POST, "/posts/").hasRole("VERIFIED")
+                .antMatchers(GET, "/posts/").permitAll()
                 .anyRequest().permitAll()
             )
             .apply(customFilterConfigurer);
@@ -50,7 +60,7 @@ public class SecurityConfiguration {
         corsConfiguration.setAllowedOrigins(List.of("http://polareco-deploy.s3-website.ap-northeast-2.amazonaws.com"));
         corsConfiguration.setAllowedMethods(List.of("POST", "GET", "PATCH", "DELETE", "OPTIONS"));
         corsConfiguration.setAllowedHeaders(List.of("*"));
-        corsConfiguration.setExposedHeaders(List.of("Authorization", "Refresh-Token", "Member-ID"));
+        corsConfiguration.setExposedHeaders(List.of("Authorization", "Refresh-Token", "Member-UUID"));
         UrlBasedCorsConfigurationSource corsConfigurationSource = new UrlBasedCorsConfigurationSource();
         corsConfigurationSource.registerCorsConfiguration("/**", corsConfiguration);
         return corsConfigurationSource;

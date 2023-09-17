@@ -3,8 +3,8 @@ import logo from '../../assets/Logo.png';
 import { useDispatch } from 'react-redux';
 // import { login } from '../../redux/slice/loginSlice';
 import { logout } from '../../redux/slice/loginSlice';
-import profileImg from '../../assets/ProfileImage.svg';
 import { useSelector } from 'react-redux';
+
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -21,7 +21,7 @@ const Header: React.FC = () => {
   const memberId = useSelector((state: RootState) => state.user.id);
   const username = useSelector((state: RootState) => state.user.username); // username 상태 가져오기
   const APIURL = useSelector((state: RootState) => state.api.APIURL);
-
+  const profileImg = useSelector((state:RootState) => state.user.profileImg)
   // logout: {APIURL}/auth/logout -> delete -> accesstoken, refreshtoken, Id 요청
   // Header css : 재설정
   // main 이미지 수정

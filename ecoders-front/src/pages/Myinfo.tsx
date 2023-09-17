@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
-import profileImg from '../assets/ProfileImage.svg';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
-import { setUsername } from '../redux/slice/userSlice';
+import { setUsername, setProfileImg } from '../redux/slice/userSlice';
 import { RootState } from '../redux/store/store';
 import shiningImg from '../assets/shining.png';
 import hills from '../assets/hills.png';
@@ -19,7 +18,9 @@ const MyInfo = () => {
   const username = useSelector((state: RootState) => state.user.username); // username 상태 가져오기
   const memberId = useSelector((state: RootState) => state.user.id);
   const email = useSelector((state: RootState) => state.user.email);
+  const profileImg = useSelector((state:RootState) => state.user.profileImg)
   const [isModalOpen, setModalOpen] = useState(false);
+
 
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -244,7 +245,6 @@ const MyInfo = () => {
   };
 
   const [selectedImage, setSelectedImage] = useState(null);
-  const [profileImage, setProfileImg] = useState(profileImg);
   const fileInputRef = useRef(null);
 
   const handleProfileClick = () => {
@@ -258,7 +258,7 @@ const MyInfo = () => {
       reader.onloadend = () => {
         console.log(reader);
         setSelectedImage(reader.result);
-        setProfileImg(reader.result);
+        dispatch(setProfileImg(reader.result))
         uploadImage(file); //서버에 이미지 전송
       };
       reader.readAsDataURL(file);
@@ -381,7 +381,7 @@ const MyInfo = () => {
             )}
           </MenuContainer>
           <ProfileContent>
-            <ProfileImg src={profileImage} onClick={handleProfileClick} style={{ cursor: 'pointer' }} />
+            <ProfileImg src={profileImg} onClick={handleProfileClick} style={{ cursor: 'pointer' }} />
             <input
               type="file"
               ref={fileInputRef}

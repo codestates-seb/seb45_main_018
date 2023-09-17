@@ -223,6 +223,7 @@ const Entire = styled.div`
 
 const HeaderContainer = styled.div`
   position: fixed;
+  z-index: 1000;
   /* transform: scale(0.65); // 이 줄을 추가 */
   display: flex;
   justify-content: space-between;

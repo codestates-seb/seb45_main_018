@@ -25,15 +25,12 @@ import axios from 'axios';
 import { setUsername, setStamp } from '../redux/slice/userSlice';
 
 const Main = () => {
-  type ApiState = {
-    api: {
-      APIURL: string;
-    };
-  };
-  const APIURL = useSelector((state: ApiState) => state.api.APIURL);
 
+  const APIURL = useSelector((state: RootState) => state.api.APIURL);
+
+  
   const username = useSelector((state: RootState) => state.user.username); // username 상태 가져오기
-  const stamp = useSelector((state: RootState) => state.user.stamp); // username 상태 가져오기
+  const completedMission = useSelector((state: RootState) => state.missions.completedMissionsCount); // 오늘의 미션 완료 상태 가져오기
 
   const isLoggedIn = useSelector((state: RootState) => state.login.isLoggedIn);
   const [isHovered, setIsHovered] = useState(false);
@@ -60,7 +57,7 @@ const Main = () => {
   const [bearImage, setBearImage] = useState(Bear1); // BearImage의 초기 이미지를 설정
   const [stateImage, setStateImage] = useState(state1);
   useEffect(() => {
-    switch (stamp) {
+    switch (completedMission) {
       case 0:
         setBearImage(Bear1);
         setStateImage(state1);
@@ -89,7 +86,7 @@ const Main = () => {
         setBearImage(Bear1);
         setStateImage(state1); // 기본값으로 Bear1을 사용
     }
-  }, [stamp]); // stamp 상태가 변경될 때마다 이 useEffect를 실행
+  }, [completedMission]); // stamp 상태가 변경될 때마다 이 useEffect를 실행
 
   return (
     <>
@@ -111,8 +108,22 @@ const Main = () => {
           </>
         ) : (
           <>
-            <StyledImage src={LogoutMain} />;
-          </>
+          <Wrapper>
+            <StyledImage src={LoginBG} />;
+            <BearState src={stateImage} />
+            <TextImage src={TextPolarbear} />
+            <BearImage src={bearImage} />
+            <ButtonImage
+              src={isHovered ? EcoHabitHoveringButton : EcoHabitButton}
+              onMouseOver={() => setIsHovered(true)}
+              onMouseOut={() => setIsHovered(false)}
+              onClick={() => navigate('/eco-habit')}
+            />
+          </Wrapper>
+        </>
+          // <>
+          //   <StyledImage src={LogoutMain} />;
+          // </>
         )}
       </Container>
     </>

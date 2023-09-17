@@ -8,7 +8,7 @@ import Modal from '../components/atoms/Modal';
 import { useDispatch } from 'react-redux';
 import { openModal } from '../redux/slice/modalSlice';
 import { useNavigate } from 'react-router-dom';
-import { setToken } from '../redux/slice/userSlice';
+import { setAccessToken, setRefreshToken } from '../redux/slice/userSlice';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { setId } from '../redux/slice/userSlice';
@@ -71,8 +71,9 @@ function LoginPage() {
             gapi.load("client:auth2", start)
           })
         
-          const accessToken = gapi.auth.getToken().access_token;
-          localStorage.setItem('accessToken', accessToken);
+          const googleAccessToken = gapi.auth.getToken().access_token;
+          console.log(googleAccessToken)
+          // localStorage.setItem('accessToken', accessToken);
     }
     catch {
         alert('오류가 발생했습니다.')
@@ -131,7 +132,8 @@ function LoginPage() {
         console.log(refreshToken); //추후 삭제
         console.log(id); //추후 삭제
 
-        dispatch(setToken(accessToken));
+        dispatch(setAccessToken(accessToken));
+        dispatch(setRefreshToken(refreshToken));
         // dispatch(setUsername(username));
         dispatch(setId(id));
         dispatch(login());
@@ -173,7 +175,7 @@ function LoginPage() {
               <div className="forgot-pw" onClick={modalOpenHandler}>
                 비밀번호 찾기
               </div>
-              <PwModal modalType='findPwModal'>
+              <PwModal modaltype='findPwModal'>
                 <div className="modal-cont-wrapper">
                   <div className="modal-title">비밀번호 찾기</div>
                   <p className="modal-content">

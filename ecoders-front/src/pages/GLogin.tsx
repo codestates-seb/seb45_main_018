@@ -4,6 +4,10 @@ import { RootState } from '../redux/store/store';
 import Button from '../components/atoms/Button';
 import styled from 'styled-components';
 import googleicon from '../assets/google-icon.png';
+import axios from 'axios';
+import { useDispatch } from 'react-redux';
+import { setAccessToken, setRefreshToken, setId } from '../redux/slice/userSlice';
+
 
 
 interface GLoginProps {
@@ -12,11 +16,35 @@ interface GLoginProps {
 }
 
 const GLogin: React.FC<GLoginProps> = () => {
-
+  const dispatch = useDispatch();
+  const APIURL = useSelector((state:RootState) => state.api.APIURL);
     const clientId = useSelector((state: RootState) => state.login.clientId);
-    const onSuccess = (res:any) => {
-        console.log("로그인 성공! 현재 유저: ", res.profileObj);
-       
+    const onSuccess = async (res:any) => {
+        try {
+          const response = await axios.post(`${APIURL}/auth/login`,{
+            email: res.profileObj.email,
+            username: res.profileObj.name,
+          });
+
+          if( response.status === 200) {
+            const accessToken = response.headers['authorization'];
+            const refreshToken = response.headers['refresh-token'];
+            const id = response.headers['id'];
+            localStorage.setItem('accessToken', accessToken);
+            localStorage.setItem('refreshToken', refreshToken);
+            localStorage.setItem('id', id);
+            console.log(accessToken);  // 액세스 토큰 값
+            console.log(refreshToken);  // 리프레시 토큰 값
+            console.log(id)
+            dispatch(setAccessToken(accessToken));
+            dispatch(setRefreshToken(refreshToken));
+            dispatch(setId(id));
+            console.log("로그인 성공! 현재 유저: ", res.profileObj);
+          }
+      }
+      catch {
+        alert('오류가 발생했습니다')
+      }
     }
 
     const onFailure = (res: any) => {

@@ -4,12 +4,16 @@ export const userSlice = createSlice({
     name: 'user',
     initialState: {
         accessToken: null,
+        refreshToken: null,
         username: 'user',
         id: '',
         stamp: 0
     },
     reducers: {
-        setToken: (state, action) => {
+        setAccessToken: (state, action) => {
+            state.accessToken = action.payload;
+        },
+        setRefreshToken: (state, action) => {
             state.accessToken = action.payload;
         },
         setUsername: (state, action) => {
@@ -26,5 +30,5 @@ export const userSlice = createSlice({
     },
 });
 
-export const { setToken, setUsername, setId, setStamp} = userSlice.actions;
+export const { setAccessToken, setRefreshToken, setUsername, setId, setStamp} = userSlice.actions;
 export default userSlice.reducer;

@@ -12,6 +12,8 @@ import hills from '../assets/hills.png';
 const MyInfo = () => {
   const dispatch = useDispatch();
   const username = useSelector((state: RootState) => state.user.username); // username 상태 가져오기
+  const memberId = useSelector((state: RootState) => state.user.id);
+
   // const stamp = useSelector((state: RootState) => state.user.stamp);
 
   // const [data, setData] = useState({
@@ -49,7 +51,7 @@ const MyInfo = () => {
 
   useEffect(() => {
     axios
-      .get(`${APIURL}/member`)
+      .get(`${APIURL}/members/${memberId}`)
       .then(res => {
         dispatch(setUsername(res.data.username));
         dispatch(setStamp(res.data.stamp));

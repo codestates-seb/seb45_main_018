@@ -24,7 +24,7 @@ const GLogin: React.FC<GLoginProps> = () => {
     const clientId = useSelector((state: RootState) => state.login.clientId);
     const onSuccess = async (res:any) => {
         try {
-          const response = await axios.post(`${APIURL}/auth/login`,{
+          const response = await axios.post(`${APIURL}/oauth/google/login`,{
             email: res.profileObj.email,
             username: res.profileObj.name,
           });

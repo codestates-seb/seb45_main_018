@@ -9,7 +9,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useEffect } from 'react';
-import { setUsername, setStamp } from '../../redux/slice/userSlice';
+import { setUsername} from '../../redux/slice/userSlice';
 import { RootState } from '../../redux/store/store';
 import Modal from './Modal';
 import { openModal, closeModal } from '../../redux/slice/modalSlice';
@@ -20,7 +20,6 @@ const Header: React.FC = () => {
   const isLoggedIn = useSelector((state: RootState) => state.login.isLoggedIn);
   const memberId = useSelector((state: RootState) => state.user.id);
   const username = useSelector((state: RootState) => state.user.username); // username 상태 가져오기
-  const stamp = useSelector((state: RootState) => state.user.stamp); // stamp 상태 가져오기
   const APIURL = useSelector((state: RootState) => state.api.APIURL);
 
   // logout: {APIURL}/auth/logout -> delete -> accesstoken, refreshtoken, Id 요청
@@ -46,10 +45,9 @@ const Header: React.FC = () => {
         axios.get(`${APIURL}/members/${memberId}`).then(response => {
           // const { username, stamp } = response.data;
           console.log(response.data);
-          console.log(username, stamp); // 이렇게 같은 스코프 내에서 호출
+          console.log(username); // 이렇게 같은 스코프 내에서 호출
           dispatch(setUsername(response.data['username']));
-          dispatch(setStamp(response.data['stamp']));
-          console.log(username, stamp); // 이렇게 같은 스코프 내에서 호출
+          console.log(username); // 이렇게 같은 스코프 내에서 호출
         });
       } catch (error: any) {
         if (error.response?.status === 401) {
@@ -386,6 +384,7 @@ const AlertModal = styled(Modal)`
   justify-content: center;
   gap: 1rem;
   padding-bottom: 4rem;
+  z-index: 1000;
 
   div > .modal-cont-wrapper {
     display: flex;
@@ -411,11 +410,12 @@ const AlertModal = styled(Modal)`
 
 const AlertModalBackground = styled.div`
   position: fixed;
+  
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: 999;
+  z-index: 1000;
   display: flex;
   align-items: center;
   justify-content: center;

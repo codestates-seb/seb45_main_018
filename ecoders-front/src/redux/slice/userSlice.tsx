@@ -7,7 +7,8 @@ export const userSlice = createSlice({
         refreshToken: null,
         username: 'user',
         id: '',
-        stamp: 0
+        email: 'user@gmail.com'
+
     },
     reducers: {
         setAccessToken: (state, action) => {
@@ -24,11 +25,11 @@ export const userSlice = createSlice({
             state.id = action.payload;
         },
 
-        setStamp: (state, action) => {
-            state.stamp = action.payload;
+        setEmail: (state, action) => {
+            state.email = action.payload;
         }
     },
 });
 
-export const { setAccessToken, setRefreshToken, setUsername, setId, setStamp} = userSlice.actions;
+export const { setAccessToken, setRefreshToken, setUsername, setId, setEmail} = userSlice.actions;
 export default userSlice.reducer;

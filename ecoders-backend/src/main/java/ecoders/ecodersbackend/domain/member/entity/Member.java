@@ -1,5 +1,6 @@
 package ecoders.ecodersbackend.domain.member.entity;
 
+import ecoders.ecodersbackend.audit.Auditable;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -11,7 +12,7 @@ import java.util.UUID;
 @Builder
 @Getter
 @Entity
-public class Member {
+public class Member extends Auditable {
 
     @Id
     @GeneratedValue(generator = "uuid2")
@@ -19,6 +20,7 @@ public class Member {
     @Column(columnDefinition = "binary(16)")
     protected UUID id;
 
+    @Setter
     @Column(nullable = false)
     protected String username;
 

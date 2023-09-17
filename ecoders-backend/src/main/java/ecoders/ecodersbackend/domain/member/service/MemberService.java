@@ -2,7 +2,10 @@ package ecoders.ecodersbackend.domain.member.service;
 
 import ecoders.ecodersbackend.domain.member.entity.Member;
 import ecoders.ecodersbackend.domain.member.repository.MemberRepository;
+import ecoders.ecodersbackend.domain.post.Post;
+import ecoders.ecodersbackend.domain.post.PostRepository;
 import ecoders.ecodersbackend.exception.BusinessLogicException;
+import ecoders.ecodersbackend.exception.code.ExceptionCode;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -19,6 +22,7 @@ import static ecoders.ecodersbackend.exception.code.ExceptionCode.*;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+
 
     public long signup(Member member) {
         checkExistingMemberByEmail(member.getEmail());
@@ -48,4 +52,5 @@ public class MemberService {
         }
         return member.get();
     }
+
 }

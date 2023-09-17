@@ -1,8 +1,8 @@
-package ecoders.ecodersbackend.post.comment;
+package ecoders.ecodersbackend.domain.comment;
 
 import ecoders.ecodersbackend.audit.Auditable;
 import ecoders.ecodersbackend.domain.member.entity.Member;
-import ecoders.ecodersbackend.post.Post;
+import ecoders.ecodersbackend.domain.post.Post;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

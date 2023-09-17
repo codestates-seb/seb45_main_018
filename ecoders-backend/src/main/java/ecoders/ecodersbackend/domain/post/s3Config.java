@@ -1,4 +1,4 @@
-package ecoders.ecodersbackend.post;
+package ecoders.ecodersbackend.domain.post;
 
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;

@@ -12,7 +12,7 @@ import { useEffect } from 'react';
 import { setUsername, setStamp } from '../../redux/slice/userSlice';
 import { RootState } from '../../redux/store/store';
 import Modal from './Modal';
-import { openModal, closeModal } from "../../redux/slice/modalSlice";
+import { openModal, closeModal } from '../../redux/slice/modalSlice';
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
@@ -22,7 +22,6 @@ const Header: React.FC = () => {
   const username = useSelector((state: RootState) => state.user.username); // username 상태 가져오기
   const stamp = useSelector((state: RootState) => state.user.stamp); // stamp 상태 가져오기
   const APIURL = useSelector((state: RootState) => state.api.APIURL);
-
 
   // logout: {APIURL}/auth/logout -> delete -> accesstoken, refreshtoken, Id 요청
   // Header css : 재설정
@@ -109,11 +108,11 @@ const Header: React.FC = () => {
   };
 
   const modalcloseHandler = () => {
-  dispatch(closeModal('loginModal'));
-  navigate('/login')
+    dispatch(closeModal('loginModal'));
+    navigate('/login');
   };
 
-  const loginModalState = useSelector((state:RootState) => state.modal.modals.loginModal)
+  const loginModalState = useSelector((state: RootState) => state.modal.modals.loginModal);
 
   //chatting 구현 이후 살리기
   // useEffect(()=> {
@@ -121,89 +120,95 @@ const Header: React.FC = () => {
   //     navigate('/login')
   //   }
   // }, [loginModalState]);
-  
+
   const modalOpenHandler = () => {
     dispatch(openModal('loginModal'));
   };
   return (
     <>
-    <Entire>
-      <HeaderContainer>
-        <MenuContainer>
-          <HeaderLogo src={logo} onClick={navigateToMain} />
-          <HeaderLogoText onClick={navigateToMain}>POLARECO</HeaderLogoText>
-          <MenuTabContainer>
-            <MenuTab
-              onClick={() => {
-                navigate('/service');
-              }}>
-              Services
-            </MenuTab>
-
-            {isLoggedIn ? (
+      <Entire>
+        <HeaderContainer>
+          <MenuContainer>
+            <HeaderLogo src={logo} onClick={navigateToMain} />
+            <HeaderLogoText onClick={navigateToMain}>POLARECO</HeaderLogoText>
+            <MenuTabContainer>
               <MenuTab
                 onClick={() => {
-                  navigate('/eco-habit');
+                  navigate('/service');
                 }}>
-                Eco-Habit
+                Services
               </MenuTab>
+
+              {isLoggedIn ? (
+                <MenuTab
+                  onClick={() => {
+                    navigate('/eco-habit');
+                  }}>
+                  Eco-Habit
+                </MenuTab>
+              ) : (
+                <>
+                  <MenuTab
+                    onClick={() => {
+                      modalOpenHandler();
+                    }}>
+                    Eco-Habit
+                  </MenuTab>
+                </>
+              )}
+
+              <MenuTab
+                onClick={() => {
+                  navigate('community');
+                }}>
+                Community
+              </MenuTab>
+              <MenuTab
+                onClick={() => {
+                  navigate('contact');
+                }}>
+                Contact
+              </MenuTab>
+            </MenuTabContainer>
+          </MenuContainer>
+          <HeaderProfileContainer>
+            {isLoggedIn ? (
+              <>
+                <HeaderProfilePic src={profileImg} onClick={navigateToMyInfo} />
+                <UsernameButton onClick={navigateToMyInfo}>{username}</UsernameButton>
+                <LogoutButton onClick={handleLogout}>Logout</LogoutButton>
+              </>
             ) : (
               <>
-              <MenuTab  
-                onClick={() => {modalOpenHandler();}}>
-                  
-                Eco-Habit
-              </MenuTab>
+                <LoginButton
+                  onClick={() => {
+                    navigate('/login');
+                  }}>
+                  Login
+                </LoginButton>
+                <CreateAccountButton onClick={navigateToSignUp}>Create Account</CreateAccountButton>
               </>
             )}
+          </HeaderProfileContainer>
+        </HeaderContainer>
+        {/* 키눌렀을 때 왜 작동안하는지 모르겠음. 글씨 가운데 정렬하는 법?*/}
 
-            <MenuTab
-              onClick={() => {
-                navigate('community');
-              }}>
-              Community
-            </MenuTab>
-            <MenuTab
-              onClick={() => {
-                navigate('contact');
-              }}>
-              Contact
-            </MenuTab>
-          </MenuTabContainer>
-        </MenuContainer>
-        <HeaderProfileContainer>
-          {isLoggedIn ? (
-            <>
-              <HeaderProfilePic src={profileImg} onClick={navigateToMyInfo} />
-              <UsernameButton onClick={navigateToMyInfo}>{username}</UsernameButton>
-              <LogoutButton onClick={handleLogout}>Logout</LogoutButton>
-            </>
-          ) : (
-            <>
-              <LoginButton
+        {
+          // 헤더모달백그라운드 추가 및 클릭 시 closeHandler 연결
+          // loginModalState는 모달의 활성화 상태를 나타내는 state로 가정합니다.
+          // 실제 앱에서 해당 state나 로직에 따라 조건을 적절히 조절해야 합니다.
+          loginModalState && (
+            <AlertModalBackground onClick={modalcloseHandler}>
+              <AlertModal
+              modaltype="loginModal"
                 onClick={() => {
-                  navigate('/login');
+                  modalcloseHandler();
                 }}>
-                Login
-              </LoginButton>
-              <CreateAccountButton onClick={navigateToSignUp}>Create Account</CreateAccountButton>
-            </>
-          )}
-        </HeaderProfileContainer>
-      </HeaderContainer>
-      {/* 키눌렀을 때 왜 작동안하는지 모르겠음. 글씨 가운데 정렬하는 법?*/}
-
-
-      {
-      // 헤더모달백그라운드 추가 및 클릭 시 closeHandler 연결 
-      // loginModalState는 모달의 활성화 상태를 나타내는 state로 가정합니다.
-      // 실제 앱에서 해당 state나 로직에 따라 조건을 적절히 조절해야 합니다.
-      loginModalState && (
-        <AlertModalBackground onClick={modalcloseHandler}>
-      <AlertModal modalType='loginModal' onClick={() => {modalcloseHandler()}}>로그인이 필요한 서비스입니다.</AlertModal>
-        </AlertModalBackground>
-      )
-    }
+                로그인이 필요한 서비스입니다.
+              </AlertModal>
+            </AlertModalBackground>
+          )
+        }
       </Entire>
     </>
   );
@@ -212,9 +217,9 @@ const Header: React.FC = () => {
 export default Header;
 
 const Entire = styled.div`
-display: flex;
-justify-content: center;
-`
+  display: flex;
+  justify-content: center;
+`;
 
 const HeaderContainer = styled.div`
   position: fixed;
@@ -225,7 +230,7 @@ const HeaderContainer = styled.div`
   width: 100%;
   max-width: 1920px;
   min-width: 960px;
-  height: 100px;
+  height: 70px;
   background-color: #ffffff;
   border: none;
   padding-left: 80px;
@@ -256,8 +261,8 @@ const MenuContainer = styled.div`
 `;
 
 const HeaderLogo = styled.img`
-  width: 115px;
-  height: 85.059px;
+  width: auto;
+  height: 50px;
   margin-top: 15px;
   margin-bottom: 11.94px;
   cursor: pointer;
@@ -266,7 +271,7 @@ const HeaderLogo = styled.img`
 const HeaderLogoText = styled.div`
   color: black;
   font-family: 'Inter';
-  font-size: 25px;
+  font-size: 20px;
   font-style: normal;
   font-weight: 700;
   line-height: normal;
@@ -290,7 +295,7 @@ const MenuTab = styled.div`
   color: #1a1a1a;
 
   font-family: 'Inter';
-  font-size: 20px;
+  font-size: 16px;
   font-style: normal;
   font-weight: 500;
   line-height: normal;
@@ -327,7 +332,7 @@ const ButtonStyle = styled.button`
   background-color: #1a1a1a;
   color: #ffffff;
   font-family: 'Inter';
-  font-size: 20px;
+  font-size: 16px;
   font-style: normal;
   font-weight: 700;
   line-height: normal;
@@ -349,11 +354,24 @@ const UsernameButton = styled(ButtonStyle)`
   margin-right: 10px;
 `;
 
-const LogoutButton = styled(ButtonStyle)``;
+const LogoutButton = styled(ButtonStyle)`
+  display: flex;
+  justify-content: center;
+  border: none;
+  height: 80%;
+`;
 
-const LoginButton = styled(ButtonStyle)``;
+const LoginButton = styled(ButtonStyle)`
+  display: flex;
+  justify-content: center;
+  border: none;
+  height: 80%;
+`;
 
 const CreateAccountButton = styled(ButtonStyle)`
+  display: flex;
+  justify-content: center;
+  height: 80%;
   background-color: #ffffff;
   color: #1a1a1a;
   border: 1px solid #1a1a1a;
@@ -361,36 +379,33 @@ const CreateAccountButton = styled(ButtonStyle)`
 `;
 
 const AlertModal = styled(Modal)`
-    width: 25rem;
+  width: 25rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1rem;
+  padding-bottom: 4rem;
+
+  div > .modal-cont-wrapper {
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    gap: 1rem;
-    padding-bottom: 4rem;
-    
+    gap: 1.5rem;
 
-    div > .modal-cont-wrapper {
-        display: flex;
-        flex-direction: column;
-        gap: 1.5rem;
-
-        > .modal-title {
-            font-family: 'Inter';
-            font-size: 24px;
-            font-weight: 400;
-            line-height: normal;
-            text-align: center;
-            
-        }
-
+    > .modal-title {
+      font-family: 'Inter';
+      font-size: 24px;
+      font-weight: 400;
+      line-height: normal;
+      text-align: center;
     }
+  }
 
-    p {
-        text-align: center;
-        font-family: Inter;
-        font-size: 14px;
-        line-height: normal;
-    }
+  p {
+    text-align: center;
+    font-family: Inter;
+    font-size: 14px;
+    line-height: normal;
+  }
 `;
 
 const AlertModalBackground = styled.div`

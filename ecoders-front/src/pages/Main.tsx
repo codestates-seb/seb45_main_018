@@ -129,14 +129,14 @@ const Container = styled.div`
 `;
 
 const Wrapper = styled.div`
-  position: relative;
+  /* position: relative; */
   width: 100%;
-  max-width: 1280px;
+  max-width: 960px;
   margin: 0 auto;
 `;
 
 const StyledImage = styled.img`
-  max-width: 1280px;
+  max-width: 960px;
   width: 100%;
 
   @media (max-width: 1152px) {

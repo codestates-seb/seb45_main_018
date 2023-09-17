@@ -36,9 +36,8 @@ function App() {
           <Route path="/community/postdetail/:postnumber" element={<CommunityPostDetailPage />} />
           {/* <Route element={NotFound} /> */}
         </Routes>
-
+        <Footer />
       </BrowserRouter>
-      <Footer />
     </>
   );
 }

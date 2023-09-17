@@ -124,11 +124,11 @@ function LoginPage() {
 
         console.log(accessToken); //추후 삭제
         console.log(refreshToken); //추후 삭제
-        console.log(id); //추후 삭제
+        console.log(ID); //추후 삭제
 
         dispatch(setToken(accessToken));
         // dispatch(setUsername(username));
-        dispatch(setId(id));
+        dispatch(setId(ID));
         dispatch(login());
 
         navigate('/');
@@ -168,7 +168,7 @@ function LoginPage() {
               <div className="forgot-pw" onClick={modalOpenHandler}>
                 비밀번호 찾기
               </div>
-              <PwModal modalType="findPwModal">
+              <PwModal modaltype="findPwModal">
                 <div className="modal-cont-wrapper">
                   <div className="modal-title">비밀번호 찾기</div>
                   <p className="modal-content">

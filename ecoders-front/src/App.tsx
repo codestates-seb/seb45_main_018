@@ -15,8 +15,21 @@ import CommunityPostDetailPage from './pages/CommunityPostDetailPage';
 import LoginPage from './pages/LoginPage';
 import Signup from './pages/Signup';
 import Chat from './pages/Chat/Chat';
+import { useDispatch } from 'react-redux';
+import { useEffect } from 'react';
+import { login } from './redux/slice/loginSlice';
 
 function App() {
+
+  const dispatch = useDispatch();
+
+  useEffect(()=>{
+    const accessToken = localStorage.getItem('accessToken');
+    if (accessToken) {
+      dispatch(login());
+    }
+  }, [dispatch])
+  
   return (
     <>
       {' '}

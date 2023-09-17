@@ -7,6 +7,8 @@ import googleicon from '../assets/google-icon.png';
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
 import { setAccessToken, setRefreshToken, setId } from '../redux/slice/userSlice';
+import { useNavigate } from 'react-router-dom';
+import { login } from '../redux/slice/loginSlice';
 
 
 
@@ -17,6 +19,7 @@ interface GLoginProps {
 
 const GLogin: React.FC<GLoginProps> = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const APIURL = useSelector((state:RootState) => state.api.APIURL);
     const clientId = useSelector((state: RootState) => state.login.clientId);
     const onSuccess = async (res:any) => {
@@ -40,6 +43,8 @@ const GLogin: React.FC<GLoginProps> = () => {
             dispatch(setRefreshToken(refreshToken));
             dispatch(setId(id));
             console.log("로그인 성공! 현재 유저: ", res.profileObj);
+            dispatch(login());
+            navigate('/');
           }
       }
       catch {

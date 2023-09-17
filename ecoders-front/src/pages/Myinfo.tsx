@@ -41,13 +41,9 @@ const MyInfo = () => {
   //   },
   // });
 
-  type ApiState = {
-    api: {
-      APIURL: string;
-    };
-  };
 
-  const APIURL = useSelector((state: ApiState) => state.api.APIURL);
+
+  const APIURL = useSelector((state: RootState) => state.api.APIURL);
 
   useEffect(() => {
     axios
@@ -179,6 +175,7 @@ const PasswordReset = styled.button`
   font-weight: 700;
   line-height: normal;
   margin-top: 33px;
+  cursor: pointer;
 `;
 
 const StampBadgeContainer = styled.div`

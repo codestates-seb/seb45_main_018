@@ -17,6 +17,8 @@ const loginSlice= createSlice({
     reducers: {
         login: (state) => {
             state.isLoggedIn = true;
+            localStorage.getItem('accessToken')
+            localStorage.getItem('refreshToken')
         },
         logout: (state) => {
             state.isLoggedIn = false;

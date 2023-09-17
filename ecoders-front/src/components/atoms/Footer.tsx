@@ -66,6 +66,9 @@ const Container = styled.div`
 margin-top: 100px;
 display:flex;
 justify-content: center;
+align-items: center;
+z-index: 1000;
+position: sticky;
 `
 
 const Logo = styled.img`
@@ -77,16 +80,13 @@ const Logo = styled.img`
 const FooterContainer = styled.div`
   margin: 0;
   padding: 0;
-  /* transform: scale(0.65); // 이 줄을 추가 */
   max-width: 1920px;
-  min-width: 960px;
   height: 420px;
-  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   background-color: #131313;
-  bottom: 0;
+  /* bottom: 0; */
 
 
   @media (max-width: 1152px) {

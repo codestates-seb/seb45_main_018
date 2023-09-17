@@ -8,7 +8,7 @@ export interface card {
   username: string;
   createdAt: string;
   likes: number;
-  likedByUserIds: Array<number>;
+  likedByUserIds: Array<string>;
 }
 
 //더미 데이터

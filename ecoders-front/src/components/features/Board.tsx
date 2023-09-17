@@ -38,7 +38,7 @@ function Board() {
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   //필터된 데이터 state
-  const [filteredData, setFilteredData] = useState(Array<card>);
+  const [filteredData, setFilteredData] = useState<Array<card>>([]);
 
   //렌더링 첫 번째에 받아오기 1page -> 20개
   useEffect(() => {
@@ -52,6 +52,12 @@ function Board() {
             setPosts(response.data);
             console.log(response.data[response.data.length - 1].postId);
             setPage(response.data[response.data.length - 1].postId);
+            if (response.data.length < 20) {
+              setPage(0);
+              console.log(response.data.length);
+            } else {
+              setPage(response.data[response.data.length - 1].postId);
+            }
           })
           .catch(function (error) {
             console.log('게시물 데이터 받아오기 실패');
@@ -69,6 +75,12 @@ function Board() {
             setPosts(response.data);
             console.log(response.data[response.data.length - 1].postId);
             setPage(response.data[response.data.length - 1].postId);
+            if (response.data.length < 20) {
+              setPage(0);
+              console.log(response.data.length);
+            } else {
+              setPage(response.data[response.data.length - 1].postId);
+            }
           })
           .catch(function (error) {
             console.log('게시물 데이터 받아오기 실패');
@@ -78,71 +90,89 @@ function Board() {
     }
   }, [keyWord]);
 
-  //무한스크롤 이벤트 발생시
-  const handleScroll = () => {
-    if (
-      containerRef.current &&
-      containerRef.current.getBoundingClientRect().bottom <= window.innerHeight + 100 &&
-      !isLoading
-    ) {
-      console.log(page);
-      // 스크롤이 아래로 내려가면서 로딩중이 아니라면 새로운 데이터 로드
-      if (keyWord === '') {
-        if (page !== 0) {
-          // 여기서 수정
-          axios
-            .get(`${APIURL}/posts/all?lastPostId=${page}&size=10`)
-            .then(function (response) {
-              // response
-              console.log(response.data);
-              console.log(response.data.length);
-              console.log(response.data[response.data.length - 1]);
-              setPosts(prevData => [...prevData, ...response.data]);
-              if (response.data.length < 10) {
-                setPage(0);
-              } else {
-                setPage(response.data[response.data.length - 1].postId);
-              }
-              setIsLoading(false);
-            })
-            .catch(function (error) {
-              console.log('게시물 데이터 받아오기 실패');
-              console.log(error);
-            });
-        } else {
-          setIsLoading(false);
-          console.log('더이상 받아올 데이터가 없음');
-        }
-      } else {
-        axios
-          .get(`${APIURL}/posts/all?lastPostId=${page}&size=10&keyword=${keyWord}`)
-          .then(function (response) {
-            // response
-            console.log(response.data);
-            setPosts(prevData => [...prevData, ...response.data]);
-            setPage(response.data[response.data.length - 1].postId);
-            setIsLoading(false);
-          })
-          .catch(function (error) {
-            console.log('게시물 데이터 받아오기 실패');
-            console.log(error);
-          });
-      }
-    }
-    setIsLoading(true);
-  };
-
   // 스크롤 이벤트 핸들러를 창에 추가
   useEffect(() => {
+    //무한스크롤 이벤트 발생시
+    const handleScroll = () => {
+      if (
+        containerRef.current &&
+        containerRef.current.getBoundingClientRect().bottom <= window.innerHeight + 100 &&
+        !isLoading
+      ) {
+        setIsLoading(true);
+        // console.log('page', page); //99999
+
+        // 스크롤이 아래로 내려가면서 로딩중이 아니라면 새로운 데이터 로드
+        if (keyWord === '') {
+          if (page !== 0) {
+            // 여기서 수정
+            axios
+              .get(`${APIURL}/posts/all?lastPostId=${page}&size=10`)
+              .then(function (response) {
+                // response
+                console.log(response.data);
+                console.log(response.data.length);
+                console.log(response.data[response.data.length - 1]);
+                setPosts(prevData => [...prevData, ...response.data]);
+                if (response.data.length < 10) {
+                  setPage(0);
+                  console.log(response.data.length);
+                } else {
+                  setPage(response.data[response.data.length - 1].postId);
+                }
+                setIsLoading(false);
+              })
+              .catch(function (error) {
+                console.log('게시물 데이터 받아오기 실패');
+                console.log(error);
+              });
+          } else {
+            setIsLoading(false);
+            // console.log('더이상 받아올 데이터가 없음');
+          }
+        } else {
+          if (page !== 0) {
+            // 여기서 수정
+            console.log(page);
+            axios
+              .get(`${APIURL}/posts/all?lastPostId=${page}&size=10&keyword=${keyWord}`)
+              .then(function (response) {
+                // response
+                console.log(response.data);
+                console.log(response.data.length);
+                console.log(response.data[response.data.length - 1]);
+                setPosts(prevData => [...prevData, ...response.data]);
+                if (response.data.length < 10) {
+                  setPage(0);
+                  console.log(response.data.length);
+                } else {
+                  setPage(response.data[response.data.length - 1].postId);
+                }
+                setIsLoading(false);
+              })
+              .catch(function (error) {
+                console.log('게시물 데이터 받아오기 실패');
+                console.log(error);
+              });
+          } else {
+            setIsLoading(false);
+            // console.log('더이상 받아올 데이터가 없음');
+          }
+        }
+      }
+    };
+
     window.addEventListener('scroll', handleScroll);
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
-  }, []);
+  }, [isLoading, keyWord, page]);
 
   // 카테고리 변경시
   function changeCategoryHandler(event: React.MouseEvent<HTMLButtonElement>) {
-    setCategory((event.target as HTMLButtonElement).value);
+    console.log('카테고리 변경됨');
+    console.log((event.target as HTMLButtonElement).innerText);
+    setCategory((event.target as HTMLButtonElement).innerText);
   }
 
   // 검색어 변경시
@@ -161,6 +191,8 @@ function Board() {
 
   //필터 기능(특정 state(여기선 filteredData)가 바뀔 때마다 실행)
   useEffect(() => {
+    console.log('카테고리 변경?');
+    console.log(category);
     if (category === '모집글') {
       setFilteredData(
         post.filter(item => {
@@ -190,8 +222,8 @@ function Board() {
                   <Button
                     key={index}
                     className={category === item ? 'clicked-category' : ''}
-                    width="60px"
-                    fontSize={0.5}
+                    width="70px"
+                    fontSize={1}
                     hoverBgColor="#7092bf"
                     hoverColor="white"
                     onClick={changeCategoryHandler}>
@@ -220,7 +252,7 @@ function Board() {
           {isLoading && <Loading />}
         </div>
       </BoardBody>
-      <CommunityButtonGroup />
+      <CommunityButtonGroup top="15%" />
     </BoardLayout>
   );
 }
@@ -233,7 +265,7 @@ const BoardLayout = styled.div`
 
 const BoardHead = styled.div`
   border: 1px solid #a8adaf;
-  width: 64%;
+  width: 66%;
   background-color: #eceff1;
   display: flex;
   margin: 0 auto;
@@ -284,7 +316,7 @@ const BoardHead = styled.div`
 
 const BoardBody = styled.div`
   border: 1px solid #a8adaf;
-  width: 64%;
+  width: 66%;
   background-color: #eceff1;
   display: flex;
   margin: 0 auto;

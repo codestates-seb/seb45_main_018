@@ -11,8 +11,8 @@ function CommunityPostWritePage() {
   const [postid, setPostId] = useState<number>(0);
   const [post, setPost] = useState<postData>({
     // memberId: '',
-    memberId: 0,
-    postId: 0,
+    memberId: '0',
+    postId: Number(state.post.postId),
     title: '',
     content: '',
     category: '',
@@ -27,12 +27,13 @@ function CommunityPostWritePage() {
   });
 
   if (state !== null) {
+    console.log('dd');
     useEffect(() => {
       console.log(state.post);
       console.log(state.post.postId);
       setPostId(state.post.postId);
       setPost(state.post);
-    }, [postid]);
+    }, []);
   }
   // <PostWrite post={state.dummyData} />
 

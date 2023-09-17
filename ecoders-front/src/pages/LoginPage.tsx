@@ -120,7 +120,7 @@ function LoginPage() {
 
         localStorage.setItem('accessToken', accessToken);
         localStorage.setItem('refreshToken', refreshToken);
-        // localStorage.setItem('id', id);
+        localStorage.setItem('id', ID);
 
         console.log(accessToken); //추후 삭제
         console.log(refreshToken); //추후 삭제

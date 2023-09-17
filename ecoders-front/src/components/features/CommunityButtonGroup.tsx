@@ -4,8 +4,9 @@ import { styled } from 'styled-components';
 import { Link, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux/es/hooks/useSelector';
 
-interface leftSetting {
+interface positionSetting {
   left?: string;
+  top?: string;
 }
 
 type UserState = {
@@ -17,7 +18,7 @@ type UserState = {
   };
 };
 
-function CommunityButtonGroup(props: leftSetting) {
+function CommunityButtonGroup(props: positionSetting) {
   const USERACCESSTOKEN = useSelector((state: UserState) => state.user.accessToken);
   const navigate = useNavigate();
 
@@ -50,10 +51,10 @@ function CommunityButtonGroup(props: leftSetting) {
 }
 export default CommunityButtonGroup;
 
-const ButtonGroup = styled.div<leftSetting>`
+const ButtonGroup = styled.div<positionSetting>`
   position: fixed;
-  left: ${props => (props.left ? props.left : '75%')};
-  top: 85%;
+  left: ${props => (props.left ? props.left : '85%')};
+  top: ${props => (props.top ? props.top : '10%')};
   z-index: 0.5;
   button {
     margin: 5px;

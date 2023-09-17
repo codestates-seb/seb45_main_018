@@ -38,7 +38,7 @@ const CommonButton = styled.button<ButtonType>`
   width: ${props => (props.width ? props.width : '100%')};
   height: ${props => (props.height ? props.height : '100%')};
   border: ${props => (props.border ? props.border : '1px solid black')};
-  font-size: ${props => (props.fontSize ? props.fontSize : '1rem')};
+  font-size: ${props => (props.fontSize ? `${props.fontSize}rem` : '1rem')};
   background-color: ${props => (props.bgColor ? props.bgColor : 'white')};
   color: ${props => (props.color ? props.color : 'black')};
 

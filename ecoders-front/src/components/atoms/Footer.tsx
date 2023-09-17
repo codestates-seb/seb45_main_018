@@ -4,57 +4,59 @@ import logo from '../../assets/Logo.png';
 const Footer: React.FC = () => {
   return (
     <>
-    <Container>
-      <FooterContainer>
-        <FooterInfoContainer>
-          <FooterLogoSectionContainer>
-            <FooterLogoText>
-              <Logo src={logo} />
-              POLARECO
-            </FooterLogoText>
-            <FooterLogoContent>
-              건강한 지구, 건강한 라이프 <br/>건강한 가치를 추구하는 에코 플랫폼 <br />폴라레코입니다.
-            </FooterLogoContent>
-          </FooterLogoSectionContainer>
-          <FooterSectionContainer>
-            <FooterSectionTitle>Company</FooterSectionTitle>
-            <FooterSectionContent>
-              <div className="footer-content">About Us</div>
-              <div className="footer-content">Contact Us</div>
-              <div className="footer-content">Features</div>
-            </FooterSectionContent>
-          </FooterSectionContainer>
-          <FooterSectionContainer>
-            <FooterSectionTitle>Services</FooterSectionTitle>
-            <FooterSectionContent>
-              <div className="footer-content">Eco-Habit</div>
-              <div className="footer-content">Challenge</div>
-              <div className="footer-content">Community</div>
-              <div className="footer-content">Sponsor</div>
-            </FooterSectionContent>
-          </FooterSectionContainer>
-          <FooterContactSection>
-            <FooterSectionTitle>Contact</FooterSectionTitle>
-            <FooterSectionContent>
-              <div className="footer-content">(+82) 10-0000-0000</div>
-              <div className="footer-content">polareco.official@gmail.com</div>
-              <div className="footer-content">
-                Address: Gangnamgu, <div>Seoul, 03232</div>
-              </div>
-            </FooterSectionContent>
-          </FooterContactSection>
-          <FooterSectionContainer>
-            <FooterSectionTitle>Link</FooterSectionTitle>
-            <FooterSectionContent>
-              <div className="footer-content">Terms of Service</div>
-              <div className="footer-content">Privacy Policy</div>
-              <div className="footer-content">Career</div>
-            </FooterSectionContent>
-          </FooterSectionContainer>
-        </FooterInfoContainer>
-        <FooterLine />
-        <RigthInfo>© 2023 Polareco - All Rights Reserved</RigthInfo>
-      </FooterContainer>
+      <Container>
+        <FooterContainer>
+          <FooterInfoContainer>
+            <FooterLogoSectionContainer>
+              <FooterLogoText>
+                <Logo src={logo} />
+                POLARECO
+              </FooterLogoText>
+              <FooterLogoContent>
+                건강한 지구, 건강한 라이프 <br />
+                건강한 가치를 추구하는 에코 플랫폼 <br />
+                폴라레코입니다.
+              </FooterLogoContent>
+            </FooterLogoSectionContainer>
+            <FooterSectionContainer>
+              <FooterSectionTitle>Company</FooterSectionTitle>
+              <FooterSectionContent>
+                <div className="footer-content">About Us</div>
+                <div className="footer-content">Contact Us</div>
+                <div className="footer-content">Features</div>
+              </FooterSectionContent>
+            </FooterSectionContainer>
+            <FooterSectionContainer>
+              <FooterSectionTitle>Services</FooterSectionTitle>
+              <FooterSectionContent>
+                <div className="footer-content">Eco-Habit</div>
+                <div className="footer-content">Challenge</div>
+                <div className="footer-content">Community</div>
+                <div className="footer-content">Sponsor</div>
+              </FooterSectionContent>
+            </FooterSectionContainer>
+            <FooterContactSection>
+              <FooterSectionTitle>Contact</FooterSectionTitle>
+              <FooterSectionContent>
+                <div className="footer-content">(+82) 10-0000-0000</div>
+                <div className="footer-content">polareco.official@gmail.com</div>
+                <div className="footer-content">
+                  Address: Gangnamgu, <div>Seoul, 03232</div>
+                </div>
+              </FooterSectionContent>
+            </FooterContactSection>
+            <FooterSectionContainer>
+              <FooterSectionTitle>Link</FooterSectionTitle>
+              <FooterSectionContent>
+                <div className="footer-content">Terms of Service</div>
+                <div className="footer-content">Privacy Policy</div>
+                <div className="footer-content">Career</div>
+              </FooterSectionContent>
+            </FooterSectionContainer>
+          </FooterInfoContainer>
+          <FooterLine />
+          <RigthInfo>© 2023 Polareco - All Rights Reserved</RigthInfo>
+        </FooterContainer>
       </Container>
     </>
   );
@@ -63,9 +65,10 @@ const Footer: React.FC = () => {
 export default Footer;
 
 const Container = styled.div`
-display:flex;
-justify-content: center;
-`
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+`;
 
 const Logo = styled.img`
   width: 51px;
@@ -86,7 +89,6 @@ const FooterContainer = styled.div`
   align-items: center;
   background-color: #131313;
   bottom: 0;
-
 
   @media (max-width: 1152px) {
     // 화면 크기가 768px 이하일 때

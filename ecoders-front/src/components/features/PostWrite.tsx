@@ -85,6 +85,7 @@ function PostWriteBody({ bodyData }: { bodyData: bodyProps }) {
   const editorRef = useRef<Editor>(null);
   const dispatch = useDispatch();
 
+  console.log(bodyData.content);
   useEffect(() => {
     if (bodyData.content !== '') {
       editorRef.current?.getInstance().setHTML(bodyData.content);
@@ -163,7 +164,7 @@ function PostWriteBody({ bodyData }: { bodyData: bodyProps }) {
   return (
     <>
       {/* 등록 버튼 클릭시 모달 */}
-      <Modal className="post-upload" modalType="postModal">
+      <Modal className="post-upload" modaltype="postModal">
         <div>해당 게시글을 등록하시겠습니까?</div>
         <ModalButtons>
           <Button onClick={submitModalClickHandler}>예</Button>
@@ -204,12 +205,11 @@ function PostWriteBody({ bodyData }: { bodyData: bodyProps }) {
 }
 
 function PostWrite({ postid, post }: { postid: number; post: postData }) {
-  console.log(postid);
   const navigate = useNavigate();
   const USERACCESSTOKEN = useSelector((state: UserState) => state.user.accessToken);
   const APIURL = useSelector((state: ApiState) => state.api.APIURL);
 
-  // console.log(dummyData);
+  console.log(post);
   const [title, setTitle] = useState<string | undefined>('');
   const [category, setCategory] = useState<string | undefined>('');
   const [content, setContent] = useState<string | undefined>('');
@@ -218,16 +218,21 @@ function PostWrite({ postid, post }: { postid: number; post: postData }) {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isModify, setIsModify] = useState<boolean>(false);
 
+  //게시글 수정일 경우
   useEffect(() => {
-    if (postid !== 0) {
-      setTitle(post.title);
-      setCategory(post.category);
-      setContent(post.content);
-      setIsModify(true);
-      setIsLoading(false);
-    } else {
-      setIsLoading(false);
-    }
+    axios
+      .get(`${APIURL}/posts/${post.postId}`)
+      .then(function (response) {
+        setIsModify(true);
+        setTitle(response.data.title);
+        setCategory(response.data.category);
+        setContent(response.data.content);
+        setIsLoading(false);
+      })
+      .catch(function (error) {
+        console.log(error);
+        setIsLoading(false);
+      });
   }, []);
 
   const headerData: headerProps = {

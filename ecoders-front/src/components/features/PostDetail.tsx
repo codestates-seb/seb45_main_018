@@ -24,8 +24,8 @@ type UserState = {
   user: {
     accessToken: string | null;
     username: string;
-    // id: string;
-    id: number;
+    id: string;
+    // id: number;
     stamp: number;
   };
 };
@@ -82,10 +82,10 @@ const HeaderButtons = ({ post }: { post: postData }) => {
         </ModalButtons>
       </Modal>
 
-      <Button width="50px" fontSize={0.5} hoverBgColor="#7092bf" hoverColor="white" onClick={postModifyHandler}>
+      <Button width="60px" fontSize={1} hoverBgColor="#7092bf" hoverColor="white" onClick={postModifyHandler}>
         수정
       </Button>
-      <Button width="50px" fontSize={0.5} hoverBgColor="#7092bf" hoverColor="white" onClick={postDeleteModalHandler}>
+      <Button width="60px" fontSize={1} hoverBgColor="#7092bf" hoverColor="white" onClick={postDeleteModalHandler}>
         삭제
       </Button>
     </div>
@@ -95,10 +95,14 @@ const HeaderButtons = ({ post }: { post: postData }) => {
 const CommentButtons = ({
   comment,
   postid,
+  commentList,
+  setCommentList,
   setIsCommentModify,
 }: {
   comment: comment;
   postid: number | undefined;
+  commentList: Array<comment>;
+  setCommentList: React.Dispatch<React.SetStateAction<Array<comment> | undefined>>;
   setIsCommentModify: React.Dispatch<React.SetStateAction<number>>;
 }) => {
   const USERACCESSTOKEN = useSelector((state: UserState) => state.user.accessToken);
@@ -112,7 +116,12 @@ const CommentButtons = ({
   }
 
   function postDeleteHandler() {
-    // 댓글 삭제 요청 처리 후 게시판으로 이동
+    // 댓글 삭제 낙관적 업데이트
+    if (commentList !== undefined) {
+      const deletedCommentList = commentList.filter(item => item.commentId !== comment.commentId);
+      setCommentList(deletedCommentList);
+    }
+
     axios
       .delete(`${APIURL}/posts/comment/${comment.commentId}`, {
         headers: {
@@ -121,9 +130,6 @@ const CommentButtons = ({
       })
       .then(function (response) {
         closeModal('deletePostModal');
-        // navigate(`/community/postdtail/${postid}`);
-        //화면 새로고침
-        // window.location.reload();
       })
       .catch(function (error) {
         console.log('댓글 삭제 실패');
@@ -153,7 +159,7 @@ const CommentButtons = ({
 
       <Button
         width="30px"
-        fontSize={0.5}
+        fontSize={0.7}
         border="0px"
         hoverBgColor="#7092bf"
         hoverColor="white"
@@ -162,7 +168,7 @@ const CommentButtons = ({
       </Button>
       <Button
         width="30px"
-        fontSize={0.5}
+        fontSize={0.7}
         border="0px"
         hoverBgColor="#7092bf"
         hoverColor="white"
@@ -173,25 +179,43 @@ const CommentButtons = ({
   );
 };
 
-function CommentDetail({ comment, post }: { comment: Array<comment>; post: postData }) {
+function CommentDetail({
+  commentList,
+  setCommentList,
+  post,
+}: {
+  commentList: Array<comment>;
+  setCommentList: React.Dispatch<React.SetStateAction<Array<comment> | undefined>>;
+  post: postData;
+}) {
   const USERID = useSelector((state: UserState) => state.user.id);
   const [isCommentModify, setIsCommentModify] = useState(0);
   return (
     <div className="post-comment-container">
-      {comment.map((item, index) => {
-        {
-          /* 수정 눌린 경우.. 등록컴포넌트 보이기..? */
-        }
+      {commentList.map((item, index) => {
         if (item.commentId === isCommentModify) {
-          return <CommentModify initComment={item} postid={post.postId} setIsCommentModify={setIsCommentModify} />;
+          return (
+            <CommentModify
+              initComment={item}
+              postid={post.postId}
+              commentList={commentList}
+              setIsCommentModify={setIsCommentModify}
+              setCommentList={setCommentList}
+            />
+          );
         }
         return (
           <div className="post-comment" key={index}>
             {/* 헤더 유저네임, item.usename 같은지 조건부 버튼 렌더 */}
-            {/* {item.memberId === USERID && (
-              <CommentButtons comment={item} postid={post.postId} setIsCommentModify={setIsCommentModify} />
-            )} */}
-            <CommentButtons comment={item} postid={post.postId} setIsCommentModify={setIsCommentModify} />
+            {item.memberId === USERID && (
+              <CommentButtons
+                comment={item}
+                postid={post.postId}
+                setIsCommentModify={setIsCommentModify}
+                commentList={commentList}
+                setCommentList={setCommentList}
+              />
+            )}
             <div className="comment-detail">
               <p className="comment-user">{item.username}</p>
               <p className="comment-content">{item.content}</p>
@@ -207,11 +231,15 @@ function CommentDetail({ comment, post }: { comment: Array<comment>; post: postD
 function CommentModify({
   initComment,
   postid,
+  commentList,
   setIsCommentModify,
+  setCommentList,
 }: {
   initComment: comment;
   postid: number | undefined;
+  commentList: Array<comment>;
   setIsCommentModify: React.Dispatch<React.SetStateAction<number>>;
+  setCommentList: React.Dispatch<React.SetStateAction<Array<comment> | undefined>>;
 }) {
   const USERACCESSTOKEN = useSelector((state: UserState) => state.user.accessToken);
   const APIURL = useSelector((state: ApiState) => state.api.APIURL);
@@ -226,7 +254,19 @@ function CommentModify({
     const commentData = {
       content: comment,
     };
+    //댓글 수정 낙관적 업데이트
     console.log(JSON.stringify(commentData));
+    setCommentList([
+      ...commentList,
+      {
+        memberId: initComment.memberId,
+        commentId: initComment.commentId,
+        content: comment,
+        username: initComment.username,
+        createdAt: initComment.createdAt,
+        updatedAt: initComment.updatedAt,
+      },
+    ]);
     axios({
       method: 'patch',
       url: `${APIURL}/posts/comment/${initComment.commentId}`,
@@ -255,19 +295,41 @@ function CommentModify({
         value={comment}
         onChange={changeCommentHandler}></textarea>
       <div className="post-comment-submit">
-        <Button width="50px" fontSize={0.5} hoverBgColor="#7092bf" hoverColor="white" onClick={submitCommentHandler}>
-          등록
+        <Button width="70px" fontSize={1} hoverBgColor="#7092bf" hoverColor="white" onClick={submitCommentHandler}>
+          수정
         </Button>
       </div>
     </div>
   );
 }
 
-function CommentAdd({ postid }: { postid: number | undefined }) {
+function CommentAdd({
+  commentList,
+  setCommentList,
+  postid,
+}: {
+  commentList: Array<comment> | undefined;
+  setCommentList: React.Dispatch<React.SetStateAction<Array<comment> | undefined>>;
+  postid: number | undefined;
+}) {
   const USERACCESSTOKEN = useSelector((state: UserState) => state.user.accessToken);
-
+  const USERID = useSelector((state: UserState) => state.user.id);
+  const USERNAME = useSelector((state: UserState) => state.user.username);
   const APIURL = useSelector((state: ApiState) => state.api.APIURL);
   const [comment, setComment] = useState('');
+
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = ('0' + (today.getMonth() + 1)).slice(-2);
+  const day = ('0' + today.getDate()).slice(-2);
+  const hours = ('0' + today.getHours()).slice(-2);
+  const minutes = ('0' + today.getMinutes()).slice(-2);
+  const seconds = ('0' + today.getSeconds()).slice(-2);
+
+  const dateString = year + '-' + month + '-' + day;
+  const timeString = hours + ':' + minutes + ':' + seconds;
+
+  console.log(timeString);
 
   function changeCommentHandler(event: React.ChangeEvent<HTMLTextAreaElement>) {
     setComment((event.target as HTMLTextAreaElement).value);
@@ -278,6 +340,21 @@ function CommentAdd({ postid }: { postid: number | undefined }) {
     const commentData = {
       content: comment,
     };
+
+    if (commentList !== undefined) {
+      setCommentList([
+        ...commentList,
+        {
+          memberId: USERID,
+          commentId: commentList[commentList?.length - 1].commentId + 1,
+          content: comment,
+          username: USERNAME,
+          createdAt: `${dateString} ${timeString}`,
+          updatedAt: null,
+        },
+      ]);
+    }
+
     console.log(JSON.stringify(commentData));
     axios({
       method: 'post',
@@ -292,6 +369,7 @@ function CommentAdd({ postid }: { postid: number | undefined }) {
         console.log('댓글 등록 성공');
         if (response.status === 200) {
           // navigate(`/community`);
+          window.location.reload();
         }
       })
       .catch(error => {
@@ -308,7 +386,7 @@ function CommentAdd({ postid }: { postid: number | undefined }) {
         value={comment}
         onChange={changeCommentHandler}></textarea>
       <div className="post-comment-submit">
-        <Button width="50px" fontSize={0.5} hoverBgColor="#7092bf" hoverColor="white" onClick={submitCommentHandler}>
+        <Button width="70px" fontSize={1} hoverBgColor="#7092bf" hoverColor="white" onClick={submitCommentHandler}>
           등록
         </Button>
       </div>
@@ -322,6 +400,10 @@ function PostDetail({ post }: { post: postData }) {
   const USERACCESSTOKEN = useSelector((state: UserState) => state.user.accessToken);
   const APIURL = useSelector((state: ApiState) => state.api.APIURL);
   const [isLiked, setIsLiked] = useState<boolean>(false);
+  const [likeList, setLikeList] = useState<Array<string> | undefined>(post.likedByUserIds);
+  const [likeCount, setLikeCount] = useState<number | undefined>(post.likes);
+  const [commentList, setCommentList] = useState<Array<comment> | undefined>(post.comments);
+
   const navigate = useNavigate();
   function goToCommunityHandler() {
     navigate(`/community`);
@@ -332,16 +414,33 @@ function PostDetail({ post }: { post: postData }) {
   useEffect(() => {
     if (post.likedByUserIds !== undefined && post.postId !== undefined) {
       // if (post.myLikes.includes(UERID)) {}
+      console.log(typeof USERID);
       console.log(USERID);
       console.log(post.likedByUserIds);
+      console.log(post.likedByUserIds.includes(USERID));
       if (post.likedByUserIds.includes(USERID)) {
         setIsLiked(true);
       }
     }
   }, []);
+
+  useEffect(() => {
+    if (!isLiked) {
+      console.log(likeList);
+      if (likeList !== undefined) {
+        setLikeList([...likeList, USERID]);
+      }
+    } else {
+      console.log(likeList);
+      if (likeList !== undefined) {
+        setLikeList(likeList.slice(0, likeList.length - 1));
+      }
+    }
+  }, []);
+
   // 좋아요 클릭시..요청
   function changeLikeHandler() {
-    if (USERID === 0) {
+    if (USERID === '0') {
       const tryLogin = confirm('회원만 이용 가능한 기능입니다. 로그인 하시겠습니까?');
       console.log(tryLogin);
       if (tryLogin) {
@@ -349,6 +448,17 @@ function PostDetail({ post }: { post: postData }) {
       }
     } else {
       setIsLiked(!isLiked);
+      if (likeCount !== undefined) {
+        if (!isLiked && likeList !== undefined) {
+          setLikeCount(likeCount + 1);
+          setLikeList([...likeList, USERID]);
+        } else {
+          setLikeCount(likeCount - 1);
+          if (likeList !== undefined) {
+            setLikeList(likeList.slice(0, likeList.length - 1));
+          }
+        }
+      }
       axios({
         method: 'post',
         url: `${APIURL}/posts/${post.postId}/likes`,
@@ -358,7 +468,6 @@ function PostDetail({ post }: { post: postData }) {
       })
         .then(response => {
           console.log('좋아요 성공');
-          console.log(response.status);
         })
         .catch(error => {
           console.log(error);
@@ -374,9 +483,10 @@ function PostDetail({ post }: { post: postData }) {
           <div className="header-detail">
             <div className="post-user">{post.username}</div>
             <div className="post-date">{post.createdAt}</div>
+            <div className="post-view"> 조회수: {post.views}</div>
           </div>
-          {/* {USERID === post.memberId && <HeaderButtons post={post} />} */}
-          <HeaderButtons post={post} />
+          {USERID === post.memberId && <HeaderButtons post={post} />}
+          {/* <HeaderButtons post={post} /> */}
         </div>
       </PostDetailHeader>
       <PostDetailContent>
@@ -384,18 +494,18 @@ function PostDetail({ post }: { post: postData }) {
       </PostDetailContent>
       <PostDetailFooter>
         <div className="lick-count-container">
-          {isLiked ? (
+          {isLiked && likeList?.includes(USERID) ? (
             <AiFillHeart className="aifillheart" onClick={changeLikeHandler} />
           ) : (
             <AiOutlineHeart className="aioutlineheart" onClick={changeLikeHandler} />
           )}
-          <div>{post.likes}</div>
+          <div>{likeCount}</div>
         </div>
         <Button
           width="65px"
           height="30px"
           borderRadius="15px"
-          fontSize={0.5}
+          fontSize={1}
           hoverBgColor="#7092bf"
           hoverColor="white"
           onClick={goToCommunityHandler}>
@@ -405,9 +515,10 @@ function PostDetail({ post }: { post: postData }) {
 
       <PostFooter>
         {/* 댓글 리스트 map으로 */}
-        {post.comments ? <CommentDetail comment={post.comments} post={post} /> : null}
-        {USERID !== 0 ? (
-          <CommentAdd postid={post.postId} />
+        {commentList ? <CommentDetail commentList={commentList} setCommentList={setCommentList} post={post} /> : null}
+        {/* {post.comments ? <CommentDetail comment={post.comments} post={post} /> : null} */}
+        {USERID !== '0' ? (
+          <CommentAdd commentList={commentList} setCommentList={setCommentList} postid={post.postId} />
         ) : (
           <div className="not-login-comment">
             로그인하시면 댓글을 작성할 수 있습니다. <Link to={'/login'}>로그인 페이지로...</Link>
@@ -415,7 +526,7 @@ function PostDetail({ post }: { post: postData }) {
         )}
       </PostFooter>
 
-      <CommunityButtonGroup left="73%" />
+      <CommunityButtonGroup left="77%" top="85%" />
     </PostDetailLayout>
   );
 }
@@ -447,14 +558,14 @@ const PostDetailHeader = styled.div`
     justify-content: space-between;
   }
   div.header-detail-container div.header-detail {
-    font-size: 13px;
+    font-size: 15px;
     display: flex;
   }
   div.header-detail-container div.header-detail div {
     margin: 3px 4px;
   }
   div.header-detail-container div.post-date {
-    font-size: 13px;
+    font-size: 15px;
   }
   div.header-buttons button {
     margin-left: 5px;
@@ -517,8 +628,8 @@ const PostFooter = styled.div`
     display: flex;
   }
   div.post-comment p.comment-user {
-    width: 75px;
-    font-size: 13px;
+    width: 80px;
+    font-size: 14px;
     font-weight: 600;
     padding: 0 10px;
   }
@@ -530,6 +641,7 @@ const PostFooter = styled.div`
     display: flex;
     justify-content: right;
     font-size: 12px;
+    color: gray;
   }
   div.post-comment div.comment-buttons {
     display: flex;

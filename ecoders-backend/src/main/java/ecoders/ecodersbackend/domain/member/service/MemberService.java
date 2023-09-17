@@ -7,6 +7,7 @@ import ecoders.ecodersbackend.domain.member.entity.Member;
 import ecoders.ecodersbackend.domain.member.repository.MemberRepository;
 import ecoders.ecodersbackend.domain.member.repository.VerificationCodeRepository;
 import ecoders.ecodersbackend.exception.BusinessLogicException;
+import ecoders.ecodersbackend.exception.code.ExceptionCode;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

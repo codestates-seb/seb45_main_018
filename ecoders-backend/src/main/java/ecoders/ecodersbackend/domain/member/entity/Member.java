@@ -43,4 +43,5 @@ public class Member extends Auditable {
         POLARECO,
         GOOGLE
     }
+
 }

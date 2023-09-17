@@ -25,9 +25,9 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
         throws AuthenticationException {
         ObjectMapper objectMapper = new ObjectMapper();
-        AuthDto.LoginDto loginDto = objectMapper.readValue(request.getInputStream(), AuthDto.LoginDto.class);
+        AuthDto.PolarecoLoginDto polarecoLoginDto = objectMapper.readValue(request.getInputStream(), AuthDto.PolarecoLoginDto.class);
         UsernamePasswordAuthenticationToken authenticationToken =
-            new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword());
+            new UsernamePasswordAuthenticationToken(polarecoLoginDto.getEmail(), polarecoLoginDto.getPassword());
         return authenticationManager.authenticate(authenticationToken);
     }
 }

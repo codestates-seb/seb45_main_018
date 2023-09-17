@@ -9,10 +9,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.constraints.Positive;
+import javax.validation.Valid;
+import java.util.UUID;
 
 import static ecoders.ecodersbackend.auth.jwt.JwtProvider.HEADER_AUTHORIZATION;
-import static ecoders.ecodersbackend.auth.jwt.JwtProvider.HEADER_REFRESH_TOKEN;
 
 @Slf4j
 @AllArgsConstructor
@@ -33,8 +33,19 @@ public class MemberController {
     }
 
     @GetMapping("/{member-id}")
-    public ResponseEntity<MemberDto.Response> getMember(@PathVariable("member-id") @Positive long memberId) {
-        Member member = memberService.findMemberById(memberId);
+    public ResponseEntity<MemberDto.Response> getMember(@PathVariable("member-id") UUID uuid) {
+        Member member = memberService.findMemberById(uuid);
+        MemberDto.Response responseDto = MemberDto.Response.parse(member);
+        return ResponseEntity.ok(responseDto);
+    }
+
+    @PatchMapping("/my-info")
+    public ResponseEntity<MemberDto.Response> updateMyInfo(
+        @RequestHeader(HEADER_AUTHORIZATION) String accessToken,
+        @RequestBody @Valid MemberDto.Patch patchDto
+    ) {
+        String email = jwtProvider.getEmailFromToken(accessToken);
+        Member member = memberService.updateMember(email, patchDto.toMember());
         MemberDto.Response responseDto = MemberDto.Response.parse(member);
         return ResponseEntity.ok(responseDto);
     }

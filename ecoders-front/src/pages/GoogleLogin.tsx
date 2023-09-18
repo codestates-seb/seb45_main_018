@@ -25,7 +25,7 @@ const GoogleSignIn = () => {
 
        // 서버에 POST 요청 보내기
        try {
-        const result = await axios.post(`${APIURL}/oauth/google/login`, {
+        const result = await axios.post(`${APIURL}/auth/oauth/google/login`, {
             email,
             username
         }, {

@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.UUID;
 
 import static ecoders.ecodersbackend.auth.jwt.JwtProvider.HEADER_AUTHORIZATION;
 
@@ -59,10 +60,10 @@ public class TodayMissionController {
 
 
 
-    private Long getMemberIdFromAccessToken(String accessToken) {
+    private UUID getMemberIdFromAccessToken(String accessToken) {
         String email = jwtProvider.getEmailFromToken(accessToken);
         Member member = memberService.findMemberByEmail(email);
-        Long memberId = member.getId();
+        UUID memberId = member.getId();
         return memberId;
     }
 

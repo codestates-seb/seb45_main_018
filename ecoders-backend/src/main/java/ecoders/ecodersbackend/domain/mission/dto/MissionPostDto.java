@@ -3,6 +3,7 @@ package ecoders.ecodersbackend.domain.mission.dto;
 import lombok.*;
 
 import java.sql.Timestamp;
+import java.util.UUID;
 
 
 public class MissionPostDto {
@@ -21,7 +22,7 @@ public class MissionPostDto {
         private final String text;
         private final Timestamp createdAt;
         private final Timestamp modifiedAt;
-        private final Long memberId;
+        private final UUID memberId;
         private final boolean completed;
 
     }

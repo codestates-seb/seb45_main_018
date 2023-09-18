@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -20,7 +21,7 @@ public class StampService {
      * 오늘의 미션 완료 개수 가져오기
      */
     @Transactional
-    public int getStampCount(Long memberId, LocalDateTime startDate, LocalDateTime endDate) {
+    public int getStampCount(UUID memberId, LocalDateTime startDate, LocalDateTime endDate) {
 
         LocalDateTime completionTime = LocalDateTime.now();
 

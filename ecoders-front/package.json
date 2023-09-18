@@ -14,6 +14,7 @@
     "@toast-ui/editor": "^3.2.2",
     "@toast-ui/react-editor": "^3.1.5",
     "axios": "^1.5.0",
+    "fortawesome": "^0.0.1-security",
     "gapi-script": "^1.2.0",
     "react": "^18.2.0",
     "react-calendar": "^4.6.0",

@@ -33,7 +33,7 @@ function LoginPage() {
     const onSuccess = async (res: any) => {
       try {
           const { email, name } = res.profileObj;
-          const response = await axios.post(`${APIURL}/oauth/google/login`, {
+          const response = await axios.post(`${APIURL}/auth/oauth/google/login`, {
               email,
               username: name,
           });
@@ -42,7 +42,7 @@ function LoginPage() {
               const headers = response.headers;
               const accessToken = headers['authorization'];
               const refreshToken = headers['refresh-token'];
-              const id = headers['id'];
+              const id = headers['Member-ID'];
   
               localStorage.setItem('accessToken', accessToken);
               localStorage.setItem('refreshToken', refreshToken);
@@ -133,24 +133,24 @@ function LoginPage() {
 
 //   async function googleHandler() {
 
-    // try{
-    //     useEffect(()=> {
-    //         function start() {
-    //           gapi.client.init({
-    //             clientId: clientId,
-    //             scope: ""
-    //           })
-    //         }
-    //         gapi.load("client:auth2", start)
-    //       })
+//     try{
+//         useEffect(()=> {
+//             function start() {
+//               gapi.client.init({
+//                 clientId: clientId,
+//                 scope: ""
+//               })
+//             }
+//             gapi.load("client:auth2", start)
+//           })
         
-    //       const googleAccessToken = gapi.auth.getToken().access_token;
-    //       console.log(googleAccessToken)
-    //       // localStorage.setItem('accessToken', accessToken);
-    // }
-    // catch {
-    //     alert('오류가 발생했습니다.')
-    // }
+//           const googleAccessToken = gapi.auth.getToken().access_token;
+//           console.log(googleAccessToken)
+//           // localStorage.setItem('accessToken', accessToken);
+//     }
+//     catch {
+//         alert('오류가 발생했습니다.')
+//     }
 // }
 
   const loginHandler = async (e: any) => {

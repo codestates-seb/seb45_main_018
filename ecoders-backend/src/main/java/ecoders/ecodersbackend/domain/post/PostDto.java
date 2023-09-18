@@ -7,6 +7,7 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 public class PostDto {
 
@@ -40,7 +41,7 @@ public class PostDto {
         private String category;
         private String thumbnailUrl;
         private String username;
-        private long memberId;
+        private UUID memberId;
         private long views;
         private long likes;
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -48,7 +49,7 @@ public class PostDto {
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
         private LocalDateTime updatedAt;
         private List<CommentResponseDTO> comments;
-        private Set<Long> likedByUserIds;
+        private Set<UUID> likedByUserIds;
 
 
     }
@@ -64,7 +65,7 @@ public class PostDto {
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
         private LocalDateTime createdAt;
         private long likes;
-        private Set<Long> likedByUserIds;
+        private Set<UUID> likedByUserIds;
     }
     @Getter
     @Setter
@@ -72,7 +73,7 @@ public class PostDto {
         private long commentId;
         private String content;
         private String username;
-        private long memberId;
+        private UUID memberId;
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
         private LocalDateTime createdAt;
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")

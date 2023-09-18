@@ -28,6 +28,7 @@ public class Member extends Auditable {
     @Column(nullable = false, unique = true)
     protected String email;
 
+    @Setter
     @Column(nullable = true)
     protected String password;
 
@@ -35,6 +36,7 @@ public class Member extends Auditable {
     @Column(nullable = false)
     protected AuthType authType;
 
+    @Setter
     @Column(nullable = false)
     protected boolean isVerified;
 
@@ -44,5 +46,4 @@ public class Member extends Auditable {
         POLARECO,
         GOOGLE
     }
-
 }

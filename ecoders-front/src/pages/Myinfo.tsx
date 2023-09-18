@@ -60,7 +60,7 @@ const MyInfo = () => {
 
   useEffect(() => {
     axios
-      .get(`${APIURL}/members/myinfo`, {
+      .get(`${APIURL}/members/my-info`, {
         headers: {
           Authorization: accessToken,
           'Refresh-Token': refreshToken,
@@ -206,7 +206,7 @@ const MyInfo = () => {
 
   const deleteHandler = () => {
     axios
-      .delete(`${APIURL}/members/myinfo`, {
+      .delete(`${APIURL}/members/my-info`, {
         headers: {
           Authorization: accessToken,
           'Refresh-Token': refreshToken,
@@ -312,7 +312,6 @@ const MyInfo = () => {
             <label htmlFor="new-password">새로운 비밀번호</label>
           </PasswordTitle>
           <PasswordInput
-                  onClick={() => setFocusKey(2)}
                   autoFocus={focusKey === 2}
             type="password"
             id="new-password"
@@ -327,7 +326,6 @@ const MyInfo = () => {
             <label htmlFor="confirm-new-password">새로운 비밀번호 확인</label>
           </PasswordTitle>
           <PasswordInput
-                  onClick={() => setFocusKey(3)}
                   autoFocus={focusKey === 3}
             type="password"
             id="confirm-new-password"
@@ -403,10 +401,20 @@ const MyInfo = () => {
         if (response.status === 200) {
           setProfileImg(response.data.imageUrl + '?' + new Date().getTime());
           console.log(response);
-          axios.post(`${APIURL}/upload`, response.data).then(response => {
+          axios.patch(`${APIURL}/members/profile-image`,
+          {
+            headers: {
+              'authorization': accessToken,
+              'refresh-token': refreshToken,
+            },
+            params: {
+              'img': response.data, // 쿼리 파라미터로 username 추가
+            },
+
+          }).then(response => {
             if (response.status === 200) {
               alert('업로드에 성공하였습니다.');
-              setProfileImg(response.data);
+              setProfileImg(response.data);//user정보 전체 response로 올 것 
             }
           });
         }
@@ -471,6 +479,7 @@ const MyInfo = () => {
     }
   };
 
+  //닉네임 변경
   const updateUsername = async () => {
     // tempUsername이 빈 문자열이면 업데이트를 건너뛴다.
     if (!tempUsername.trim()) {

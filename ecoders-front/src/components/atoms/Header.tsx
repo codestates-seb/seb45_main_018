@@ -30,9 +30,9 @@ const Header: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${APIURL}/members/myinfo`, {
+        const response = await axios.get(`${APIURL}/members/my-info`, {
           headers: {
-            Authorization: accessToken,
+            'Authorization': accessToken,
             'Refresh-Token': refreshToken,
           },
         });

@@ -42,7 +42,7 @@ function LoginPage() {
               const headers = response.headers;
               const accessToken = headers['authorization'];
               const refreshToken = headers['refresh-token'];
-              const id = headers['id'];
+              const id = headers['member-id'];
   
               localStorage.setItem('accessToken', accessToken);
               localStorage.setItem('refreshToken', refreshToken);
@@ -51,7 +51,10 @@ function LoginPage() {
               dispatch(setAccessToken(accessToken));
               dispatch(setRefreshToken(refreshToken));
               dispatch(setId(id));
-  
+              console.log(accessToken);
+              console.log(refreshToken);
+
+              console.log(id);
               console.log("로그인 성공! 현재 유저: ", res.profileObj);
               dispatch(login()); 
               navigate('/');

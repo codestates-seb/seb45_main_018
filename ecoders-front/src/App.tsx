@@ -49,7 +49,6 @@ function App() {
 
   return (
     <>
-      {' '}
       <BrowserRouter>
         <Header />
         <PageWrapper>

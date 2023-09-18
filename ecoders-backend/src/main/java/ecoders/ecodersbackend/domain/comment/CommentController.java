@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.Positive;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 import static ecoders.ecodersbackend.auth.jwt.JwtProvider.HEADER_AUTHORIZATION;
 
@@ -38,10 +40,11 @@ public class CommentController {
         this.postRepository = postRepository;
         this.jwtProvider = jwtProvider;
     }
+
     @PostMapping("/{post-id}/comment")
-    public ResponseEntity postComment(@PathVariable("post-id") long postId,
-                                      @RequestBody CommentDto.CommentCreateDto commentDto,
-                                      @RequestHeader(HEADER_AUTHORIZATION) String accessToken) {
+    public ResponseEntity<Map<String,Object>> postComment(@PathVariable("post-id") long postId,
+                                                          @RequestBody CommentDto.CommentCreateDto commentDto,
+                                                          @RequestHeader(HEADER_AUTHORIZATION) String accessToken) {
         String email = jwtProvider.getEmailFromToken(accessToken);
         Member member = commentService.findMemberByEmail(email);
 
@@ -55,7 +58,11 @@ public class CommentController {
         newComment.setModifiedAt(LocalDateTime.now());
 
         commentRepository.save(newComment);
-        return ResponseEntity.ok("Comment successfully created.");
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", "Comment successfully created.");
+        response.put("commentId", newComment.getCommentId());
+        return ResponseEntity.ok(response);
     }
 
     @PatchMapping("/comment/{comment-id}")

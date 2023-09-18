@@ -7,7 +7,7 @@ import javax.validation.Payload;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Target;
 
-@Target(ElementType.FIELD)
+@Target({ ElementType.PARAMETER, ElementType.FIELD })
 @Constraint(validatedBy = { PolarecoUsernameValidator.class })
 public @interface PolarecoUsername {
 

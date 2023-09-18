@@ -14,6 +14,7 @@ public enum ExceptionCode {
     AUTHENTICATION_FAILED(UNAUTHORIZED, "JWT authentication failed"),
     EXPIRED_ACCESS_TOKEN(UNAUTHORIZED, "Expired access token"),
     EXPIRED_REFRESH_TOKEN(UNAUTHORIZED, "Expired refresh token"),
+    CURRENT_PASSWORD_MISMATCH(FORBIDDEN, "Current password mistmatch"),
     POST_NOT_FOUND(NOT_FOUND, "Post not found"),
     CANNOT_CHANGE_POST(FORBIDDEN, "Post cannot change"),
     CANNOT_DELETE_POST(FORBIDDEN, "Post cannot delete"),

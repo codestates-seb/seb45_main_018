@@ -19,8 +19,8 @@ public class EmailService {
     public void sendVerificationMail(String to) {
         try {
             javaMailSender.send(writeTestMessage(to));
-        } catch (MessagingException e) {
-            log.error("메시지 작성 중 예외 발생");
+        } catch (Exception e) {
+            log.error("메시지 작성 중 예외 발생: {}", e.toString());
         }
     }
 

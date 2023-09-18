@@ -7,9 +7,9 @@ import ecoders.ecodersbackend.domain.member.entity.Member;
 import ecoders.ecodersbackend.domain.member.repository.MemberRepository;
 import ecoders.ecodersbackend.domain.member.repository.VerificationCodeRepository;
 import ecoders.ecodersbackend.exception.BusinessLogicException;
-import ecoders.ecodersbackend.exception.code.ExceptionCode;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,31 +30,29 @@ public class MemberService {
 
     private final VerificationCodeRepository verificationCodeRepository;
 
+    private final PasswordEncoder passwordEncoder;
+
     public UUID signup(Member member) {
         // 해당 이메일 주소로 가입한 회원이 존재하는지 조회, 존재하지 않으면 새 회원 생성 및 데이터베이스에 저장
         String email = member.getEmail();
         checkExistingMemberByEmail(email);
         Member signedUpMember = memberRepository.save(member);
-        log.info("새 유저 이메일: {}", signedUpMember.getEmail());
-        log.info("새 유저 ID: {}", signedUpMember.getId());
-        log.info("새 유저 닉네임: {}", signedUpMember.getUsername());
-        log.info("새 유저 가입 벤더: {}", signedUpMember.getAuthType());
-        log.info("새 유저 이메일 인증 여부: {}", signedUpMember.isVerified());
+        log.info("신규 회원 DB 등록 완료");
         UUID signedUpMemberId = signedUpMember.getId();
 
         // 인증 코드 발급 및 데이터베이스에 저장
         String code = VerificationCodeIssuer.issue();
-        log.info("인증 코드: {}", code);
         VerificationCode verificationCode = VerificationCode.builder()
             .memberId(signedUpMemberId)
             .email(email)
             .code(code)
             .build();
         verificationCodeRepository.save(verificationCode);
+        log.info("인증 코드 발급 및 DB 저장 완료");
 
-//        // 인증 이메일 전송
-//        emailService.sendVerificationMail(email);
-//        log.info("이메일 전송 완료");
+        // 인증 이메일 전송
+        emailService.sendVerificationMail(email);
+        log.info("이메일 전송 완료");
         return signedUpMemberId;
     }
 
@@ -87,10 +85,31 @@ public class MemberService {
         return member.get();
     }
 
-    public Member updateMember(String email, Member member) {
+    public Member updateUsername(String email, String newUsername) {
         Member foundMember = findMemberByEmail(email);
-        foundMember.setUsername(member.getUsername());
+        foundMember.setUsername(newUsername);
         return memberRepository.save(foundMember);
+    }
+
+    public void updatePassword(String email, String currentPassword, String newPassword) {
+        Member foundMember = findMemberByEmail(email);
+        String encodedPassword = foundMember.getPassword();
+        if (!passwordEncoder.matches(currentPassword, encodedPassword)) {
+            throw new BusinessLogicException(CURRENT_PASSWORD_MISMATCH);
+        }
+        foundMember.setPassword(passwordEncoder.encode(newPassword));
+        memberRepository.save(foundMember);
+    }
+
+    public Member updateProfileImage(String email, String imageUrl) {
+        Member foundMember = findMemberByEmail(email);
+        foundMember.setImageUrl(imageUrl);
+        return memberRepository.save(foundMember);
+    }
+
+    public void deleteMember(String email) {
+        Member foundMember = findMemberByEmail(email);
+        memberRepository.delete(foundMember);
     }
 
     private void checkExistingMemberByEmail(String email) {

@@ -3,28 +3,30 @@ package ecoders.ecodersbackend.domain.mission.entity;
 import ecoders.ecodersbackend.domain.member.entity.Member;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @Getter
+@Setter
 @Entity
 public class Mission {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column
     private Long missionId;
 
     @Column(nullable = false)
     private String text;
 
-    @Column(nullable = false)
-    private LocalDateTime createdAt;
+    @Column(updatable = false)
+    private Timestamp createdAt;
 
     @Column
-    private LocalDateTime modifiedAt;
+    private Timestamp modifiedAt;
 
     @Column
     private Boolean completed;
@@ -45,12 +47,11 @@ public class Mission {
     /**
      * 챌린지 생성시 사용하는 생성자
      */
-    public Mission(Long missionId, String text, LocalDateTime createdAt, LocalDateTime modifiedAt, Member member) {
-        this.missionId = missionId;
+    public Mission(String text, Long memberId) {
         this.text = text;
-        this.createdAt = createdAt;
-        this.modifiedAt = modifiedAt;
-        this.member = member;
+        LocalDateTime currentTime = LocalDateTime.now();
+        this.createdAt =  Timestamp.valueOf(currentTime);
+        this.modifiedAt = Timestamp.valueOf(currentTime);
     }
 
     /**

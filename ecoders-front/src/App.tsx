@@ -19,6 +19,7 @@ import { useEffect } from 'react';
 import { login } from './redux/slice/loginSlice';
 import { setAccessToken, setRefreshToken, setId } from './redux/slice/userSlice';
 import PageWrapper from './PageWrapper';
+import GoogleSignIn from './pages/GoogleLogin';
 
 function App() {
 
@@ -50,6 +51,7 @@ function App() {
         <Header />
         <PageWrapper>
         <Routes>
+          
           <Route path="/" element={<Main />} />
           <Route path="/myinfo" element={<MyInfo />} />
           <Route path="/service" element={<Service />} />
@@ -64,6 +66,7 @@ function App() {
           {/* <Route element={NotFound} /> */}
         </Routes>
         </PageWrapper>
+        <GoogleSignIn />
         <Footer />
       </BrowserRouter>
     </>

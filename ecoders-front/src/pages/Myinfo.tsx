@@ -16,11 +16,13 @@ const MyInfo = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const username = useSelector((state: RootState) => state.user.username); // username 상태 가져오기
-  const memberId = useSelector((state: RootState) => state.user.id);
+  // const memberId = useSelector((state: RootState) => state.user.id);
   const email = useSelector((state: RootState) => state.user.email);
-  const profileImg = useSelector((state:RootState) => state.user.profileImg)
-  const [isModalOpen, setModalOpen] = useState(false);
+  const accessToken = useSelector((state: RootState) => state.user.accessToken);
+  const refreshToken = useSelector((state: RootState) => state.user.refreshToken);
 
+  const profileImg = useSelector((state: RootState) => state.user.profileImg);
+  const [isModalOpen, setModalOpen] = useState(false);
 
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -28,8 +30,6 @@ const MyInfo = () => {
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
-
-  // const stamp = useSelector((state: RootState) => state.user.stamp);
 
   // const [data, setData] = useState({
   //   username: 'user',
@@ -60,9 +60,15 @@ const MyInfo = () => {
 
   useEffect(() => {
     axios
-      .get(`${APIURL}/members/${memberId}`)
+      .get(`${APIURL}/members/myinfo`, {
+        headers: {
+          Authorization: accessToken,
+          'Refresh-Token': refreshToken,
+        },
+      })
       .then(res => {
         dispatch(setUsername(res.data.username));
+        console.log(username);
       })
       .catch(error => {
         console.log(error, '데이터를 불러오는데 실패했습니다.');
@@ -91,48 +97,133 @@ const MyInfo = () => {
     );
   });
 
-  const changePassword = () => {
-    // 현재 비밀번호 확인
-    axios
-      .post(`${APIURL}/password/verify`, { password: currentPassword })
-      .then(response => {
-        if (response.status === 200) {
-          //현재 비밀번호가 일치하면
-          // 새비밀번호와 확인 비밀번호 비교
-          if (newPassword !== confirmNewPassword) {
-            alert('두 비밀번호가 일치하지 않습니다.');
-            return;
-          }
+  // axios
+  // .get(`${APIURL}/members/myinfo`, {
+  //   headers: {
+  //     'Authorization': accessToken,
+  //     'Refresh-Token': refreshToken,
+  //   },
+  // })
+  // .then(res => {
+  //   dispatch(setUsername(res.data.username));
+  // })
+  // .catch(error => {
+  //   console.log(error, '데이터를 불러오는데 실패했습니다.');
+  // });
 
-          // 비밀번호 업데이트
-          axios
-            .patch(`${APIURL}/members/${memberId}/reset-password`, { password: newPassword })
-            .then(() => {
-              alert('비밀번호가 성공적으로 변경되었습니다.');
-              setModalOpen(false);
-            })
-            .catch(() => {
-              console.error('비밀번호 변경 중 오류 발생');
-              alert('비밀번호 변경 중 오류가 발생했습니다.');
-            });
-        } else {
-          alert('현재 비밀번호가 일치하지 않습니다.');
+  const changePassword = async () => {
+    try {
+      // 현재 비밀번호 확인
+      const response = await axios.patch(
+        `${APIURL}/members/password`,
+        { currentPassword: currentPassword, newPassword: newPassword },
+        {
+          headers: {
+            Authorization: accessToken,
+            'Refresh-Token': refreshToken,
+          },
+        },
+      );
+
+      console.log(currentPassword, newPassword);
+
+      if (response.status === 200) {
+        alert('비밀번호가 성공적으로 변경되었습니다.');
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  // 현재 비밀번호가 일치하면
+
+  // 새 비밀번호와 확인 비밀번호 비교
+  // if (newPassword !== confirmNewPassword) {
+  //   alert('두 비밀번호가 일치하지 않습니다.');
+  //   return;
+  // }
+
+  // 비밀번호 업데이트
+  //       try {
+  //         await axios.patch(
+  //           `${APIURL}/members/${memberId}/patch-password`,
+  //           { password: newPassword }
+  //         );
+  //         alert('비밀번호가 성공적으로 변경되었습니다.');
+  //         setModalOpen(false);
+  //       } catch (error) {
+  //         console.error('비밀번호 변경 중 오류 발생:', error);
+  //         alert('비밀번호 변경 중 오류가 발생했습니다.');
+  //       }
+  //     } else {
+  //       alert('현재 비밀번호가 일치하지 않습니다.');
+  //     }
+  //   } catch (error) {
+  //     console.error('비밀번호 확인 중 오류 발생:', error);
+  //     alert('비밀번호 확인 중 오류가 발생했습니다.');
+  //   }
+  // };
+
+  //   const changePassword = () => {
+  //     // 현재 비밀번호 확인
+  //     axios
+  //       .post(`${APIURL}/members/reset-password`,{
+  //         headers: {
+  //           "Authorization": accessToken,
+  //           'Refresh-Token': refreshToken,
+  //         },
+  //          { currentpassword: currentPassword, newPassword: newPassword }
+  //       }
+  // )
+  //       .then(response => {
+  //         if (response.status === 200) {
+  //           //현재 비밀번호가 일치하면
+  //           // 새비밀번호와 확인 비밀번호 비교
+  //           if (newPassword !== confirmNewPassword) {
+  //             alert('두 비밀번호가 일치하지 않습니다.');
+  //             return;
+  //           }
+
+  //           // 비밀번호 업데이트
+  //           axios
+  //             .patch(`${APIURL}/members/${memberId}/patch-password`, { password: newPassword })
+  //             .then(() => {
+  //               alert('비밀번호가 성공적으로 변경되었습니다.');
+  //               setModalOpen(false);
+  //             })
+  //             .catch(() => {
+  //               console.error('비밀번호 변경 중 오류 발생');
+  //               alert('비밀번호 변경 중 오류가 발생했습니다.');
+  //             });
+  //         } else {
+  //           alert('현재 비밀번호가 일치하지 않습니다.');
+  //         }
+  //       })
+  //       .catch(error => {
+  //         console.error('비밀번호 확인 중 오류 발생:', error);
+  //         alert('비밀번호 확인 중 오류가 발생했습니다.');
+  //       });
+  //   };
+
+  const deleteHandler = () => {
+    axios
+      .delete(`${APIURL}/members/myinfo`, {
+        headers: {
+          Authorization: accessToken,
+          'Refresh-Token': refreshToken,
+        },
+      })
+      .then(response => {
+        //헤더에 accesstoken, refreshtoken 담기
+        if (response.status === 200) {
+          alert('계정이 삭제되었습니다.');
+          dispatch(logout());
+          navigate('/');
         }
       })
       .catch(error => {
-        console.error('비밀번호 확인 중 오류 발생:', error);
-        alert('비밀번호 확인 중 오류가 발생했습니다.');
+        console.error('서버 연결 불가:', error);
+        alert('서버 연결이 되어있지 않습니다.');
       });
-  };
-
-  const deleteHandler = () => {
-    axios.delete(`${APIURL}/members/${memberId}/delete-account`).then(response => {
-      if (response.status === 200) {
-        alert('계정이 삭제되었습니다.');
-        dispatch(logout());
-        navigate('/');
-      }
-    });
   };
 
   interface DeleteAccountModalProps {
@@ -185,6 +276,11 @@ const MyInfo = () => {
   };
 
   const PasswordModalContent = () => {
+
+    const [focusKey, setFocusKey] = useState(null);
+    
+
+
     return (
       <ModalContentContainer>
         <h2>비밀번호 변경</h2>
@@ -194,6 +290,8 @@ const MyInfo = () => {
             <label htmlFor="current-password">현재 비밀번호</label>
           </PasswordTitle>
           <PasswordInput
+        onClick={() => setFocusKey(1)}
+        autoFocus={focusKey === 1}
             type="password"
             id="current-password"
             value={currentPassword}
@@ -207,6 +305,8 @@ const MyInfo = () => {
             <label htmlFor="new-password">새로운 비밀번호</label>
           </PasswordTitle>
           <PasswordInput
+                  onClick={() => setFocusKey(2)}
+                  autoFocus={focusKey === 2}
             type="password"
             id="new-password"
             value={newPassword}
@@ -220,6 +320,8 @@ const MyInfo = () => {
             <label htmlFor="confirm-new-password">새로운 비밀번호 확인</label>
           </PasswordTitle>
           <PasswordInput
+                  onClick={() => setFocusKey(3)}
+                  autoFocus={focusKey === 3}
             type="password"
             id="confirm-new-password"
             value={confirmNewPassword}
@@ -236,7 +338,14 @@ const MyInfo = () => {
             비밀번호 변경하기
           </PasswordButton>
 
-          <PasswordButton onClick={() => setModalOpen(false)} style={{ backgroundColor: '#5A5A5A', color: '#ffffff' }}>
+          <PasswordButton
+            onClick={() => {
+              setModalOpen(false);
+              setCurrentPassword('');
+              setNewPassword('');
+              setConfirmNewPassword('');
+            }}
+            style={{ backgroundColor: '#5A5A5A', color: '#ffffff' }}>
             닫기
           </PasswordButton>
         </PasswordContainer>
@@ -245,21 +354,26 @@ const MyInfo = () => {
   };
 
   const [selectedImage, setSelectedImage] = useState(null);
-  const fileInputRef = useRef(null);
+  // console.log(selectedImage);
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleProfileClick = () => {
-    fileInputRef.current.click();
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
   };
 
-  const handleImageChange = e => {
-    const file = e.target.files[0];
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files && e.target.files[0];
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        console.log(reader);
-        setSelectedImage(reader.result);
-        dispatch(setProfileImg(reader.result))
-        uploadImage(file); //서버에 이미지 전송
+        if (typeof reader.result === 'string') {
+          setSelectedImage(reader.result);
+          dispatch(setProfileImg(reader.result));
+          uploadImage(file); //서버에 이미지 전송
+        }
       };
       reader.readAsDataURL(file);
     }
@@ -267,20 +381,31 @@ const MyInfo = () => {
 
   const uploadImage = async file => {
     const formData = new FormData();
-    formData.append('profileImage', file);
+    formData.append('imageFile', file);
 
     axios
-      .post(`${APIURL}/upload`, formData, {
+      .post(`${APIURL}/posts/uploadImage`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
+          Authorization: accessToken,
+          'Refresh-Token': refreshToken,
         },
       })
       .then(response => {
         if (response.status === 200) {
           setProfileImg(response.data.imageUrl + '?' + new Date().getTime());
+          console.log(response);
+          axios.post(`${APIURL}/upload`, response.data).then(response => {
+            if (response.status === 200) {
+              alert('업로드에 성공하였습니다.');
+              setProfileImg(response.data);
+            }
+          });
         }
       });
   };
+
+  //myinfo 로딩할 때 다시 서버 프로필 이미지를 get해오는 로직 추가(useEffect?)
 
   const [isEditing, setIsEditing] = useState(false); // username을 수정하는 중인지 상태
   const [tempUsername, setTempUsername] = useState(username); // 임시 username 저장
@@ -304,8 +429,9 @@ const MyInfo = () => {
       }
     }, 0);
   }
+
   // 정규식을 사용하여 허용된 문자 및 기호만 입력되게 하는 로직
-  const isValidInput = input => {
+  const isValidInput = (input: any) => {
     const pattern = /^[A-Za-z0-9_.가-힣]*$/;
     return pattern.test(input);
   };
@@ -343,20 +469,58 @@ const MyInfo = () => {
       setTempUsername(username); // 현재 username으로 tempUsername을 리셋한다.
       return;
     }
+
     // dispatch
     dispatch(setUsername(tempUsername));
 
     // 서버 업데이트
     try {
-      const response = await axios.patch(`${APIURL}/members/${memberId}/update-username`, { username: tempUsername });
-      if (response.status !== 200) {
-        // 에러 처리
-        console.error('Username update failed');
+      const response = await axios.patch(`${APIURL}/members/username`, {
+        headers: {
+          Authorization: accessToken,
+          'Refresh-Token': refreshToken,
+        },
+        params: {
+          username: username, // 쿼리 파라미터로 username 추가
+        },
+      });
+
+      console.log(username);
+
+      if (response.status === 200) {
+        console.log(response.data);
+        dispatch(setUsername(response.data['username']));
       }
     } catch (error) {
-      console.error('Error updating username:', error);
+      console.log(error);
     }
   };
+
+  // try {
+  //   const response = await axios.patch(`${APIURL}/members/username?username=${username}`, {
+  //     headers: {
+  //       'Authorization': accessToken,
+  //       'Refresh-Token': refreshToken
+  //     }
+  //   })
+  //   if( response.status === 200 ) {
+  //     alert("닉네임이 변경되었습니다.")
+  //   }
+  // } catch(error) {
+  //   console.error('Error updating username: ', error);
+  // }
+  // }
+
+  //   try {
+  //     const response = await axios.patch(`${APIURL}/members/username`, { username: tempUsername });
+  //     if (response.status !== 200) {
+  //       // 에러 처리
+  //       console.error('Username update failed');
+  //     }
+  //   } catch (error) {
+  //     console.error('Error updating username:', error);
+  //   }
+  // };
 
   return (
     <div>
@@ -391,10 +555,9 @@ const MyInfo = () => {
             />
             <div>
               <Username>
-
-              {isEditing ? (
-                <>
-                  <div style={{ display: 'flex', flexDirection: 'column' }}>
+                {isEditing ? (
+                  <>
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
                       <input
                         style={{ fontSize: '16px', fontWeight: '700', textAlign: 'center', padding: 0, margin: 0 }}
                         value={tempUsername}
@@ -404,26 +567,30 @@ const MyInfo = () => {
                         autoFocus // input이 활성화될 때 자동으로 포커스
                       />
 
-                    <span style={{ fontSize: '12px', fontWeight: '500', textAlign: 'center' }}>
-                      {byte}byte / 20byte
-                    </span>
-                  </div>
-                </>
-              ) : (
-                <>
+                      <span style={{ fontSize: '12px', fontWeight: '500', textAlign: 'center' }}>
+                        {byte}byte / 20byte
+                      </span>
+                    </div>
+                  </>
+                ) : (
+                  <>
                     {username}
                     <FiEdit2
                       onClick={handleEditClick}
                       style={{ paddingTop: '5px', color: '#a1a1a1', cursor: 'pointer' }}
                     />
-                </>
-              )}
-
+                  </>
+                )}
               </Username>
             </div>
             <BottomContainer>
               <Email>{email}</Email>
-              <PasswordReset onClick={() => setModalOpen(true)}>비밀번호 변경</PasswordReset>
+              <PasswordReset
+                onClick={() => {
+                  setModalOpen(true);
+                }}>
+                비밀번호 변경
+              </PasswordReset>
             </BottomContainer>
           </ProfileContent>
         </ProfileContainer>
@@ -622,8 +789,8 @@ const PasswordReset = styled.button`
 `;
 
 const BottomContainer = styled.div`
-position: absolute;
-margin: 215px;
+  position: absolute;
+  margin: 215px;
   display: flex;
   flex-direction: column;
 `;

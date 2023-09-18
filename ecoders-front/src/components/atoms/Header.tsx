@@ -18,49 +18,68 @@ const Header: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const isLoggedIn = useSelector((state: RootState) => state.login.isLoggedIn);
-  const memberId = useSelector((state: RootState) => state.user.id);
+  // const memberId = useSelector((state: RootState) => state.user.id);
   const username = useSelector((state: RootState) => state.user.username); // username 상태 가져오기
   const APIURL = useSelector((state: RootState) => state.api.APIURL);
   const profileImg = useSelector((state:RootState) => state.user.profileImg)
+  const accessToken = useSelector((state:RootState) => state.user.accessToken)
+  const refreshToken = useSelector((state:RootState) => state.user.refreshToken)
+
   // logout: {APIURL}/auth/logout -> delete -> accesstoken, refreshtoken, Id 요청
-  // Header css : 재설정
-  // main 이미지 수정
+
 
   useEffect(() => {
     const fetchData = async () => {
-      // try {
-      //   const response = await axios.get(`${APIURL}/member`);
-      //   if (response.status === 200) {
-      //     const { username, stamp } = response.data;
-      //     console.log(username, stamp)
-      //     console.log(response.data)
-      //     dispatch(setUsername(username));
-      //     // dispatch(setStamp(`${stamp}`));
-      //     console.log(username)
-      //     navigate('/');
-      //   }
-      // }
-
       try {
-        axios.get(`${APIURL}/members/${memberId}`).then(response => {
-          // const { username, stamp } = response.data;
-          console.log(response.data);
-          console.log(username); // 이렇게 같은 스코프 내에서 호출
-          dispatch(setUsername(response.data['username']));
-          console.log(username); // 이렇게 같은 스코프 내에서 호출
+        const response = await axios.get(`${APIURL}/members/myinfo`, {
+          headers: {
+            'Authorization': accessToken,
+            'Refresh-Token': refreshToken,
+          }
         });
-      } catch (error: any) {
-        if (error.response?.status === 401) {
-          alert('로그인에 실패했습니다.');
-        } else {
-          alert('서버 오류가 발생했습니다.');
-          console.error('로그인 에러:', error);
-        }
+  
+        console.log(response.data);
+        dispatch(setUsername(response.data.username));
+      } 
+      
+      
+      catch (error) {
+        console.log(error)
+
       }
     };
-
+  
     fetchData(); // 비동기 함수 실행
   }, [isLoggedIn]);
+  
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try{ 
+  //       axios.get(`${APIURL}/members/my-info`, {
+  //         headers: {
+  //           'Authorization': accessToken,
+  //           'Refresh-Token': refreshToken,
+  //         }
+  //       })
+  //       .then(response => {
+  //         console.log(response.data); 
+  //       dispatch(setUsername(response.data.username))
+  //     })
+  //       // .catch(error => console.error('Error:', error));
+
+  //     } catch (error: any) {
+  //       if (error.response?.status === 401) {
+  //         alert('로그인에 실패했습니다.');
+  //       } else {
+  //         alert('서버 오류가 발생했습니다.');
+  //         console.error('로그인 에러:', error);
+  //       }
+  //     }
+  //   };
+
+  //   fetchData(); // 비동기 함수 실행
+  // }, [isLoggedIn]);
 
   //   try {
   //     const response = await axios.get(`${APIURL}/member`);

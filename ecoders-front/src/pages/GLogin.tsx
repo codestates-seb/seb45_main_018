@@ -14,7 +14,7 @@ import { login } from '../redux/slice/loginSlice';
 
 interface GLoginProps {
     children: React.ReactNode;
-    onClick: (e:React.MouseEventHandler<HTMLButtonElement>) => Promise<void>; 
+    // onClick: (e:React.MouseEventHandler<HTMLButtonElement>) => Promise<void>; 
 }
 
 const GLogin: React.FC<GLoginProps> = () => {
@@ -22,35 +22,44 @@ const GLogin: React.FC<GLoginProps> = () => {
   const navigate = useNavigate();
   const APIURL = useSelector((state:RootState) => state.api.APIURL);
     const clientId = useSelector((state: RootState) => state.login.clientId);
-    const onSuccess = async (res:any) => {
-        try {
-          const response = await axios.post(`${APIURL}/oauth/google/login`,{
-            email: res.profileObj.email,
-            username: res.profileObj.name,
-          });
 
-          if( response.status === 200) {
-            const accessToken = response.headers['authorization'];
-            const refreshToken = response.headers['refresh-token'];
-            const id = response.headers['id'];
-            localStorage.setItem('accessToken', accessToken);
-            localStorage.setItem('refreshToken', refreshToken);
-            localStorage.setItem('id', id);
-            console.log(accessToken);  // 액세스 토큰 값
-            console.log(refreshToken);  // 리프레시 토큰 값
-            console.log(id)
-            dispatch(setAccessToken(accessToken));
-            dispatch(setRefreshToken(refreshToken));
-            dispatch(setId(id));
-            console.log("로그인 성공! 현재 유저: ", res.profileObj);
-            dispatch(login());
-            navigate('/');
+    const onSuccess = async (res: any) => {
+      try {
+          const { email, name } = res.profileObj;
+          const response = await axios.post(`${APIURL}/oauth/google/login`, {
+              email,
+              username: name,
+          });
+  
+          if (response.status === 200) {
+              const headers = response.headers;
+              const accessToken = headers['authorization'];
+              const refreshToken = headers['refresh-token'];
+              const id = headers['id'];
+  
+              localStorage.setItem('accessToken', accessToken);
+              localStorage.setItem('refreshToken', refreshToken);
+              localStorage.setItem('id', id);
+  
+              dispatch(setAccessToken(accessToken));
+              dispatch(setRefreshToken(refreshToken));
+              dispatch(setId(id));
+  
+              console.log("로그인 성공! 현재 유저: ", res.profileObj);
+              dispatch(login());
+              navigate('/');
           }
+      } catch (error) {
+          console.error("Error occurred:", error);
+          alert('오류');
       }
-      catch {
-        alert('오류가 발생했습니다')
-      }
-    }
+  }
+  
+
+
+    // const onSuccess = (res: any) => {
+    //   console.log(res.profileObj)
+    // }
 
     const onFailure = (res: any) => {
         console.log("로그인 실패! res: ", res)

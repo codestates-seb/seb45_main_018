@@ -74,7 +74,7 @@ public class PostService {
         PostDto.PostResponseDtoV1 newPost = new PostDto.PostResponseDtoV1();
         long likescount = getLikeCountForPost(postId);
         Set<Member> likedByMembers = post.getLikedBy();
-        Set<Long> likedByUserIds = new HashSet<>();
+        Set<UUID> likedByUserIds = new HashSet<>();
         for (Member member : likedByMembers) {
             likedByUserIds.add(member.getId());
         }
@@ -125,7 +125,7 @@ public class PostService {
                     PostDto.PostResponseDtoV2 dto = new PostDto.PostResponseDtoV2();
                     long likescount = getLikeCountForPost(post.getPostId());
                     Set<Member> likedByMembers = post.getLikedBy();
-                    Set<Long> likedByUserIds = new HashSet<>();
+                    Set<UUID> likedByUserIds = new HashSet<>();
                     for (Member member : likedByMembers) {
                         likedByUserIds.add(member.getId());
                     }
@@ -161,7 +161,7 @@ public class PostService {
         return url;
     }
 
-    public void toggleLike(Long postId, Long memberId) {
+    public void toggleLike(Long postId, UUID memberId) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new BusinessLogicException(ExceptionCode.POST_NOT_FOUND));
         Member member = memberRepository.findById(memberId).orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
 

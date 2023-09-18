@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.Positive;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 import static ecoders.ecodersbackend.auth.jwt.JwtProvider.HEADER_AUTHORIZATION;
 
@@ -119,7 +120,7 @@ public class PostController {
                                              @RequestHeader(HEADER_AUTHORIZATION) String accessToken) {
         String email = jwtProvider.getEmailFromToken(accessToken);
         Member member = postService.findMemberByEmail(email);
-        long memberId = member.getId();
+        UUID memberId = member.getId();
         postService.toggleLike(postId, memberId);
         return ResponseEntity.ok("Like toggled successfully");
     }

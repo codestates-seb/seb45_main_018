@@ -16,10 +16,11 @@ import Signup from './pages/Signup';
 import Chat from './pages/Chat/Chat';
 import { useDispatch } from 'react-redux';
 import { useEffect } from 'react';
-import { login } from './redux/slice/loginSlice';
+import { login, logout } from './redux/slice/loginSlice';
 import { setAccessToken, setRefreshToken, setId } from './redux/slice/userSlice';
 import PageWrapper from './PageWrapper';
 import GoogleSignIn from './pages/GoogleLogin';
+
 
 function App() {
 
@@ -38,8 +39,10 @@ function App() {
       dispatch(setRefreshToken(refreshToken));
       // dispatch(setUsername(username));
       dispatch(setId(id));
+    } else {
+      dispatch(logout());
     }
-  }, [])
+  }, [dispatch])
 
 
   

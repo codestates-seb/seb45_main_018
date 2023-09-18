@@ -42,7 +42,7 @@ function LoginPage() {
               const headers = response.headers;
               const accessToken = headers['authorization'];
               const refreshToken = headers['refresh-token'];
-              const id = headers['Member-ID'];
+              const id = headers['id'];
   
               localStorage.setItem('accessToken', accessToken);
               localStorage.setItem('refreshToken', refreshToken);
@@ -107,6 +107,7 @@ function LoginPage() {
 //         });
 //     }
 
+
 //     // gapi 라이브러리를 로드하고, 로드가 완료되면 initGoogleAuth 함수를 호출합니다.
 //     gapi.load("client:auth2", initGoogleAuth);
 // }, [clientId, dispatch]);  // 의존성 배열에 clientId와 dispatch를 추가했습니다.
@@ -152,6 +153,7 @@ function LoginPage() {
 //         alert('오류가 발생했습니다.')
 //     }
 // }
+
 
   const loginHandler = async (e: any) => {
     e.preventDefault();

@@ -13,6 +13,7 @@
     "@reduxjs/toolkit": "^1.9.5",
     "@toast-ui/editor": "^3.2.2",
     "@toast-ui/react-editor": "^3.1.5",
+    "@types/react-calendar": "^4.1.0",
     "axios": "^1.5.0",
     "fortawesome": "^0.0.1-security",
     "gapi-script": "^1.2.0",

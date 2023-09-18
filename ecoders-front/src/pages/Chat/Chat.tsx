@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/store/store';
 import { useState } from 'react';
 import axios from 'axios';
-import ChatContent from './\bChatContent';
+// import ChatContent from './ChatContent';
 // import { useEffect } from 'react';
 
 const Chat = () => {
@@ -89,7 +89,7 @@ const Chat = () => {
           <ChatTitle>Chat with {curChatUser}</ChatTitle>
           <MessageContainer>
 
-            <ChatContent currentRoomId={selectedRoomId} currentUserId={currentUserId}/>
+            {/* <ChatContent currentRoomId={selectedRoomId} currentUserId={currentUserId}/> */}
             
           </MessageContainer>
         </ChatContainer>

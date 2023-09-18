@@ -9,7 +9,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useEffect } from 'react';
-import { setUsername} from '../../redux/slice/userSlice';
+import { setUsername } from '../../redux/slice/userSlice';
 import { RootState } from '../../redux/store/store';
 import Modal from './Modal';
 import { openModal, closeModal } from '../../redux/slice/modalSlice';
@@ -21,41 +21,35 @@ const Header: React.FC = () => {
   // const memberId = useSelector((state: RootState) => state.user.id);
   const username = useSelector((state: RootState) => state.user.username); // username 상태 가져오기
   const APIURL = useSelector((state: RootState) => state.api.APIURL);
-  const profileImg = useSelector((state:RootState) => state.user.profileImg)
-  const accessToken = useSelector((state:RootState) => state.user.accessToken)
-  const refreshToken = useSelector((state:RootState) => state.user.refreshToken)
+  const profileImg = useSelector((state: RootState) => state.user.profileImg);
+  const accessToken = useSelector((state: RootState) => state.user.accessToken);
+  const refreshToken = useSelector((state: RootState) => state.user.refreshToken);
 
   // logout: {APIURL}/auth/logout -> delete -> accesstoken, refreshtoken, Id 요청
-
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axios.get(`${APIURL}/members/myinfo`, {
           headers: {
-            'Authorization': accessToken,
+            Authorization: accessToken,
             'Refresh-Token': refreshToken,
-          }
+          },
         });
-  
+
         console.log(response.data);
         dispatch(setUsername(response.data.username));
-      } 
-      
-      
-      catch (error) {
-        console.log(error)
-
+      } catch (error) {
+        console.log(error);
       }
     };
-  
+
     fetchData(); // 비동기 함수 실행
   }, [isLoggedIn]);
-  
 
   // useEffect(() => {
   //   const fetchData = async () => {
-  //     try{ 
+  //     try{
   //       axios.get(`${APIURL}/members/my-info`, {
   //         headers: {
   //           'Authorization': accessToken,
@@ -63,7 +57,7 @@ const Header: React.FC = () => {
   //         }
   //       })
   //       .then(response => {
-  //         console.log(response.data); 
+  //         console.log(response.data);
   //       dispatch(setUsername(response.data.username))
   //     })
   //       // .catch(error => console.error('Error:', error));
@@ -217,7 +211,7 @@ const Header: React.FC = () => {
           loginModalState && (
             <AlertModalBackground onClick={modalcloseHandler}>
               <AlertModal
-              modaltype="loginModal"
+                modaltype="loginModal"
                 onClick={() => {
                   modalcloseHandler();
                 }}>
@@ -236,11 +230,13 @@ export default Header;
 const Entire = styled.div`
   display: flex;
   justify-content: center;
+  height: 100px;
+  margin-bottom: 20px;
 `;
 
 const HeaderContainer = styled.div`
   position: fixed;
-  z-index: 1000;
+  z-index: 40;
   /* transform: scale(0.65); // 이 줄을 추가 */
   display: flex;
   justify-content: space-between;
@@ -248,7 +244,7 @@ const HeaderContainer = styled.div`
   width: 100%;
   max-width: 1920px;
   min-width: 960px;
-  height: 70px;
+  height: 100px;
   background-color: #ffffff;
   border: none;
   padding-left: 80px;
@@ -429,7 +425,7 @@ const AlertModal = styled(Modal)`
 
 const AlertModalBackground = styled.div`
   position: fixed;
-  
+
   top: 0;
   left: 0;
   right: 0;

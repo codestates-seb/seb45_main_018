@@ -1,6 +1,5 @@
 package ecoders.ecodersbackend.domain.member.entity;
 
-
 import ecoders.ecodersbackend.audit.Auditable;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
@@ -27,6 +26,10 @@ public class Member extends Auditable {
 
     @Column(nullable = false, unique = true)
     protected String email;
+
+    @Setter
+    @Column(nullable = true)
+    protected String imageUrl;
 
     @Setter
     @Column(nullable = true)

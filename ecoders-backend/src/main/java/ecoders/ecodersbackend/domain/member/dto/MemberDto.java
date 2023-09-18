@@ -1,5 +1,6 @@
 package ecoders.ecodersbackend.domain.member.dto;
 
+import ecoders.ecodersbackend.auth.validation.annotation.PolarecoPassword;
 import ecoders.ecodersbackend.auth.validation.annotation.PolarecoUsername;
 import ecoders.ecodersbackend.domain.member.entity.Member;
 import lombok.AllArgsConstructor;
@@ -13,16 +14,12 @@ public class MemberDto {
     @NoArgsConstructor
     @AllArgsConstructor
     @Getter
-    public static final class Patch {
+    public static final class PatchPassword {
 
-        @PolarecoUsername
-        private String username;
+        private String currentPassword;
 
-        public Member toMember() {
-            return Member.builder()
-                .username(username)
-                .build();
-        }
+        @PolarecoPassword
+        private String newPassword;
     }
 
     @AllArgsConstructor
@@ -35,6 +32,8 @@ public class MemberDto {
 
         private String username;
 
+        private String imageUrl;
+
         private String authType;
 
         private boolean isVerified;
@@ -44,6 +43,7 @@ public class MemberDto {
                 member.getId(),
                 member.getEmail(),
                 member.getUsername(),
+                member.getImageUrl(),
                 member.getAuthType().name(),
                 member.isVerified()
             );

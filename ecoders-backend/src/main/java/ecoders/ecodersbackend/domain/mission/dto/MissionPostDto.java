@@ -22,6 +22,8 @@ public class MissionPostDto {
         private final Timestamp createdAt;
         private final Timestamp modifiedAt;
         private final Long memberId;
+        private final boolean completed;
+
     }
 
 }

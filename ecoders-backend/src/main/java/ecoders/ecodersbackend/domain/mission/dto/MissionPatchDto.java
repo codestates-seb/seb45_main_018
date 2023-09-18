@@ -1,19 +1,20 @@
 package ecoders.ecodersbackend.domain.mission.dto;
 
-import ecoders.ecodersbackend.domain.mission.entity.Mission;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+
+import java.sql.Timestamp;
 
 public class MissionPatchDto {
 
     @Getter
-    public static class Patch {
+    public static class Request {
 
         private long missionId;
 
         private String text;
 
-        private Mission.MissionProgress missionProgress;
+//        private MyMission.MissionProgress missionProgress;
     }
 
     @Getter
@@ -22,8 +23,8 @@ public class MissionPatchDto {
 
         private final Long id;
         private final String text;
-        private final String createdAt;
-        private final String modifiedAt;
-        private final Long memberId;
+        private final Timestamp createdAt;
+        private final Timestamp modifiedAt;
+        private final boolean completed;
     }
 }

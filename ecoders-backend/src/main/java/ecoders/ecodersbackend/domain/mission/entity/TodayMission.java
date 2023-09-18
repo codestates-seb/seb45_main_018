@@ -3,7 +3,7 @@ package ecoders.ecodersbackend.domain.mission.entity;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -19,8 +19,15 @@ public class TodayMission {
 
     private String missionContent;
 
+    @Column
     private boolean completed;
 
-    @Temporal(TemporalType.DATE)
-    private Date missionDate;
+    private LocalDateTime completionDate;
+
+    @PreUpdate
+    public void preUpdate() {
+        if (this.completed && this.completionDate == null) {
+            this.completionDate = LocalDateTime.now();
+        }
+    }
 }

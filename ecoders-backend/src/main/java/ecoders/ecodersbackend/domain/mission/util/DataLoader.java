@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 public class DataLoader implements ApplicationRunner {
 
     private final TodayMissionRepository todayMissionRepository;
+    private boolean dataInitialized = false;
 
     public DataLoader(TodayMissionRepository todayMissionRepository) {
         this.todayMissionRepository = todayMissionRepository;
@@ -17,6 +18,13 @@ public class DataLoader implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
+        if (!dataInitialized) {
+            initializeData();
+            dataInitialized = true;
+        }
+    }
+
+    public void initializeData() {
         TodayMission mission1 = TodayMission.builder().missionContent("사용하지 않는 전자제품 플러그 뽑기").build();
         todayMissionRepository.save(mission1);
         TodayMission mission2 = TodayMission.builder().missionContent("빨래 모아서 세탁하기").build();

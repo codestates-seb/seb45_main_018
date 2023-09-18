@@ -1,8 +1,12 @@
 package ecoders.ecodersbackend.domain.member.entity;
 
+import ecoders.ecodersbackend.domain.mission.entity.TodayMission;
+import ecoders.ecodersbackend.domain.stamp.Stamp;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor

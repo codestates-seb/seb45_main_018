@@ -47,7 +47,7 @@ public class SecurityConfiguration {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.setAllowedOrigins(List.of("http://polareco-deploy.s3-website.ap-northeast-2.amazonaws.com"));
+        corsConfiguration.setAllowedOrigins(List.of("*", "http://localhost:5173", "http://polareco-deploy.s3-website.ap-northeast-2.amazonaws.com"));
         corsConfiguration.setAllowedMethods(List.of("POST", "GET", "PATCH", "DELETE", "OPTIONS"));
         corsConfiguration.setAllowedHeaders(List.of("*"));
         corsConfiguration.setExposedHeaders(List.of("Authorization", "Refresh-Token", "Member-ID"));

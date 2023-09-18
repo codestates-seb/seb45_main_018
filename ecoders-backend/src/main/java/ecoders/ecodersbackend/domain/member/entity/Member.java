@@ -1,5 +1,6 @@
 package ecoders.ecodersbackend.domain.member.entity;
 
+
 import ecoders.ecodersbackend.audit.Auditable;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;

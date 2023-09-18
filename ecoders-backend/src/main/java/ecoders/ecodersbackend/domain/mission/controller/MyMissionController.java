@@ -6,8 +6,10 @@ import ecoders.ecodersbackend.domain.member.service.MemberService;
 import ecoders.ecodersbackend.domain.mission.dto.MissionPatchDto;
 import ecoders.ecodersbackend.domain.mission.dto.MissionPostDto;
 import ecoders.ecodersbackend.domain.mission.dto.TodayMissionResponseDto;
+import ecoders.ecodersbackend.domain.mission.entity.MyMission;
 import ecoders.ecodersbackend.domain.mission.service.MyMissionService;
 import ecoders.ecodersbackend.domain.mission.service.TodayMissionService;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,48 +24,13 @@ import static ecoders.ecodersbackend.auth.jwt.JwtProvider.HEADER_AUTHORIZATION;
 @RestController
 @RequestMapping("/mission")
 @RequiredArgsConstructor
-public class MissionController {
+public class MyMissionController {
 
     private final MyMissionService missionService;
     private final TodayMissionService todayMissionService;
     private final JwtProvider jwtProvider;
     private final MemberService memberService;
     private TodayMissionResponseDto currentMission;
-
-
-    /**
-     * 오늘의미션 API (사용자 설정에 따른 갯수 랜덤)
-     */
-    @ResponseBody
-    @GetMapping("/today_mission")
-    public ResponseEntity<?> getTodayMissionList(
-            @RequestHeader(HEADER_AUTHORIZATION) String accessToken,
-            @RequestParam(name = "size", defaultValue = "5") int size) {
-
-        List<TodayMissionResponseDto> todayMissionList = todayMissionService.getMission(getMemberIdFromAccessToken(accessToken), size);
-        return ResponseEntity.ok().body(todayMissionList);
-    }
-
-    /**
-     * 오늘의 미션 수행 완료 및 취소
-     */
-    @ResponseBody
-    @PatchMapping("/today_mission/{today_mission_id}")
-    public ResponseEntity<?> patchTodayMissionComplete(
-            @PathVariable ("today_mission_id") Long missionId,
-            @RequestBody boolean iscompleted) {
-        todayMissionService.patchMissionComplete(missionId, iscompleted);
-        return ResponseEntity.ok("Mission updated successfully!");
-    }
-
-    /**
-     * 오늘의 미션 완료 개수 가져오기
-     */
-    @GetMapping("/today_mission/count")
-    public ResponseEntity<Integer> getCompletedMissionCount() {
-        int completedCount = todayMissionService.getCompletedMissionCount();
-        return ResponseEntity.ok(completedCount);
-    }
 
     /**
      * 나만의미션 생성 API
@@ -81,13 +48,14 @@ public class MissionController {
                 response.getText(),
                 response.getCreatedAt(),
                 response.getModifiedAt(),
-                response.getMemberId()
+                response.getMemberId(),
+                response.isCompleted()
         );
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 
     /**
-     * 나만의 미션 수정 API
+     * 나만의 미션 text 수정 API
      */
     @PatchMapping("/my_mission/{missionId}")
     public ResponseEntity<MissionPatchDto.Response> updateMission(
@@ -99,6 +67,31 @@ public class MissionController {
         MissionPatchDto.Response response = missionService.updateMission(missionId, patchDto, memberId);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    /**
+     * 나만의 미션 수행 완료 및 취소
+     */
+    @PatchMapping("/my_mission/complete/{missionId}")
+    public ResponseEntity<?> patchTodayMissionComplete(
+            @PathVariable Long missionId,
+            @RequestBody boolean iscompleted,
+            @RequestHeader(HEADER_AUTHORIZATION) String accessToken) throws IOException {
+
+        missionService.patchMissionComplete(missionId, iscompleted);
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * 나만의 미션 리스트 조회 API
+     */
+    @GetMapping("/my_missions")
+    public ResponseEntity<List<MyMission>> getMyMissions(
+            @RequestHeader(HEADER_AUTHORIZATION) String accessToken) {
+
+        List<MyMission> missions = missionService.getAllMissions();
+
+        return new ResponseEntity<>(missions, HttpStatus.OK);
     }
 
     /**

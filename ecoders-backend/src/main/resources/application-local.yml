@@ -12,6 +12,8 @@ spring:
   redis:
     port: 6379
     host: your_ip
+  jackson:
+    time-zone: Asia/Seoul
 
   jpa:
     database: h2

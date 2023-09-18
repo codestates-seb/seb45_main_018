@@ -1,15 +1,21 @@
 import { createSlice } from '@reduxjs/toolkit';
+import profileImg from '../../assets/ProfileImage.svg';
 
 export const userSlice = createSlice({
   name: 'user',
   initialState: {
     accessToken: null,
+    refreshToken: null,
     username: 'user',
     id: '',
-    stamp: 0,
+    email: 'user@gmail.com',
+    profileImg: profileImg,
   },
   reducers: {
-    setToken: (state, action) => {
+    setAccessToken: (state, action) => {
+      state.accessToken = action.payload;
+    },
+    setRefreshToken: (state, action) => {
       state.accessToken = action.payload;
     },
     setUsername: (state, action) => {
@@ -20,11 +26,15 @@ export const userSlice = createSlice({
       state.id = action.payload;
     },
 
-    setStamp: (state, action) => {
-      state.stamp = action.payload;
+    setEmail: (state, action) => {
+      state.email = action.payload;
+    },
+
+    setProfileImg: (state, action) => {
+      state.profileImg = action.payload;
     },
   },
 });
 
-export const { setToken, setUsername, setId, setStamp } = userSlice.actions;
+export const { setAccessToken, setRefreshToken, setUsername, setId, setEmail, setProfileImg } = userSlice.actions;
 export default userSlice.reducer;

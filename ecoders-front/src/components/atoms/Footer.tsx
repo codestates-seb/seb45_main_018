@@ -65,9 +65,12 @@ const Footer: React.FC = () => {
 export default Footer;
 
 const Container = styled.div`
-  margin-top: 20px;
+  margin-top: 100px;
   display: flex;
   justify-content: center;
+  align-items: center;
+  z-index: 9;
+  position: sticky;
 `;
 
 const Logo = styled.img`
@@ -79,30 +82,27 @@ const Logo = styled.img`
 const FooterContainer = styled.div`
   margin: 0;
   padding: 0;
-  /* transform: scale(0.65); // 이 줄을 추가 */
   max-width: 1920px;
-  min-width: 960px;
-  height: 738px;
-  width: 100%;
+  height: 420px;
   display: flex;
   flex-direction: column;
   align-items: center;
   background-color: #131313;
-  bottom: 0;
+  /* bottom: 0; */
 
   @media (max-width: 1152px) {
     // 화면 크기가 768px 이하일 때
-    transform: scale(0.6); // 이 줄을 추가
+    /* transform: scale(0.6); // 이 줄을 추가 */
   }
 
   @media (max-width: 768px) {
     // 화면 크기가 768px 이하일 때
-    transform: scale(0.4); // 이 줄을 추가
+    /* transform: scale(0.4); // 이 줄을 추가 */
   }
 
   @media (max-width: 480px) {
     // 화면 크기가 480px 이하일 때
-    transform: scale(0.25); // 이 줄을 추가
+    /* transform: scale(0.25); // 이 줄을 추가 */
   }
 `;
 
@@ -113,13 +113,13 @@ const FooterInfoContainer = styled.div`
 const FooterSectionContainer = styled.div`
   display: flex;
   flex-direction: column;
-  margin-top: 150px;
+  margin-top: 60px;
   margin-right: 122px;
 `;
 
 const FooterContactSection = styled(FooterSectionContainer)`
-  margin-right: 88px;
-  width: 332px;
+  /* margin-right: 88px; */
+  /* width: 332px; */
 `;
 
 const FooterLogoSectionContainer = styled(FooterSectionContainer)`
@@ -128,7 +128,7 @@ const FooterLogoSectionContainer = styled(FooterSectionContainer)`
 `;
 
 const FooterSectionTitle = styled.div`
-  font-size: 36px;
+  font-size: 25px;
   color: var(--White, #fdfdfd);
   /* H2 */
   font-family: 'Inter';
@@ -147,7 +147,7 @@ const FooterSectionContent = styled.div`
   color: #b2afaf;
   /* H4 */
   font-family: 'Inter';
-  font-size: 24px;
+  font-size: 16px;
   text-align: left;
   font-style: normal;
   font-weight: 600;
@@ -174,7 +174,7 @@ const FooterLine = styled.hr`
   border: none;
   height: 1px;
   background-color: #b2afaf;
-  margin-top: 150px;
+  /* margin-top: 150px; */
   width: 1596px;
 `;
 
@@ -183,7 +183,7 @@ const RigthInfo = styled.div`
   text-align: center;
   /* H4 */
   font-family: 'Inter';
-  font-size: 24px;
+  font-size: 16px;
   font-style: normal;
   font-weight: 600;
   line-height: 130%; /* 31.2px */

@@ -1,23 +1,27 @@
 package ecoders.ecodersbackend.domain.member.entity;
 
-import ecoders.ecodersbackend.domain.mission.entity.TodayMission;
-import ecoders.ecodersbackend.domain.stamp.Stamp;
+
+import ecoders.ecodersbackend.audit.Auditable;
 import lombok.*;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.UUID;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Getter
 @Entity
-public class Member {
+public class Member extends Auditable {
 
     @Id
-    protected long id;
+    @GeneratedValue(generator = "uuid2")
+    @GenericGenerator(name = "uuid2", strategy = "uuid2")
+    @Column(columnDefinition = "binary(16)")
+    protected UUID id;
 
+    @Setter
     @Column(nullable = false)
     protected String username;
 
@@ -40,4 +44,5 @@ public class Member {
         POLARECO,
         GOOGLE
     }
+
 }

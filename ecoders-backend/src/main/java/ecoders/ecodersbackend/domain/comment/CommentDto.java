@@ -1,4 +1,4 @@
-package ecoders.ecodersbackend.post.comment;
+package ecoders.ecodersbackend.domain.comment;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;

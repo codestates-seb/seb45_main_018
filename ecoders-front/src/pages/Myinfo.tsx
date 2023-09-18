@@ -331,6 +331,7 @@ const MyInfo = () => {
         </div>
 
         <PasswordContainer>
+          {/* authtype google이면 안 보이게 */}
           <PasswordButton
             className="buttontop"
             onClick={changePassword}

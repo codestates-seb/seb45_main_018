@@ -1,3 +1,6 @@
+import { GoogleLogin } from 'react-google-login';
+import googleicon from '../assets/google-icon.png';
+
 import { login } from '../redux/slice/loginSlice';
 import axios from 'axios';
 import styled from 'styled-components';
@@ -8,39 +11,66 @@ import Modal from '../components/atoms/Modal';
 import { useDispatch } from 'react-redux';
 import { openModal } from '../redux/slice/modalSlice';
 import { useNavigate } from 'react-router-dom';
-import { setToken } from '../redux/slice/userSlice';
+import { setAccessToken, setRefreshToken } from '../redux/slice/userSlice';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { setId } from '../redux/slice/userSlice';
-import GLogin from './GLogin';
+// import GLogin from './GLogin';
 import { RootState } from '../redux/store/store';
-import { gapi } from 'gapi-script';
-import { useEffect } from 'react';
-
-
-// 아래 코드 검토 필요
-// axios.interceptors.response.use(
-//   response => response,
-//   async error => {
-//     const originalRequest = error.config;
-//     if (error.response.status === 401 && !originalRequest._retry) {
-//       originalRequest._retry = true;
-//       const refreshToken = localStorage.getItem('refreshToken');
-//       const res = await axios.post('YOUR_REFRESH_ENDPOINT', { refreshToken });
-//       const newToken = res.data.accessToken;
-//       localStorage.setItem('accessToken', newToken);
-//       axios.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
-//       return axios(originalRequest);
-//     }
-//     return Promise.reject(error);
-//   },
-// );
+// import { gapi } from 'gapi-script';
+// import { useEffect } from 'react';
 
 
 // 1. 추가할 것: 이메일 형식이 올바르지 않으면 오류 메시지 띄우기(유효성 검사)
 // 2. 공란이면 입력해달라고하기.
 
 function LoginPage() {
+
+  // const dispatch = useDispatch();
+  // const navigate = useNavigate();
+  // const APIURL = useSelector((state:RootState) => state.api.APIURL);
+
+    const onSuccess = async (res: any) => {
+      try {
+          const { email, name } = res.profileObj;
+          const response = await axios.post(`${APIURL}/oauth/google/login`, {
+              email,
+              username: name,
+          });
+  
+          if (response.status === 200) {
+              const headers = response.headers;
+              const accessToken = headers['authorization'];
+              const refreshToken = headers['refresh-token'];
+              const id = headers['id'];
+  
+              localStorage.setItem('accessToken', accessToken);
+              localStorage.setItem('refreshToken', refreshToken);
+              localStorage.setItem('id', id);
+  
+              dispatch(setAccessToken(accessToken));
+              dispatch(setRefreshToken(refreshToken));
+              dispatch(setId(id));
+  
+              console.log("로그인 성공! 현재 유저: ", res.profileObj);
+              dispatch(login()); 
+              navigate('/');
+          }
+      } catch (error) {
+          console.error("Error occurred:", error);
+          alert('오류');
+      }
+  }
+  
+
+    // const onSuccess = (res: any) => {
+    //   console.log(res.profileObj)
+    // }
+
+    const onFailure = (res: any) => {
+        console.log("로그인 실패! res: ", res)
+    }
+
 
   const APIURL = useSelector((state:RootState) => state.api.APIURL);
   const clientId = useSelector((state: RootState) => state.login.clientId);
@@ -58,26 +88,70 @@ function LoginPage() {
     dispatch(openModal('findPwModal'));
   };
 
-  async function googleHandler() {
+// useEffect(() => {
+//     function initGoogleAuth() {
+//         gapi.client.init({
+//             clientId: clientId,
+//             scope: 'email name' // 필요한 스코프를 여기에 추가하세요.
+//         }).then(() => {
+//             // 클라이언트 라이브러리가 초기화된 후의 로직
+//             const authInstance = gapi.auth2.getAuthInstance();
+//             if (authInstance.isSignedIn.get()) {
+//                 dispatch(login());
+                
+//                 // 선택적으로 사용자 정보를 콘솔에 출력하는 코드
+//                 // var profile = authInstance.currentUser.get().getBasicProfile();
+//                 // console.log('Email: ' + profile.getEmail());
+//                 // console.log('Full Name: ' + profile.getName());
+//             }
+//         });
+//     }
 
-    try{
-        useEffect(()=> {
-            function start() {
-              gapi.client.init({
-                clientId: clientId,
-                scope: ""
-              })
-            }
-            gapi.load("client:auth2", start)
-          })
+//     // gapi 라이브러리를 로드하고, 로드가 완료되면 initGoogleAuth 함수를 호출합니다.
+//     gapi.load("client:auth2", initGoogleAuth);
+// }, [clientId, dispatch]);  // 의존성 배열에 clientId와 dispatch를 추가했습니다.
+
+// const googleHandler = () => {
+//   try {
+//     if (!gapi.auth2.getAuthInstance().isSignedIn.get()) {
+//         // 사용자가 로그인되지 않은 경우 로그인 프로세스 시작
+//         gapi.auth2.getAuthInstance().signIn().then(() => {
+//             const googleAccessToken = gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse().access_token;
+//             console.log(googleAccessToken);
+//             // 추가 로직
+//         });
+//     } else {
+//         const googleAccessToken = gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse().access_token;
+//         console.log(googleAccessToken);
+//         // 추가 로직
+//     }
+// } catch (error) {
+//     console.error(error);
+//     alert('오류가 발생했습니다.');
+// }
+// }
+
+//   async function googleHandler() {
+
+    // try{
+    //     useEffect(()=> {
+    //         function start() {
+    //           gapi.client.init({
+    //             clientId: clientId,
+    //             scope: ""
+    //           })
+    //         }
+    //         gapi.load("client:auth2", start)
+    //       })
         
-          const accessToken = gapi.auth.getToken().access_token;
-          localStorage.setItem('accessToken', accessToken);
-    }
-    catch {
-        alert('오류가 발생했습니다.')
-    }
-}
+    //       const googleAccessToken = gapi.auth.getToken().access_token;
+    //       console.log(googleAccessToken)
+    //       // localStorage.setItem('accessToken', accessToken);
+    // }
+    // catch {
+    //     alert('오류가 발생했습니다.')
+    // }
+// }
 
   const loginHandler = async (e: any) => {
     e.preventDefault();
@@ -104,7 +178,7 @@ function LoginPage() {
     
         let accessToken, refreshToken, id;
     
-        // Authorization 헤더 값에서 "Bearer " 제거
+        // Authorization 헤더 값 할당
         if (authHeader) {
             accessToken = authHeader;
         }
@@ -131,7 +205,8 @@ function LoginPage() {
         console.log(refreshToken); //추후 삭제
         console.log(id); //추후 삭제
 
-        dispatch(setToken(accessToken));
+        dispatch(setAccessToken(accessToken));
+        dispatch(setRefreshToken(refreshToken));
         // dispatch(setUsername(username));
         dispatch(setId(id));
         dispatch(login());
@@ -173,7 +248,7 @@ function LoginPage() {
               <div className="forgot-pw" onClick={modalOpenHandler}>
                 비밀번호 찾기
               </div>
-              <PwModal modalType='findPwModal'>
+              <PwModal modaltype='findPwModal'>
                 <div className="modal-cont-wrapper">
                   <div className="modal-title">비밀번호 찾기</div>
                   <p className="modal-content">
@@ -194,7 +269,25 @@ function LoginPage() {
                   Log in
                 </SubmitButton>
                 {/* <SubmitButton className="google-login-submit"> */}
-                  <GLogin onClick={googleHandler}>Log in with Google</GLogin>
+                  {/* <GLogin onClick={googleHandler}>Log in with Google</GLogin> */}
+
+
+                  <GoogleLogin 
+            clientId={clientId}
+            onSuccess={onSuccess}
+            onFailure={onFailure}
+            render={(renderProps) => (
+                <div>
+            <SubmitButtonGoogle onClick={renderProps.onClick} className="google-login-submit"> 
+            <GoogleLogo src={googleicon} />
+            Log in with google</SubmitButtonGoogle>
+            </div>)}
+            cookiePolicy={'single_host_origin'}
+            isSignedIn={true}
+            >Log in with Google
+            </GoogleLogin>
+
+
                   {/* </SubmitButton> */}
               </ButtonWrapper>
             </LoginForm>
@@ -349,4 +442,52 @@ const IsUser = styled.div`
   font-weight: 400;
   line-height: normal;
   cursor: pointer;
+`;
+
+
+
+
+
+const SubmitButtonGoogle = styled(Button)`
+display:flex;
+justify-content: center;
+align-items: center;
+height: 50px;
+padding: 16px;
+
+  &.login-submit {
+    background-color: #7092bf;
+    color: #fff;
+    border: none;
+
+    &:hover {
+      background-color: #d4e2f1;
+    }
+  }
+
+  &.google-login-submit {
+    background-color: #fff;
+    border: 1px solid #5a5a5a;
+
+    &:hover {
+      background-color: #5a5a5a;
+      border: 1px solid #5a5a5a;
+    }
+  }
+
+  &.modal-email-submit {
+    background-color: #7092bf;
+    color: #fff;
+    border: none;
+
+    &:hover {
+      background-color: #d4e2f1;
+    }
+  }
+`;
+
+const GoogleLogo = styled.img`
+  width: 20px;
+  height: auto;
+  margin: 5px;
 `;

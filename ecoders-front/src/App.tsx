@@ -1,6 +1,5 @@
 // import { useState } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-
+import { BrowserRouter, Routes, Route} from 'react-router-dom';
 import './App.css';
 import Main from './pages/Main';
 import Footer from './components/atoms/Footer';
@@ -15,14 +14,44 @@ import CommunityPostDetailPage from './pages/CommunityPostDetailPage';
 import LoginPage from './pages/LoginPage';
 import Signup from './pages/Signup';
 import Chat from './pages/Chat/Chat';
+import { useDispatch } from 'react-redux';
+import { useEffect } from 'react';
+import { login } from './redux/slice/loginSlice';
+import { setAccessToken, setRefreshToken, setId } from './redux/slice/userSlice';
+import PageWrapper from './PageWrapper';
+import GoogleSignIn from './pages/GoogleLogin';
 
 function App() {
+
+  const dispatch = useDispatch();
+
+  useEffect(()=>{
+    const accessToken = localStorage.getItem('accessToken');
+    const refreshToken = localStorage.getItem('refreshToken');
+    const id = localStorage.getItem('id');
+
+    //userslice id와 token을 가져와야함.
+
+    if (accessToken) {
+      dispatch(login());
+      dispatch(setAccessToken(accessToken));
+      dispatch(setRefreshToken(refreshToken));
+      // dispatch(setUsername(username));
+      dispatch(setId(id));
+    }
+  }, [])
+
+
+  
+
   return (
     <>
       {' '}
       <BrowserRouter>
         <Header />
+        <PageWrapper>
         <Routes>
+          
           <Route path="/" element={<Main />} />
           <Route path="/myinfo" element={<MyInfo />} />
           <Route path="/service" element={<Service />} />
@@ -36,9 +65,10 @@ function App() {
           <Route path="/community/postdetail/:postnumber" element={<CommunityPostDetailPage />} />
           {/* <Route element={NotFound} /> */}
         </Routes>
-
+        </PageWrapper>
+        <GoogleSignIn />
+        <Footer />
       </BrowserRouter>
-      <Footer />
     </>
   );
 }

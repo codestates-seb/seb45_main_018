@@ -8,7 +8,7 @@ interface LoginState {
 
 const initialState: LoginState = {
     isLoggedIn: false,
-    clientId: "211432756424-hka0r8dm9mut090doogffcuovlghe99a.apps.googleusercontent.com"
+    clientId: "211432756424-hka0r8dm9mut090doogffcuovlghe99a"
 };
 
 const loginSlice= createSlice({
@@ -17,6 +17,8 @@ const loginSlice= createSlice({
     reducers: {
         login: (state) => {
             state.isLoggedIn = true;
+            localStorage.getItem('accessToken')
+            localStorage.getItem('refreshToken')
         },
         logout: (state) => {
             state.isLoggedIn = false;

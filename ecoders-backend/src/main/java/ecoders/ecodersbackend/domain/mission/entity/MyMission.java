@@ -8,6 +8,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @NoArgsConstructor
 @Getter
@@ -40,7 +41,7 @@ public class MyMission {
     /**
      * 챌린지 생성시 사용하는 생성자
      */
-    public MyMission(String text, Long memberId) {
+    public MyMission(String text, UUID memberId) {
         this.text = text;
         LocalDateTime currentTime = LocalDateTime.now();
         this.createdAt =  Timestamp.valueOf(currentTime);

@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @Slf4j
@@ -25,7 +26,7 @@ public class MyMissionService {
      * 나만의미션 생성
      */
     public MissionPostDto.Response createMission(
-            MissionPostDto.Request postDto, Long memberId) throws IOException {
+            MissionPostDto.Request postDto, UUID memberId) throws IOException {
 
         MyMission myMission = new MyMission(
                 postDto.getText(),
@@ -51,7 +52,7 @@ public class MyMissionService {
      * 나만의미션 수정
      */
     public MissionPatchDto.Response updateMission(
-            Long missionId, MissionPatchDto.Request patchDto, Long memberId) throws IOException {
+            Long missionId, MissionPatchDto.Request patchDto, UUID memberId) throws IOException {
 
         MyMission myMission = missionRepository.findByMissionId(missionId);
 
@@ -92,7 +93,7 @@ public class MyMissionService {
     /**
      * 나만의 미션 삭제
      */
-    public void deleteMission(Long missionId, Long memberId) {
+    public void deleteMission(Long missionId, UUID memberId) {
 
         MyMission myMission = missionRepository.findByMissionId(missionId);
         missionRepository.delete(myMission);

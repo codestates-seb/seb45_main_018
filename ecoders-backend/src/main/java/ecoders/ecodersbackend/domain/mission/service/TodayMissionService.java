@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 
 @Service
 @Slf4j
@@ -30,7 +31,7 @@ public class TodayMissionService {
     /**
      * 오늘의 미션
      */
-    public List<TodayMissionResponseDto> getMission(Long memberId, int size) {
+    public List<TodayMissionResponseDto> getMission(UUID memberId, int size) {
 
 //        LocalDateTime today = LocalDateTime.now();
 

@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 import static ecoders.ecodersbackend.auth.jwt.JwtProvider.HEADER_AUTHORIZATION;
 
@@ -39,7 +40,7 @@ public class MyMissionController {
     public ResponseEntity<MissionPostDto.Response> createMission(
             @Valid @RequestBody MissionPostDto.Request postDto,
             @RequestHeader(HEADER_AUTHORIZATION) String accessToken) throws IOException {
-        Long memberId = getMemberIdFromAccessToken(accessToken);
+        UUID memberId = getMemberIdFromAccessToken(accessToken);
 
         MissionPostDto.Response response = missionService.createMission(postDto, memberId);
 
@@ -62,7 +63,7 @@ public class MyMissionController {
             @PathVariable Long missionId,
             @Valid @RequestBody MissionPatchDto.Request patchDto,
             @RequestHeader(HEADER_AUTHORIZATION) String accessToken) throws IOException {
-        Long memberId = getMemberIdFromAccessToken(accessToken);
+        UUID memberId = getMemberIdFromAccessToken(accessToken);
 
         MissionPatchDto.Response response = missionService.updateMission(missionId, patchDto, memberId);
 
@@ -101,17 +102,17 @@ public class MyMissionController {
     public ResponseEntity deleteMission(
             @PathVariable Long missionId,
             @RequestHeader(HEADER_AUTHORIZATION) String accessToken) throws IOException {
-        Long memberId = getMemberIdFromAccessToken(accessToken);
+        UUID memberId = getMemberIdFromAccessToken(accessToken);
 
         missionService.deleteMission(missionId, memberId);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    private Long getMemberIdFromAccessToken(String accessToken) {
+    private UUID getMemberIdFromAccessToken(String accessToken) {
         String email = jwtProvider.getEmailFromToken(accessToken);
         Member member = memberService.findMemberByEmail(email);
-        Long memberId = member.getId();
+        UUID memberId = member.getId();
         return memberId;
     }
 

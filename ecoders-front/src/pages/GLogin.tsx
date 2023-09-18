@@ -4,20 +4,62 @@ import { RootState } from '../redux/store/store';
 import Button from '../components/atoms/Button';
 import styled from 'styled-components';
 import googleicon from '../assets/google-icon.png';
+import axios from 'axios';
+import { useDispatch } from 'react-redux';
+import { setAccessToken, setRefreshToken, setId } from '../redux/slice/userSlice';
+import { useNavigate } from 'react-router-dom';
+import { login } from '../redux/slice/loginSlice';
+
 
 
 interface GLoginProps {
     children: React.ReactNode;
-    onClick: (e:React.MouseEventHandler<HTMLButtonElement>) => Promise<void>; 
+    // onClick: (e:React.MouseEventHandler<HTMLButtonElement>) => Promise<void>; 
 }
 
 const GLogin: React.FC<GLoginProps> = () => {
-
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const APIURL = useSelector((state:RootState) => state.api.APIURL);
     const clientId = useSelector((state: RootState) => state.login.clientId);
-    const onSuccess = (res:any) => {
-        console.log("로그인 성공! 현재 유저: ", res.profileObj);
-       
-    }
+
+    const onSuccess = async (res: any) => {
+      try {
+          const { email, name } = res.profileObj;
+          const response = await axios.post(`${APIURL}/auth/oauth/google/login`, {
+              email,
+              username: name,
+          });
+  
+          if (response.status === 200) {
+              const headers = response.headers;
+              const accessToken = headers['authorization'];
+              const refreshToken = headers['refresh-token'];
+              const id = headers['id'];
+  
+              localStorage.setItem('accessToken', accessToken);
+              localStorage.setItem('refreshToken', refreshToken);
+              localStorage.setItem('id', id);
+  
+              dispatch(setAccessToken(accessToken));
+              dispatch(setRefreshToken(refreshToken));
+              dispatch(setId(id));
+  
+              console.log("로그인 성공! 현재 유저: ", res.profileObj);
+              dispatch(login());
+              navigate('/');
+          }
+      } catch (error) {
+          console.error("Error occurred:", error);
+          alert('오류');
+      }
+  }
+  
+
+
+    // const onSuccess = (res: any) => {
+    //   console.log(res.profileObj)
+    // }
 
     const onFailure = (res: any) => {
         console.log("로그인 실패! res: ", res)

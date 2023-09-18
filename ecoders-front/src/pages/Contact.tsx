@@ -44,7 +44,7 @@ const ContactWholeContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  /* transform: scale(); */
+  transform: scale(0.7);
 `;
 
 const StyledImage = styled.img`

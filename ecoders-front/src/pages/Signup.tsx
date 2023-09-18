@@ -237,7 +237,7 @@ function Signup () {
                                         </div>
                                     </SignUpModal>
                                 <GLogin
-                                    onClick={googleHandler}>Sign up with Google</GLogin>
+                                    onClick={() => googleHandler}>Sign up with Google</GLogin>
                             </ButtonWrapper>
                         </SignUpForm>
                     </FormContainer>

@@ -3,67 +3,77 @@ import logo from '../../assets/Logo.png';
 import { useDispatch } from 'react-redux';
 // import { login } from '../../redux/slice/loginSlice';
 import { logout } from '../../redux/slice/loginSlice';
-import profileImg from '../../assets/ProfileImage.svg';
 import { useSelector } from 'react-redux';
+
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useEffect } from 'react';
-import { setUsername, setStamp } from '../../redux/slice/userSlice';
+import { setUsername } from '../../redux/slice/userSlice';
 import { RootState } from '../../redux/store/store';
 import Modal from './Modal';
-import { openModal, closeModal } from "../../redux/slice/modalSlice";
+import { openModal, closeModal } from '../../redux/slice/modalSlice';
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const isLoggedIn = useSelector((state: RootState) => state.login.isLoggedIn);
-  const memberId = useSelector((state: RootState) => state.user.id);
+  // const memberId = useSelector((state: RootState) => state.user.id);
   const username = useSelector((state: RootState) => state.user.username); // username 상태 가져오기
-  const stamp = useSelector((state: RootState) => state.user.stamp); // stamp 상태 가져오기
   const APIURL = useSelector((state: RootState) => state.api.APIURL);
-
+  const profileImg = useSelector((state: RootState) => state.user.profileImg);
+  const accessToken = useSelector((state: RootState) => state.user.accessToken);
+  const refreshToken = useSelector((state: RootState) => state.user.refreshToken);
 
   // logout: {APIURL}/auth/logout -> delete -> accesstoken, refreshtoken, Id 요청
-  // Header css : 재설정
-  // main 이미지 수정
 
   useEffect(() => {
     const fetchData = async () => {
-      // try {
-      //   const response = await axios.get(`${APIURL}/member`);
-      //   if (response.status === 200) {
-      //     const { username, stamp } = response.data;
-      //     console.log(username, stamp)
-      //     console.log(response.data)
-      //     dispatch(setUsername(username));
-      //     // dispatch(setStamp(`${stamp}`));
-      //     console.log(username)
-      //     navigate('/');
-      //   }
-      // }
-
       try {
-        axios.get(`${APIURL}/members/${memberId}`).then(response => {
-          // const { username, stamp } = response.data;
-          console.log(response.data);
-          console.log(username, stamp); // 이렇게 같은 스코프 내에서 호출
-          dispatch(setUsername(response.data['username']));
-          dispatch(setStamp(response.data['stamp']));
-          console.log(username, stamp); // 이렇게 같은 스코프 내에서 호출
+        const response = await axios.get(`${APIURL}/members/myinfo`, {
+          headers: {
+            Authorization: accessToken,
+            'Refresh-Token': refreshToken,
+          },
         });
-      } catch (error: any) {
-        if (error.response?.status === 401) {
-          alert('로그인에 실패했습니다.');
-        } else {
-          alert('서버 오류가 발생했습니다.');
-          console.error('로그인 에러:', error);
-        }
+
+        console.log(response.data);
+        dispatch(setUsername(response.data.username));
+      } catch (error) {
+        console.log(error);
       }
     };
 
     fetchData(); // 비동기 함수 실행
   }, [isLoggedIn]);
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try{
+  //       axios.get(`${APIURL}/members/my-info`, {
+  //         headers: {
+  //           'Authorization': accessToken,
+  //           'Refresh-Token': refreshToken,
+  //         }
+  //       })
+  //       .then(response => {
+  //         console.log(response.data);
+  //       dispatch(setUsername(response.data.username))
+  //     })
+  //       // .catch(error => console.error('Error:', error));
+
+  //     } catch (error: any) {
+  //       if (error.response?.status === 401) {
+  //         alert('로그인에 실패했습니다.');
+  //       } else {
+  //         alert('서버 오류가 발생했습니다.');
+  //         console.error('로그인 에러:', error);
+  //       }
+  //     }
+  //   };
+
+  //   fetchData(); // 비동기 함수 실행
+  // }, [isLoggedIn]);
 
   //   try {
   //     const response = await axios.get(`${APIURL}/member`);
@@ -109,11 +119,11 @@ const Header: React.FC = () => {
   };
 
   const modalcloseHandler = () => {
-  dispatch(closeModal('loginModal'));
-  navigate('/login')
+    dispatch(closeModal('loginModal'));
+    navigate('/login');
   };
 
-  const loginModalState = useSelector((state:RootState) => state.modal.modals.loginModal)
+  const loginModalState = useSelector((state: RootState) => state.modal.modals.loginModal);
 
   //chatting 구현 이후 살리기
   // useEffect(()=> {
@@ -121,89 +131,95 @@ const Header: React.FC = () => {
   //     navigate('/login')
   //   }
   // }, [loginModalState]);
-  
+
   const modalOpenHandler = () => {
     dispatch(openModal('loginModal'));
   };
   return (
     <>
-    <Entire>
-      <HeaderContainer>
-        <MenuContainer>
-          <HeaderLogo src={logo} onClick={navigateToMain} />
-          <HeaderLogoText onClick={navigateToMain}>POLARECO</HeaderLogoText>
-          <MenuTabContainer>
-            <MenuTab
-              onClick={() => {
-                navigate('/service');
-              }}>
-              Services
-            </MenuTab>
-
-            {isLoggedIn ? (
+      <Entire>
+        <HeaderContainer>
+          <MenuContainer>
+            <HeaderLogo src={logo} onClick={navigateToMain} />
+            <HeaderLogoText onClick={navigateToMain}>POLARECO</HeaderLogoText>
+            <MenuTabContainer>
               <MenuTab
                 onClick={() => {
-                  navigate('/eco-habit');
+                  navigate('/service');
                 }}>
-                Eco-Habit
+                Services
               </MenuTab>
+
+              {isLoggedIn ? (
+                <MenuTab
+                  onClick={() => {
+                    navigate('/eco-habit');
+                  }}>
+                  Eco-Habit
+                </MenuTab>
+              ) : (
+                <>
+                  <MenuTab
+                    onClick={() => {
+                      modalOpenHandler();
+                    }}>
+                    Eco-Habit
+                  </MenuTab>
+                </>
+              )}
+
+              <MenuTab
+                onClick={() => {
+                  navigate('community');
+                }}>
+                Community
+              </MenuTab>
+              <MenuTab
+                onClick={() => {
+                  navigate('contact');
+                }}>
+                Contact
+              </MenuTab>
+            </MenuTabContainer>
+          </MenuContainer>
+          <HeaderProfileContainer>
+            {isLoggedIn ? (
+              <>
+                <HeaderProfilePic src={profileImg} onClick={navigateToMyInfo} />
+                <UsernameButton onClick={navigateToMyInfo}>{username}</UsernameButton>
+                <LogoutButton onClick={handleLogout}>Logout</LogoutButton>
+              </>
             ) : (
               <>
-              <MenuTab  
-                onClick={() => {modalOpenHandler();}}>
-                  
-                Eco-Habit
-              </MenuTab>
+                <LoginButton
+                  onClick={() => {
+                    navigate('/login');
+                  }}>
+                  Login
+                </LoginButton>
+                <CreateAccountButton onClick={navigateToSignUp}>Create Account</CreateAccountButton>
               </>
             )}
+          </HeaderProfileContainer>
+        </HeaderContainer>
+        {/* 키눌렀을 때 왜 작동안하는지 모르겠음. 글씨 가운데 정렬하는 법?*/}
 
-            <MenuTab
-              onClick={() => {
-                navigate('community');
-              }}>
-              Community
-            </MenuTab>
-            <MenuTab
-              onClick={() => {
-                navigate('contact');
-              }}>
-              Contact
-            </MenuTab>
-          </MenuTabContainer>
-        </MenuContainer>
-        <HeaderProfileContainer>
-          {isLoggedIn ? (
-            <>
-              <HeaderProfilePic src={profileImg} onClick={navigateToMyInfo} />
-              <UsernameButton onClick={navigateToMyInfo}>{username}</UsernameButton>
-              <LogoutButton onClick={handleLogout}>Logout</LogoutButton>
-            </>
-          ) : (
-            <>
-              <LoginButton
+        {
+          // 헤더모달백그라운드 추가 및 클릭 시 closeHandler 연결
+          // loginModalState는 모달의 활성화 상태를 나타내는 state로 가정합니다.
+          // 실제 앱에서 해당 state나 로직에 따라 조건을 적절히 조절해야 합니다.
+          loginModalState && (
+            <AlertModalBackground onClick={modalcloseHandler}>
+              <AlertModal
+                modaltype="loginModal"
                 onClick={() => {
-                  navigate('/login');
+                  modalcloseHandler();
                 }}>
-                Login
-              </LoginButton>
-              <CreateAccountButton onClick={navigateToSignUp}>Create Account</CreateAccountButton>
-            </>
-          )}
-        </HeaderProfileContainer>
-      </HeaderContainer>
-      {/* 키눌렀을 때 왜 작동안하는지 모르겠음. 글씨 가운데 정렬하는 법?*/}
-
-
-      {
-      // 헤더모달백그라운드 추가 및 클릭 시 closeHandler 연결 
-      // loginModalState는 모달의 활성화 상태를 나타내는 state로 가정합니다.
-      // 실제 앱에서 해당 state나 로직에 따라 조건을 적절히 조절해야 합니다.
-      loginModalState && (
-        <AlertModalBackground onClick={modalcloseHandler}>
-      <AlertModal modaltype='loginModal' onClick={() => {modalcloseHandler()}}>로그인이 필요한 서비스입니다.</AlertModal>
-        </AlertModalBackground>
-      )
-    }
+                로그인이 필요한 서비스입니다.
+              </AlertModal>
+            </AlertModalBackground>
+          )
+        }
       </Entire>
     </>
   );
@@ -212,14 +228,15 @@ const Header: React.FC = () => {
 export default Header;
 
 const Entire = styled.div`
-display: flex;
-justify-content: center;
-height: 100px;
-margin-bottom: 20px;
-`
+  display: flex;
+  justify-content: center;
+  height: 100px;
+  margin-bottom: 20px;
+`;
 
 const HeaderContainer = styled.div`
   position: fixed;
+  z-index: 40;
   /* transform: scale(0.65); // 이 줄을 추가 */
   display: flex;
   justify-content: space-between;
@@ -258,8 +275,8 @@ const MenuContainer = styled.div`
 `;
 
 const HeaderLogo = styled.img`
-  width: 115px;
-  height: 85.059px;
+  width: auto;
+  height: 50px;
   margin-top: 15px;
   margin-bottom: 11.94px;
   cursor: pointer;
@@ -268,7 +285,7 @@ const HeaderLogo = styled.img`
 const HeaderLogoText = styled.div`
   color: black;
   font-family: 'Inter';
-  font-size: 25px;
+  font-size: 20px;
   font-style: normal;
   font-weight: 700;
   line-height: normal;
@@ -292,7 +309,7 @@ const MenuTab = styled.div`
   color: #1a1a1a;
 
   font-family: 'Inter';
-  font-size: 20px;
+  font-size: 16px;
   font-style: normal;
   font-weight: 500;
   line-height: normal;
@@ -329,7 +346,7 @@ const ButtonStyle = styled.button`
   background-color: #1a1a1a;
   color: #ffffff;
   font-family: 'Inter';
-  font-size: 20px;
+  font-size: 16px;
   font-style: normal;
   font-weight: 700;
   line-height: normal;
@@ -351,11 +368,24 @@ const UsernameButton = styled(ButtonStyle)`
   margin-right: 10px;
 `;
 
-const LogoutButton = styled(ButtonStyle)``;
+const LogoutButton = styled(ButtonStyle)`
+  display: flex;
+  justify-content: center;
+  border: none;
+  height: 80%;
+`;
 
-const LoginButton = styled(ButtonStyle)``;
+const LoginButton = styled(ButtonStyle)`
+  display: flex;
+  justify-content: center;
+  border: none;
+  height: 80%;
+`;
 
 const CreateAccountButton = styled(ButtonStyle)`
+  display: flex;
+  justify-content: center;
+  height: 80%;
   background-color: #ffffff;
   color: #1a1a1a;
   border: 1px solid #1a1a1a;
@@ -363,45 +393,44 @@ const CreateAccountButton = styled(ButtonStyle)`
 `;
 
 const AlertModal = styled(Modal)`
-    width: 25rem;
+  width: 25rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1rem;
+  padding-bottom: 4rem;
+  z-index: 1000;
+
+  div > .modal-cont-wrapper {
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    gap: 1rem;
-    padding-bottom: 4rem;
-    
+    gap: 1.5rem;
 
-    div > .modal-cont-wrapper {
-        display: flex;
-        flex-direction: column;
-        gap: 1.5rem;
-
-        > .modal-title {
-            font-family: 'Inter';
-            font-size: 24px;
-            font-weight: 400;
-            line-height: normal;
-            text-align: center;
-            
-        }
-
+    > .modal-title {
+      font-family: 'Inter';
+      font-size: 24px;
+      font-weight: 400;
+      line-height: normal;
+      text-align: center;
     }
+  }
 
-    p {
-        text-align: center;
-        font-family: Inter;
-        font-size: 14px;
-        line-height: normal;
-    }
+  p {
+    text-align: center;
+    font-family: Inter;
+    font-size: 14px;
+    line-height: normal;
+  }
 `;
 
 const AlertModalBackground = styled.div`
   position: fixed;
+
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: 999;
+  z-index: 1000;
   display: flex;
   align-items: center;
   justify-content: center;

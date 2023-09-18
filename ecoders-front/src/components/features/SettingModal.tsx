@@ -2,39 +2,39 @@ import Modal from "../atoms/Modal";
 import Button from "../atoms/Button";
 import logo from "../../assets/Logo.png"
 import { styled } from "styled-components";
-import { useState } from "react";
-import axios from "axios";
+import { useEffect, useState } from "react";
+// import axios from "axios";
 import { useAppDispatch } from "../../redux/hooks/useAppDispatch";
-import { setTodayMissions } from "../../redux/slice/missionSlice";
+// import { setTodayMissions } from "../../redux/slice/missionSlice";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store/store";
+import { setOption } from "../../redux/slice/optionSlice";
 
 
 
 function SettingModal () {
     const dispatch = useAppDispatch();
 
-    const [ option, setOption ] = useState("five");
+    const option = useSelector((state: RootState) => state.option.option);
+    const [selectedOption, setSelectedOption] = useState(option);
 
     const optionChangeHandler = (e: any) => {
-        setOption(e.target.value);
-    };
+        const newOption = e.target.value;
+        setSelectedOption(newOption);
+    }
 
     const optionSubmitHandler = async () => {
         try {
-            const response = await axios.post("api 주소", {
-                option: option,  // 개수에 대한 변수명임
-            }, {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem('accessToken')}`
-                }
-            });
-
-            dispatch(setTodayMissions(response.data.todayMissions));
-            // 상태에 옵션값을 넣어서 미션슬라이스에서 요청
+            dispatch(setOption(selectedOption)); // 5?
         } catch (error) {
             console.error("옵션 설정 중 에러가 발생했습니다.", error);
         }
 
     };
+
+    useEffect(() => {
+        setOption(selectedOption);
+    }, [setOption])
 
     return (
         <>
@@ -43,12 +43,12 @@ function SettingModal () {
                     <Logo src={logo} />
                     <div className="text-content">오늘의 미션 갯수를 설정할 수 있습니다! 원하시는 갯수를 선택해 주세요! </div>
                     <SelectBox>
-                        <Select id="mission-selector" value={option} onChange={optionChangeHandler}>
-                            <option value="one">1개</option>
-                            <option value="two">2개</option>
-                            <option value="three">3개</option>
-                            <option value="four">4개</option>
-                            <option value="five">5개</option>
+                        <Select id="mission-selector" value={selectedOption} onChange={optionChangeHandler}>
+                            <option value="1">1개</option>
+                            <option value="2">2개</option>
+                            <option value="3">3개</option>
+                            <option value="4">4개</option>
+                            <option value="5">5개</option>
                         </Select>
                     </SelectBox>
                     <CommonButton className="setting-button"

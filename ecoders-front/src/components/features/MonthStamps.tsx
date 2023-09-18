@@ -33,14 +33,14 @@ function MonthStamps () {
     stampData["2023-09-13"].completedMissionCount = 3;
     stampData["2023-09-12"].completedMissionCount = 1;
 
-    const renderStamps = ({ date, view }: { date: Date; view: string}) => {
+    const renderStamps = ({ date }: { date: Date; view: string}) => {
         const dateKey = date.toISOString().split('T')[0];
         const stampInfo = stampData[dateKey];
 
         if (stampInfo) {
             return (
                 <div>
-                    <Stamp completedMissionsCount={stampInfo.completedMissionCount}/>
+                    <Stamp completedmissionscount={stampInfo.completedMissionCount}/>
                 </div>
             )
         }

@@ -70,7 +70,7 @@ function LoginPage() {
             }
             gapi.load("client:auth2", start)
           })
-        
+
           const accessToken = gapi.auth.getToken().access_token;
           localStorage.setItem('accessToken', accessToken);
     }
@@ -173,7 +173,7 @@ function LoginPage() {
               <div className="forgot-pw" onClick={modalOpenHandler}>
                 비밀번호 찾기
               </div>
-              <PwModal modalType='findPwModal'>
+              <PwModal modaltype='findPwModal'>
                 <div className="modal-cont-wrapper">
                   <div className="modal-title">비밀번호 찾기</div>
                   <p className="modal-content">

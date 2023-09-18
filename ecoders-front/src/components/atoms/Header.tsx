@@ -200,7 +200,7 @@ const Header: React.FC = () => {
       // 실제 앱에서 해당 state나 로직에 따라 조건을 적절히 조절해야 합니다.
       loginModalState && (
         <AlertModalBackground onClick={modalcloseHandler}>
-      <AlertModal modalType='loginModal' onClick={() => {modalcloseHandler()}}>로그인이 필요한 서비스입니다.</AlertModal>
+      <AlertModal modaltype='loginModal' onClick={() => {modalcloseHandler()}}>로그인이 필요한 서비스입니다.</AlertModal>
         </AlertModalBackground>
       )
     }
@@ -214,6 +214,8 @@ export default Header;
 const Entire = styled.div`
 display: flex;
 justify-content: center;
+height: 100px;
+margin-bottom: 20px;
 `
 
 const HeaderContainer = styled.div`

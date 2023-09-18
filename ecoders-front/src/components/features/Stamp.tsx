@@ -5,12 +5,12 @@ import { styled } from 'styled-components';
 interface StampProps {
     isCurrentDay?: boolean;
     day?: string;
-    completedMissionsCount?: number;
+    completedmissionscount?: number;
 }
 
 function Stamp (props: StampProps) {
-    // const completedMissionsCount = useSelector((state: RootState) => state.missions.completedMissionsCount);
-    const completedMissionsCount = props.completedMissionsCount || 0; // completedMissionsCount가 없으면 0으로 설정
+    const completedMissionsCount = useSelector((state: RootState) => state.missions.completedMissionsCount);
+    //const completedMissionsCount = props.completedMissionsCount || 0; // completedMissionsCount가 없으면 0으로 설정
 
 
     const fillLineColor = completedMissionsCount > 0 ? "#424243" : "#DADADA";

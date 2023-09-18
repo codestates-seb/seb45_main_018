@@ -7,7 +7,7 @@ interface ApiState {
 }
 
 const initialState: ApiState = {
-  APIURL: 'http://ec2-13-209-89-195.ap-northeast-2.compute.amazonaws.com:8080',
+  APIURL: 'http://ec2-54-180-124-160.ap-northeast-2.compute.amazonaws.com:8080',
 };
 
 const apiSlice = createSlice({

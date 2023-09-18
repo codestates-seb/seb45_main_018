@@ -9,13 +9,17 @@ import { openModal } from "../redux/slice/modalSlice";
 import { useState } from "react";
 import MyMissionList from "../components/features/MyMissionList";
 import TodaysMissionList from "../components/features/TodaysMissionList";
-import { setMyMissions } from "../redux/slice/missionSlice";
 import SettingModal from "../components/features/SettingModal";
 import StatusModal from "../components/features/StatusModal";
-import WeekStamps from "../components/features/WeekStamps";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store/store";
+import axios from "axios";
+import { setMyMissions } from "../redux/slice/myMissionSlice";
 
 function Ecohabit () {
     const dispatch = useDispatch();
+
+    const apiUrl = useSelector((state:RootState) => state.api.APIURL);
 
     const [ isMissionFormVisible, setIsMissionFormVisible ] = useState(false);
 
@@ -33,8 +37,27 @@ function Ecohabit () {
     };
 
     // 리스트 리셋 핸들러
-    const resetMissionHandler = () => {
-        dispatch(setMyMissions([]));
+    const resetMissionHandler = async () => {
+        try {
+            // 서버에서 모든 미션 삭제
+            const response = await axios.delete(
+              `${apiUrl}/mission/my_missions`,
+              {
+                headers: {
+                  Authorization: `${localStorage.getItem('accessToken')}`,
+                },
+              }
+            );
+            if (response.status === 204) {
+              console.log("모든 나만의 미션을 삭제했습니다.");
+                // redux에서 모든 미션 삭제
+                dispatch(setMyMissions([]));
+            } else {
+              console.error("나만의 미션을 삭제하는 중 오류가 발생했습니다.");
+            }
+          } catch (error) {
+            console.error("오류가 발생했습니다.", error);
+          }
     };
 
     return (
@@ -51,7 +74,7 @@ function Ecohabit () {
                             onClick={statusOpenHandler}>나의 스탬프 현황</CommonButton>
                     </div>
                     <div>
-                        <WeekStamps />
+                        {/* <WeekStamps /> */}
                     </div>
                 </StampContainer>
                 <StatusModal />
@@ -100,7 +123,6 @@ function Ecohabit () {
 export default Ecohabit;
 
 const Container = styled.section`
-    margin-top: 90px;
     width: 100%;
     height: 100vh;
     display: flex;

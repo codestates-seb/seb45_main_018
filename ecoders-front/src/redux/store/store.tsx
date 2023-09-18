@@ -1,20 +1,25 @@
-import { configureStore } from "@reduxjs/toolkit";
+import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
 import modalReducer from "../slice/modalSlice";
 import loginReducer from "../slice/loginSlice";
-import missionReducer from '../slice/missionSlice';
 import authReducer from "../slice/authSlice";
 import userReducer from "../slice/userSlice"
 import apiReducer from "../slice/apiSlice"
+import optionReducer from "../slice/optionSlice";
+import myMissionReducer from "../slice/myMissionSlice";
+import todayMissionReducer from "../slice/todayMissionSlice";
+
 
 // configureStore를 사용하여 스토어를 설정
 const store = configureStore({
     reducer: {                      // reducer 속성에는 reducer들을 포함
         modal: modalReducer,
         login: loginReducer,
-        missions: missionReducer,
         auth: authReducer,
         user: userReducer,
         api: apiReducer,
+        option: optionReducer,
+        myMissions: myMissionReducer,
+        todayMissions: todayMissionReducer,
 
     },
 
@@ -27,5 +32,13 @@ export type RootState = ReturnType<typeof store.getState>;
 
 // AppDispatch라는 타입 정의 -> dispatch 메서드의 타입 나타냄
 export type AppDispatch = typeof store.dispatch;
+
+// AppThunk 타입 정의
+export type AppThunk<ReturnType = void> = ThunkAction<
+    ReturnType,
+    RootState,
+    unknown,
+    Action<string>
+>;
 
 export default store;

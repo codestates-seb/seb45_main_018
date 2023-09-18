@@ -28,8 +28,8 @@ public class MissionController {
     private final TodayMissionService todayMissionService;
     private final JwtProvider jwtProvider;
     private final MemberService memberService;
-
     private TodayMissionResponseDto currentMission;
+
 
     /**
      * 오늘의미션 API (사용자 설정에 따른 갯수 랜덤)
@@ -44,64 +44,27 @@ public class MissionController {
         return ResponseEntity.ok().body(todayMissionList);
     }
 
-//    @GetMapping("/today_mission")
-//    public TodayMissionResponseDto getTodayMission(@RequestParam("size") int size) {
-//        if(currentMission == null || currentMission.getSize() != size) {
-//            currentMission = missionService.
-//        }
-//    }
-
-
     /**
-     * 나만의미션 생성 API
+     * 오늘의 미션 수행 완료 및 취소
      */
-    @PostMapping("/my_mission")
-    public ResponseEntity<MissionPostDto.Response> createMission(
-            @Valid @RequestBody MissionPostDto.Request postDto,
-            @RequestHeader(HEADER_AUTHORIZATION) String accessToken) throws IOException {
-        Long memberId = getMemberIdFromAccessToken(accessToken);
-
-        MissionPostDto.Response response = missionService.createMission(postDto, memberId);
-
-        MissionPostDto.Response responseDto = new MissionPostDto.Response(
-                response.getId(),
-                response.getText(),
-                response.getCreatedAt(),
-                response.getModifiedAt(),
-                response.getMemberId()
-        );
-        return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
+    @ResponseBody
+    @PatchMapping("/today_mission/{today_mission_id}")
+    public ResponseEntity<?> patchTodayMissionComplete(
+            @PathVariable ("today_mission_id") Long missionId,
+            @RequestBody boolean iscompleted) {
+        todayMissionService.patchMissionComplete(missionId, iscompleted);
+        return ResponseEntity.ok("Mission updated successfully!");
     }
 
     /**
-     * 나만의 미션 수정 API
+     * 오늘의 미션 완료 개수 가져오기
      */
-    @PatchMapping("/my_mission/{missionId}")
-    public ResponseEntity<MissionPatchDto.Response> updateMission(
-            @PathVariable Long missionId,
-            @Valid @RequestBody MissionPatchDto.Request patchDto,
-            @RequestHeader(HEADER_AUTHORIZATION) String accessToken) throws IOException {
-        Long memberId = getMemberIdFromAccessToken(accessToken);
-
-        MissionPatchDto.Response response = missionService.updateMission(missionId, patchDto, memberId);
-
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+    @GetMapping("/today_mission/count")
+    public ResponseEntity<Integer> getCompletedMissionCount() {
+        int completedCount = todayMissionService.getCompletedMissionCount();
+        return ResponseEntity.ok(completedCount);
     }
-
-    /**
-     * 나만의 미션 삭제 API
-     */
-    @DeleteMapping("/my_mission/{missionId}")
-    public ResponseEntity deleteMission(
-            @PathVariable Long missionId,
-            @RequestHeader(HEADER_AUTHORIZATION) String accessToken) throws IOException {
-        Long memberId = getMemberIdFromAccessToken(accessToken);
-
-        missionService.deleteMission(missionId, memberId);
-
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
-
+    
     private Long getMemberIdFromAccessToken(String accessToken) {
         String email = jwtProvider.getEmailFromToken(accessToken);
         Member member = memberService.findMemberByEmail(email);

@@ -45,14 +45,14 @@ function Board() {
     if (keyWord === '') {
       if (page === 99999) {
         axios
-          .get(`${APIURL}/posts/all?lastPostId=99999&size=20`, {})
+          .get(`${APIURL}/posts/all?lastPostId=99999&size=10`, {})
           .then(function (response) {
             // response
             console.log(response.data);
             setPosts(response.data);
             console.log(response.data[response.data.length - 1].postId);
             setPage(response.data[response.data.length - 1].postId);
-            if (response.data.length < 20) {
+            if (response.data.length < 10) {
               setPage(0);
               console.log(response.data.length);
             } else {
@@ -93,17 +93,21 @@ function Board() {
   // 스크롤 이벤트 핸들러를 창에 추가
   useEffect(() => {
     //무한스크롤 이벤트 발생시
+    console.log(post.length);
     const handleScroll = () => {
+      // 스크롤이 아래로 내려가면서 로딩중이 아니라면 새로운 데이터 로드
       if (
         containerRef.current &&
         containerRef.current.getBoundingClientRect().bottom <= window.innerHeight + 100 &&
-        !isLoading
+        !isLoading &&
+        post.length >= 10
       ) {
         setIsLoading(true);
+
         // console.log('page', page); //99999
 
-        // 스크롤이 아래로 내려가면서 로딩중이 아니라면 새로운 데이터 로드
         if (keyWord === '') {
+          console.log(page);
           if (page !== 0) {
             // 여기서 수정
             axios
@@ -111,9 +115,11 @@ function Board() {
               .then(function (response) {
                 // response
                 console.log(response.data);
+                console.log('혹시..? 여기로 들어오나..?');
                 console.log(response.data.length);
                 console.log(response.data[response.data.length - 1]);
                 setPosts(prevData => [...prevData, ...response.data]);
+
                 if (response.data.length < 10) {
                   setPage(0);
                   console.log(response.data.length);
@@ -193,6 +199,7 @@ function Board() {
   useEffect(() => {
     console.log('카테고리 변경?');
     console.log(category);
+    console.log(post);
     if (category === '모집글') {
       setFilteredData(
         post.filter(item => {

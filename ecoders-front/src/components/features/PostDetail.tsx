@@ -13,6 +13,7 @@ import { closeModal, openModal } from '../../redux/slice/modalSlice';
 import { postData, comment } from '../../pages/CommunityPostDetailPage';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { FiX } from 'react-icons/fi';
 
 type ApiState = {
   api: {
@@ -43,8 +44,6 @@ const HeaderButtons = ({ post }: { post: postData }) => {
   }
 
   function postDeleteHandler() {
-    console.log(USERACCESSTOKEN);
-    console.log(APIURL);
     // 게시글 삭제 요청 처리 후 게시판으로 이동
     axios
       .delete(`${APIURL}/posts/${post.postId}`, {
@@ -53,7 +52,7 @@ const HeaderButtons = ({ post }: { post: postData }) => {
         },
       })
       .then(function (response) {
-        closeModal('deletePostModal');
+        dispatch(closeModal('deletePostModal'));
         navigate(`/community`);
       })
       .catch(function (error) {
@@ -107,18 +106,26 @@ const CommentButtons = ({
 }) => {
   const USERACCESSTOKEN = useSelector((state: UserState) => state.user.accessToken);
   const APIURL = useSelector((state: ApiState) => state.api.APIURL);
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   function commentModifyHandler() {
     // 댓글 정보를 가지고 수정..
     setIsCommentModify(comment.commentId);
   }
 
-  function postDeleteHandler() {
-    // 댓글 삭제 낙관적 업데이트
+  function commentDeleteHandler() {
+    // // 댓글 삭제 낙관적 업데이트
+    setIsDeleteModalOpen(false);
+    console.log(comment);
+    console.log(comment.commentId);
     if (commentList !== undefined) {
-      const deletedCommentList = commentList.filter(item => item.commentId !== comment.commentId);
+      console.log(commentList);
+      console.log(comment.commentId);
+      const deletedCommentList = commentList.filter(item => {
+        console.log(item);
+        return item.commentId !== comment.commentId;
+      });
+      console.log(deletedCommentList);
       setCommentList(deletedCommentList);
     }
 
@@ -129,7 +136,8 @@ const CommentButtons = ({
         },
       })
       .then(function (response) {
-        closeModal('deletePostModal');
+        console.log(comment.commentId);
+        console.log(response);
       })
       .catch(function (error) {
         console.log('댓글 삭제 실패');
@@ -137,29 +145,35 @@ const CommentButtons = ({
       });
   }
 
-  function commentDeleteModalHandler() {
-    dispatch(openModal('deleteCommentModal'));
+  function deleteModalOpenHandler() {
+    setIsDeleteModalOpen(true);
   }
-
+  function deleteModalCloseHandler() {
+    setIsDeleteModalOpen(false);
+  }
   return (
     <div className="comment-buttons">
-      {/* 삭제 예 -> 서버에 delete 요청 */}
-      <Modal className="post-delete" modaltype="deleteCommentModal">
-        <div>해당 댓글을 삭제하시겠습니까?</div>
-        <ModalButtons>
-          <Button onClick={postDeleteHandler}>예</Button>
-          <Button
-            onClick={() => {
-              dispatch(closeModal('deleteCommentModal'));
-            }}>
-            아니요
-          </Button>
-        </ModalButtons>
-      </Modal>
+      {isDeleteModalOpen ? (
+        <Container className="post-delete">
+          <Overlay onClick={deleteModalCloseHandler} />
+          <Content>
+            <IconBox>
+              <FiX className="close-icon" onClick={deleteModalCloseHandler} />
+            </IconBox>
+            <TextBox>
+              <div>해당 댓글을 삭제하시겠습니까?</div>
+              <ModalButtons>
+                <Button onClick={commentDeleteHandler}>예</Button>
+                <Button onClick={deleteModalCloseHandler}>아니요</Button>
+              </ModalButtons>
+            </TextBox>
+          </Content>
+        </Container>
+      ) : null}
 
       <Button
         width="30px"
-        fontSize={0.7}
+        fontSize={0.8}
         border="0px"
         hoverBgColor="#7092bf"
         hoverColor="white"
@@ -168,11 +182,11 @@ const CommentButtons = ({
       </Button>
       <Button
         width="30px"
-        fontSize={0.7}
+        fontSize={0.8}
         border="0px"
         hoverBgColor="#7092bf"
         hoverColor="white"
-        onClick={commentDeleteModalHandler}>
+        onClick={deleteModalOpenHandler}>
         삭제
       </Button>
     </div>
@@ -188,15 +202,19 @@ function CommentDetail({
   setCommentList: React.Dispatch<React.SetStateAction<Array<comment> | undefined>>;
   post: postData;
 }) {
+  console.log(commentList);
   const USERID = useSelector((state: UserState) => state.user.id);
   const [isCommentModify, setIsCommentModify] = useState(0);
+
   return (
     <div className="post-comment-container">
       {commentList.map((item, index) => {
-        if (item.commentId === isCommentModify) {
+        const commentItem = item;
+        console.log(commentItem);
+        if (commentItem.commentId === isCommentModify) {
           return (
             <CommentModify
-              initComment={item}
+              initComment={commentItem}
               postid={post.postId}
               commentList={commentList}
               setIsCommentModify={setIsCommentModify}
@@ -207,20 +225,24 @@ function CommentDetail({
         return (
           <div className="post-comment" key={index}>
             {/* 헤더 유저네임, item.usename 같은지 조건부 버튼 렌더 */}
-            {item.memberId === USERID && (
+            {commentItem.memberId === USERID ? (
               <CommentButtons
-                comment={item}
+                comment={commentItem}
                 postid={post.postId}
                 setIsCommentModify={setIsCommentModify}
                 commentList={commentList}
                 setCommentList={setCommentList}
               />
+            ) : (
+              <div className="is-not-comment-btn"></div>
             )}
             <div className="comment-detail">
-              <p className="comment-user">{item.username}</p>
-              <p className="comment-content">{item.content}</p>
+              <div className="comment-user">{item.username}</div>
+              <div className="comment-detail-content">
+                <div className="comment-content">{item.content}</div>
+                <div className="comment-date">{item.createdAt}</div>
+              </div>
             </div>
-            <div className="comment-date">{item.createdAt}</div>
           </div>
         );
       })}
@@ -248,25 +270,30 @@ function CommentModify({
   function changeCommentHandler(event: React.ChangeEvent<HTMLTextAreaElement>) {
     setComment((event.target as HTMLTextAreaElement).value);
   }
-  // 댓글 등록 버튼 클릭 함수
+  // 댓글 수정 버튼 클릭 함수
   function submitCommentHandler() {
     console.log(comment);
     const commentData = {
       content: comment,
     };
     //댓글 수정 낙관적 업데이트
+    if (commentList !== undefined) {
+      const modifyCommentList = commentList.map(item => {
+        if (item.commentId === initComment.commentId) {
+          return {
+            ...item,
+            memberId: initComment.memberId,
+            content: comment,
+            username: initComment.username,
+            createdAt: initComment.createdAt,
+            updatedAt: initComment.updatedAt,
+          };
+        }
+        return item;
+      });
+      setCommentList(modifyCommentList);
+    }
     console.log(JSON.stringify(commentData));
-    setCommentList([
-      ...commentList,
-      {
-        memberId: initComment.memberId,
-        commentId: initComment.commentId,
-        content: comment,
-        username: initComment.username,
-        createdAt: initComment.createdAt,
-        updatedAt: initComment.updatedAt,
-      },
-    ]);
     axios({
       method: 'patch',
       url: `${APIURL}/posts/comment/${initComment.commentId}`,
@@ -307,10 +334,12 @@ function CommentAdd({
   commentList,
   setCommentList,
   postid,
+  setAppenCommentId,
 }: {
   commentList: Array<comment> | undefined;
   setCommentList: React.Dispatch<React.SetStateAction<Array<comment> | undefined>>;
   postid: number | undefined;
+  setAppenCommentId: React.Dispatch<React.SetStateAction<number>>;
 }) {
   const USERACCESSTOKEN = useSelector((state: UserState) => state.user.accessToken);
   const USERID = useSelector((state: UserState) => state.user.id);
@@ -329,8 +358,6 @@ function CommentAdd({
   const dateString = year + '-' + month + '-' + day;
   const timeString = hours + ':' + minutes + ':' + seconds;
 
-  console.log(timeString);
-
   function changeCommentHandler(event: React.ChangeEvent<HTMLTextAreaElement>) {
     setComment((event.target as HTMLTextAreaElement).value);
   }
@@ -342,17 +369,24 @@ function CommentAdd({
     };
 
     if (commentList !== undefined) {
+      let initCommentId;
+      if (commentList.length === 0) {
+        initCommentId = 1;
+      } else {
+        initCommentId = commentList[commentList?.length - 1].commentId + 1;
+      }
       setCommentList([
         ...commentList,
         {
           memberId: USERID,
-          commentId: commentList[commentList?.length - 1].commentId + 1,
+          commentId: initCommentId,
           content: comment,
           username: USERNAME,
           createdAt: `${dateString} ${timeString}`,
           updatedAt: null,
         },
       ]);
+      setComment('');
     }
 
     console.log(JSON.stringify(commentData));
@@ -367,9 +401,21 @@ function CommentAdd({
     })
       .then(response => {
         console.log('댓글 등록 성공');
-        if (response.status === 200) {
-          // navigate(`/community`);
-          window.location.reload();
+        console.log(response.data.commentId);
+
+        if (commentList !== undefined) {
+          setCommentList([
+            ...commentList,
+            {
+              memberId: USERID,
+              commentId: response.data.commentId,
+              content: comment,
+              username: USERNAME,
+              createdAt: `${dateString} ${timeString}`,
+              updatedAt: null,
+            },
+          ]);
+          setComment('');
         }
       })
       .catch(error => {
@@ -379,7 +425,7 @@ function CommentAdd({
   }
   return (
     <div className="post-comment-add">
-      <div className="post-comment-add-user">User</div>
+      <div className="post-comment-add-user">{USERNAME}</div>
       <textarea
         className="post-comment-add-content"
         placeholder="댓글을 남겨주세요"
@@ -403,12 +449,14 @@ function PostDetail({ post }: { post: postData }) {
   const [likeList, setLikeList] = useState<Array<string> | undefined>(post.likedByUserIds);
   const [likeCount, setLikeCount] = useState<number | undefined>(post.likes);
   const [commentList, setCommentList] = useState<Array<comment> | undefined>(post.comments);
+  const [appendCommentId, setAppenCommentId] = useState(0);
 
   const navigate = useNavigate();
   function goToCommunityHandler() {
     navigate(`/community`);
   }
 
+  console.log(commentList);
   console.log(USERID);
   //좋아요 상태 변경
   useEffect(() => {
@@ -438,6 +486,8 @@ function PostDetail({ post }: { post: postData }) {
     }
   }, []);
 
+  useEffect(() => {}, [appendCommentId]);
+
   // 좋아요 클릭시..요청
   function changeLikeHandler() {
     if (USERID === '0') {
@@ -451,11 +501,14 @@ function PostDetail({ post }: { post: postData }) {
       if (likeCount !== undefined) {
         if (!isLiked && likeList !== undefined) {
           setLikeCount(likeCount + 1);
-          setLikeList([...likeList, USERID]);
+          if (!likeList.includes(USERID)) {
+            setLikeList([...likeList, USERID]);
+          }
         } else {
           setLikeCount(likeCount - 1);
           if (likeList !== undefined) {
-            setLikeList(likeList.slice(0, likeList.length - 1));
+            const deletedLiekList = likeList.filter(item => item !== USERID);
+            setLikeList(deletedLiekList);
           }
         }
       }
@@ -518,7 +571,12 @@ function PostDetail({ post }: { post: postData }) {
         {commentList ? <CommentDetail commentList={commentList} setCommentList={setCommentList} post={post} /> : null}
         {/* {post.comments ? <CommentDetail comment={post.comments} post={post} /> : null} */}
         {USERID !== '0' ? (
-          <CommentAdd commentList={commentList} setCommentList={setCommentList} postid={post.postId} />
+          <CommentAdd
+            commentList={commentList}
+            setCommentList={setCommentList}
+            postid={post.postId}
+            setAppenCommentId={setAppenCommentId}
+          />
         ) : (
           <div className="not-login-comment">
             로그인하시면 댓글을 작성할 수 있습니다. <Link to={'/login'}>로그인 페이지로...</Link>
@@ -569,6 +627,12 @@ const PostDetailHeader = styled.div`
   }
   div.header-buttons button {
     margin-left: 5px;
+  }
+  @media all and (max-width: 580px) {
+    div.header-detail-container {
+      display: block;
+      /* justify-content: space-between; */
+    }
   }
 `;
 
@@ -623,19 +687,24 @@ const PostFooter = styled.div`
     background-color: #fcfcfc;
     border: 1px solid #a8adaf;
     border-radius: 15px;
+    /* display: flex; */
   }
-  div.post-comment div.comment-detail {
-    display: flex;
+
+  div.post-comment-container div.post-comment div.is-not-comment-btn {
+    height: 10px;
   }
-  div.post-comment p.comment-user {
+
+  div.post-comment div.comment-user {
     width: 80px;
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 600;
-    padding: 0 10px;
+    padding: 0 15px;
   }
-  div.post-comment p.comment-content {
-    font-size: 15px;
-    padding: 0 10px;
+  div.post-comment div.comment-content {
+    font-size: 16px;
+    padding: 0px;
+    padding: 10px 15px;
+    justify-content: left;
   }
   div.post-comment div.comment-date {
     display: flex;
@@ -646,6 +715,7 @@ const PostFooter = styled.div`
   div.post-comment div.comment-buttons {
     display: flex;
     justify-content: right;
+    padding: 0px 10px;
   }
   div.post-comment-add {
     margin: 5px 0px;
@@ -655,13 +725,13 @@ const PostFooter = styled.div`
     border-radius: 15px;
   }
   div.post-comment-add div.post-comment-add-user {
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 600;
-    padding: 5px;
+    padding: 10px;
   }
   div.post-comment-add textarea.post-comment-add-content {
     margin-top: 5px;
-    width: 98%;
+    width: 100%;
     height: 100px;
     border-radius: 10px;
     padding: 1%;
@@ -682,3 +752,40 @@ const ModalButtons = styled.div`
     margin: 0px 10px;
   }
 `;
+
+const Container = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+`;
+
+const Overlay = styled.div`
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.2);
+`;
+
+const Content = styled.section`
+  display: flex;
+  flex-direction: column;
+  width: 20rem;
+  max-height: 20rem;
+  background-color: #fff;
+  border-radius: 30px;
+  padding: 2rem;
+  z-index: 1;
+  overflow: auto;
+`;
+
+const IconBox = styled.div`
+  display: flex;
+  justify-content: flex-end;
+
+  .close-icon {
+    cursor: pointer;
+  }
+`;
+const TextBox = styled.div``;

@@ -75,7 +75,7 @@ function PostWriteHeader({ headerData }: { headerData: headerProps }) {
         onChange={changeCategoryHandler}>
         <option value="전체">전체</option>
         <option value="모집글">모집글</option>
-        <option value="응모글">응모글</option>
+        <option value="인증글">인증글</option>
       </select>
     </div>
   );
@@ -85,7 +85,7 @@ function PostWriteBody({ bodyData }: { bodyData: bodyProps }) {
   const editorRef = useRef<Editor>(null);
   const dispatch = useDispatch();
 
-  console.log(bodyData.content);
+  // console.log(bodyData.content);
   useEffect(() => {
     if (bodyData.content !== '') {
       editorRef.current?.getInstance().setHTML(bodyData.content);
@@ -192,7 +192,7 @@ function PostWriteBody({ bodyData }: { bodyData: bodyProps }) {
         <div className="submit-button-container">
           <Button
             width="80px"
-            fontSize={0.5}
+            fontSize={1}
             hoverBgColor="#7092bf"
             hoverColor="white"
             onClick={submitButtonClickHandler}>
@@ -203,13 +203,14 @@ function PostWriteBody({ bodyData }: { bodyData: bodyProps }) {
     </>
   );
 }
+// function PostWrite({ postid, post }: { postid: number; post: postData }) {
 
-function PostWrite({ postid, post }: { postid: number; post: postData }) {
+function PostWrite({ post }: { post: postData }) {
   const navigate = useNavigate();
   const USERACCESSTOKEN = useSelector((state: UserState) => state.user.accessToken);
   const APIURL = useSelector((state: ApiState) => state.api.APIURL);
 
-  console.log(post);
+  // console.log(post);
   const [title, setTitle] = useState<string | undefined>('');
   const [category, setCategory] = useState<string | undefined>('');
   const [content, setContent] = useState<string | undefined>('');
@@ -266,7 +267,7 @@ function PostWrite({ postid, post }: { postid: number; post: postData }) {
 
         axios({
           method: 'patch',
-          url: `${APIURL}/posts/${postid}`,
+          url: `${APIURL}/posts/${post.postId}`,
           data: JSON.stringify(postData),
           headers: {
             'Content-Type': 'application/json',
@@ -276,7 +277,7 @@ function PostWrite({ postid, post }: { postid: number; post: postData }) {
           .then(response => {
             console.log('게시물 수정 성공');
             if (response.status === 200) {
-              navigate(`/community/postdetail/${postid}`);
+              navigate(`/community/postdetail/${post.postId}`);
             }
           })
           .catch(error => {

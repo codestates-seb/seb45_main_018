@@ -9,10 +9,17 @@ import { postData } from './CommunityPostDetailPage';
 function CommunityPostWritePage() {
   const { state } = useLocation();
   const [postid, setPostId] = useState<number>(0);
+  let initPostid;
+
+  if (state) {
+    initPostid = Number(state.post.postId);
+  } else {
+    initPostid = 0;
+  }
   const [post, setPost] = useState<postData>({
     // memberId: '',
     memberId: '0',
-    postId: Number(state.post.postId),
+    postId: initPostid,
     title: '',
     content: '',
     category: '',
@@ -39,7 +46,9 @@ function CommunityPostWritePage() {
 
   return (
     <>
-      <PostWrite postid={postid} post={post} />:
+      <PostWrite post={post} />:
+      {/* // postid={postid} 
+      post={post} />: */}
     </>
   );
 }

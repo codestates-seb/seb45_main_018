@@ -93,11 +93,14 @@ function CommunityPostDetailPage() {
 
   useEffect(() => {
     axios
-      .get(`${APIURL}/posts/${params.postnumber}`)
+      .get(`${APIURL}/posts/${params.postnumber}`, {
+        withCredentials: true,
+      })
       .then(function (response) {
         // response
         console.log(response.data);
         setPost(response.data);
+        console.log(response.headers['set-cookie']);
       })
       .catch(function (error) {
         console.log('게시물 디테일 데이터 받아오기 실패');

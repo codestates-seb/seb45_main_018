@@ -22,7 +22,6 @@ function CommunityButtonGroup(props: positionSetting) {
   const USERACCESSTOKEN = useSelector((state: UserState) => state.user.accessToken);
   const navigate = useNavigate();
 
-  console.log(USERACCESSTOKEN);
   function moveToTopButtonClickHandler() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }

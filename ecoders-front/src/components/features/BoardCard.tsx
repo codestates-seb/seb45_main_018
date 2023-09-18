@@ -23,6 +23,7 @@ function BoardCard({ data }: { data: Array<card> }) {
     //detaial페이지로 이동
     navigate(`/community/postdetail/${index}`);
   }
+  console.log(data);
   return (
     <div className="board-card-container">
       {data.map((item, index) => {

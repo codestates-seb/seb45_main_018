@@ -27,9 +27,9 @@ const MyInfo = () => {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
 
-  const [currentPassword, setCurrentPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmNewPassword, setConfirmNewPassword] = useState('');
+  // const [currentPassword, setCurrentPassword] = useState('');
+  // const [newPassword, setNewPassword] = useState('');
+  // const [confirmNewPassword, setConfirmNewPassword] = useState('');
 
   // const [data, setData] = useState({
   //   username: 'user',
@@ -278,8 +278,17 @@ const MyInfo = () => {
   const PasswordModalContent = () => {
 
     const [focusKey, setFocusKey] = useState(null);
-    
+    const [currentPassword, setCurrentPassword] = useState('');
+    const [newPassword, setNewPassword] = useState('');
+    const [confirmNewPassword, setConfirmNewPassword] = useState('');
 
+    const inputRef = useRef<HTMLInputElement | null>(null);
+    
+    useEffect(() => {
+      if (inputRef.current) {
+        inputRef.current.focus();
+    }
+    })
 
     return (
       <ModalContentContainer>
@@ -290,8 +299,6 @@ const MyInfo = () => {
             <label htmlFor="current-password">현재 비밀번호</label>
           </PasswordTitle>
           <PasswordInput
-        onClick={() => setFocusKey(1)}
-        autoFocus={focusKey === 1}
             type="password"
             id="current-password"
             value={currentPassword}
@@ -522,6 +529,7 @@ const MyInfo = () => {
   //     console.error('Error updating username:', error);
   //   }
   // };
+
 
   return (
     <div>

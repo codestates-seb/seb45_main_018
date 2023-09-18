@@ -25,7 +25,7 @@ type UserState = {
   user: {
     accessToken: string | null;
     username: string;
-    id: number;
+    id: string;
     stamp: number;
   };
 };

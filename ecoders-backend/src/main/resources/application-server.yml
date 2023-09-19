@@ -15,9 +15,14 @@ cloud:
       accessKey: ${AWS_IAM_AccessKey}
       secretKey: ${AWS_IAM_SecretKey}
     s3:
-      bucket: polareco-deploy
+      bucket: polareco-bucket
       dir: post_Image
     region:
       static: ap-northeast-2
     stack:
       auto: false
+server:
+  servlet:
+    session:
+      cookie:
+        same-site: None

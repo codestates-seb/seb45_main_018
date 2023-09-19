@@ -8,10 +8,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { closeModal, openModal } from "../redux/slice/modalSlice";
 import { useState, useEffect } from "react";
 import { registerFail, registerStart, registerSuccess } from "../redux/slice/authSlice";
+import { setUsername, setAccessToken, setAuthType, setRefreshToken, setEmail, setId } from '../redux/slice/userSlice';
 import axios from "axios";
-import GLogin from './GLogin';
-import { RootState } from '../redux/store/store';
+import { GoogleLogin } from 'react-google-login';
+import googleicon from '../assets/google-icon.png';
+import { RootState } from "../redux/store/store";
 import { gapi } from 'gapi-script';
+import { login } from '../redux/slice/loginSlice';
 
 
 interface ErrorObject {
@@ -27,6 +30,73 @@ function Signup () {
     const dispatch = useDispatch();
 
     const clientId = useSelector((state: RootState) => state.login.clientId);
+    const APIURL = useSelector((state: RootState) => state.api.APIURL);
+
+    useEffect(() => {
+        function initGoogleAuth() {
+          gapi.auth2.init({
+            clientId: clientId,
+            prompt: 'select_account'
+        });
+            gapi.client.init({
+                clientId: clientId,
+                scope: 'email name' // 필요한 스코프를 여기에 추가하세요.
+            }).then(() => {
+                // 클라이언트 라이브러리가 초기화된 후의 로직
+                const authInstance = gapi.auth2.getAuthInstance();
+                if (authInstance.isSignedIn.get()) {
+                    dispatch(login());
+                }
+            });
+        }
+
+        // gapi 라이브러리를 로드하고, 로드가 완료되면 initGoogleAuth 함수를 호출합니다.
+        gapi.load("client:auth2", initGoogleAuth);
+    }, []);  // 의존성 배열에 clientId와 dispatch를 추가했습니다.
+
+    const onSuccess = async (res: any) => {
+        const email = res.profileObj.email;
+        dispatch(setEmail(email));
+        const username = res.profileObj.name;
+        console.log(email);
+        dispatch(setUsername(username));
+        try {
+          const response = await axios.post(`${APIURL}/auth/oauth/google/login`, {
+            email: email,
+            username: username,
+          });
+
+          if (response.status === 200) {
+            const headers = response.headers;
+            const accessToken = headers['authorization'];
+            const refreshToken = headers['refresh-token'];
+            const id = headers['member-id'];
+
+            localStorage.setItem('accessToken', accessToken);
+            localStorage.setItem('refreshToken', refreshToken);
+            localStorage.setItem('id', id);
+
+            dispatch(setAccessToken(accessToken));
+            dispatch(setRefreshToken(refreshToken));
+            dispatch(setId(id));
+            dispatch(setAuthType('GOOGLE'));
+            console.log(accessToken);
+            console.log(refreshToken);
+
+            console.log(id);
+            console.log('로그인 성공! 현재 유저: ', res.profileObj);
+            dispatch(login());
+            navigate('/');
+          }
+        } catch (error) {
+          console.error('Error occurred:', error);
+          alert('오류');
+        }
+      };
+
+      const onFailure = (res: any) => {
+        console.log('로그인 실패! res: ', res);
+      };
 
     // input 상태
     const [ formData, setFormData ] = useState({
@@ -157,27 +227,6 @@ function Signup () {
         }
     };
 
-    async function googleHandler() {
-
-        try{
-            useEffect(()=> {
-                function start() {
-                  gapi.client.init({
-                    clientId: clientId,
-                    scope: ""
-                  })
-                }
-                gapi.load("client:auth2", start)
-              })
-
-              const accessToken = gapi.auth.getToken().access_token;
-              localStorage.setItem('accessToken', accessToken);
-        }
-        catch {
-            alert('오류가 발생했습니다.')
-        }
-    }
-
     return (
      <Container>
         <SignupContainer>
@@ -236,8 +285,22 @@ function Signup () {
                                             </div>
                                         </div>
                                     </SignUpModal>
-                                {/* <GLogin
-                                    onClick={() => googleHandler}>Sign up with Google</GLogin> */}
+                                    <GoogleLogin
+                                        clientId={clientId}
+                                        onSuccess={onSuccess}
+                                        onFailure={onFailure}
+                                        render={renderProps => (
+                                            <div>
+                                            <SubmitButtonGoogle onClick={renderProps.onClick} className="google-login-submit">
+                                                <GoogleLogo src={googleicon} />
+                                                Sign up with google
+                                            </SubmitButtonGoogle>
+                                            </div>
+                                        )}
+                                        cookiePolicy={'single_host_origin'}
+                                        isSignedIn={true}>
+                                        Sign up with Google
+                                        </GoogleLogin>
                             </ButtonWrapper>
                         </SignUpForm>
                     </FormContainer>
@@ -403,4 +466,48 @@ const ErrorText = styled.div`
   color: red;
   font-size: 12px;
   text-align: left;
+`;
+
+const SubmitButtonGoogle = styled(Button)`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50px;
+  padding: 16px;
+
+  &.login-submit {
+    background-color: #7092bf;
+    color: #fff;
+    border: none;
+
+    &:hover {
+      background-color: #d4e2f1;
+    }
+  }
+
+  &.google-login-submit {
+    background-color: #fff;
+    border: 1px solid #5a5a5a;
+
+    &:hover {
+      background-color: #5a5a5a;
+      border: 1px solid #5a5a5a;
+    }
+  }
+
+  &.modal-email-submit {
+    background-color: #7092bf;
+    color: #fff;
+    border: none;
+
+    &:hover {
+      background-color: #d4e2f1;
+    }
+  }
+`;
+
+const GoogleLogo = styled.img`
+  width: 20px;
+  height: auto;
+  margin: 5px;
 `;

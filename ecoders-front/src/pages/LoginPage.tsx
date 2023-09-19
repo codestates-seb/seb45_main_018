@@ -20,34 +20,34 @@ import { useEffect } from 'react';
 
 function LoginPage() {
   const APIURL = useSelector((state: RootState) => state.api.APIURL);
-  const clientId = useSelector((state: RootState) => state.login.clientId)
+  const clientId = useSelector((state: RootState) => state.login.clientId);
   const [password, setPassword] = useState(''); // 비밀번호 상태와 업데이트 함수를 선언합니다.
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-
-
   useEffect(() => {
-      function initGoogleAuth() {
-        gapi.auth2.init({
-          clientId: clientId,
-          prompt: 'select_account'
+    function initGoogleAuth() {
+      gapi.auth2.init({
+        clientId: clientId,
+        prompt: 'select_account',
       });
-          gapi.client.init({
-              clientId: clientId,
-              scope: 'email name' // 필요한 스코프를 여기에 추가하세요.
-          }).then(() => {
-              // 클라이언트 라이브러리가 초기화된 후의 로직
-              const authInstance = gapi.auth2.getAuthInstance();
-              if (authInstance.isSignedIn.get()) {
-                  dispatch(login());
-              }
-          });
-      }
+      gapi.client
+        .init({
+          clientId: clientId,
+          scope: 'email name', // 필요한 스코프를 여기에 추가하세요.
+        })
+        .then(() => {
+          // 클라이언트 라이브러리가 초기화된 후의 로직
+          const authInstance = gapi.auth2.getAuthInstance();
+          if (authInstance.isSignedIn.get()) {
+            dispatch(login());
+          }
+        });
+    }
 
-      // gapi 라이브러리를 로드하고, 로드가 완료되면 initGoogleAuth 함수를 호출합니다.
-      gapi.load("client:auth2", initGoogleAuth);
-  }, []);  // 의존성 배열에 clientId와 dispatch를 추가했습니다.
+    // gapi 라이브러리를 로드하고, 로드가 완료되면 initGoogleAuth 함수를 호출합니다.
+    gapi.load('client:auth2', initGoogleAuth);
+  }, []); // 의존성 배열에 clientId와 dispatch를 추가했습니다.
 
   const email = useSelector((state: RootState) => state.user.email);
 
@@ -116,7 +116,6 @@ function LoginPage() {
       console.log(password);
 
       if (response.status === 200) {
-
         const authHeader = response.headers['authorization'];
         const refreshHeader = response.headers['refresh-token'];
 

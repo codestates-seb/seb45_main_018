@@ -232,11 +232,13 @@ public class PostService {
             if(!checkCookie){
                 Cookie newCookie = createCookieForForNotOverlap(postId);
                 response.addCookie(newCookie);
+                response.setHeader("Set-Cookie", "name=value; path=/; MaxAge=-1; SameSite=None; Secure");
                 result = postRepository.updateView(postId);
             }
         } else {
             Cookie newCookie = createCookieForForNotOverlap(postId);
             response.addCookie(newCookie);
+            response.setHeader("Set-Cookie", "name=value; path=/; MaxAge=-1; SameSite=None; Secure");
             result = postRepository.updateView(postId);
         }
         return result;
@@ -244,9 +246,8 @@ public class PostService {
 
     private Cookie createCookieForForNotOverlap(Long postId) {
         Cookie cookie = new Cookie(VIEWCOOKIENAME+postId, String.valueOf(postId));
-        cookie.setComment("SameSite=None");
-        cookie.setMaxAge(24*60*60);
-       // cookie.setHttpOnly(true);
+
+        // cookie.setHttpOnly(true);
         return cookie;
     }
 

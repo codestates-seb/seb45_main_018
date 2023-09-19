@@ -25,8 +25,6 @@ public class StampController {
     private final MemberService memberService;
 
 
-
-
 //    /**
 //     * 주간 스탬프 조회
 //     */

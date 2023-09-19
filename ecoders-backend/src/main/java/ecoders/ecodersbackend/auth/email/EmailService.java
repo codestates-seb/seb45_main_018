@@ -2,7 +2,10 @@ package ecoders.ecodersbackend.auth.email;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.mail.Message;
@@ -19,6 +22,7 @@ public class EmailService {
     public void sendVerificationMail(String to) {
         try {
             javaMailSender.send(writeTestMessage(to));
+            log.info("테스트 이메일 전송 완료");
         } catch (Exception e) {
             log.error("메시지 작성 중 예외 발생: {}", e.toString());
         }

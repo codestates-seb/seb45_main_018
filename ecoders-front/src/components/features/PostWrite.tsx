@@ -282,7 +282,6 @@ function PostWrite({ post }: { post: postData }) {
       }
       // 게시물 등록
       else {
-        const postD = JSON.stringify(postData);
         if (postData.title !== '' && postData.content !== '<p><br></p>') {
           axios({
             method: 'post',

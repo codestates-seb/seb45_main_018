@@ -4,11 +4,14 @@ import Input from "../components/atoms/Input";
 import Button from "../components/atoms/Button";
 import Modal from "../components/atoms/Modal";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { closeModal, openModal } from "../redux/slice/modalSlice";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { registerFail, registerStart, registerSuccess } from "../redux/slice/authSlice";
 import axios from "axios";
+import GLogin from './GLogin';
+import { RootState } from '../redux/store/store';
+import { gapi } from 'gapi-script';
 
 
 interface ErrorObject {
@@ -22,6 +25,8 @@ function Signup () {
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
+
+    const clientId = useSelector((state: RootState) => state.login.clientId);
 
     // input 상태
     const [ formData, setFormData ] = useState({
@@ -131,7 +136,7 @@ function Signup () {
                 confirmPassword: '',
             };
 
-            const response = await axios.post('http://ec2-54-180-107-29.ap-northeast-2.compute.amazonaws.com:8080/auth/signup', newformData, {
+            const response = await axios.post('http://ec2-54-180-124-160.ap-northeast-2.compute.amazonaws.com:8080/auth/signup', newformData, {
                 headers: {
                     "Content-Type": "application/json"
                 }
@@ -151,6 +156,27 @@ function Signup () {
             dispatch(registerFail(err.response.data.error));
         }
     };
+
+    async function googleHandler() {
+
+        try{
+            useEffect(()=> {
+                function start() {
+                  gapi.client.init({
+                    clientId: clientId,
+                    scope: ""
+                  })
+                }
+                gapi.load("client:auth2", start)
+              })
+
+              const accessToken = gapi.auth.getToken().access_token;
+              localStorage.setItem('accessToken', accessToken);
+        }
+        catch {
+            alert('오류가 발생했습니다.')
+        }
+    }
 
     return (
      <Container>
@@ -210,8 +236,8 @@ function Signup () {
                                             </div>
                                         </div>
                                     </SignUpModal>
-                                <SubmitButton
-                                    className="google-sign-up-submit">Sign up with Google</SubmitButton>
+                                <GLogin
+                                    onClick={() => googleHandler}>Sign up with Google</GLogin>
                             </ButtonWrapper>
                         </SignUpForm>
                     </FormContainer>

@@ -12,7 +12,7 @@ const GoogleSignIn = () => {
   const clientId = useSelector((state: RootState) => state.login.clientId);
 
     const dispatch = useDispatch();
-  const responseGoogle = async (response) => {
+  const responseGoogle = async (response: any) => {
     console.log(response);
     const email = response.profileObj.email;
     const username = response.profileObj.name;
@@ -25,7 +25,7 @@ const GoogleSignIn = () => {
 
        // 서버에 POST 요청 보내기
        try {
-        const result = await axios.post(`${APIURL}/oauth/google/login`, {
+        const result = await axios.post(`${APIURL}/auth/oauth/google/login`, {
             email,
             username
         }, {
@@ -52,3 +52,10 @@ const GoogleSignIn = () => {
 }
 
 export default GoogleSignIn;
+
+
+
+
+
+
+

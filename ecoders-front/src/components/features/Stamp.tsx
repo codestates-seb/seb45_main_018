@@ -3,12 +3,15 @@ import { RootState } from '../../redux/store/store';
 import { styled } from 'styled-components';
 
 interface StampProps {
-    isCurrentDay: boolean;
-    day: string;
+    isCurrentDay?: boolean;
+    day?: string;
+    completedmissionscount?: number;
 }
 
 function Stamp (props: StampProps) {
     const completedMissionsCount = useSelector((state: RootState) => state.missions.completedMissionsCount);
+    //const completedMissionsCount = props.completedMissionsCount || 0; // completedMissionsCount가 없으면 0으로 설정
+
 
     const fillLineColor = completedMissionsCount > 0 ? "#424243" : "#DADADA";
     const fillbackgroungColor = completedMissionsCount > 1 ? "#90DDD3" : "#E4E4E4";

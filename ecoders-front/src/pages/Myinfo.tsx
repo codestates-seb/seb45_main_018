@@ -11,15 +11,18 @@ import { FiChevronDown, FiEdit2 } from 'react-icons/fi';
 import { logout } from '../redux/slice/loginSlice';
 import { useNavigate } from 'react-router-dom';
 import { useRef } from 'react';
-
+// import { setEmail, setAccessToken, setId, setRefreshToken } from '../redux/slice/userSlice';
+// import { login } from '../redux/slice/loginSlice';
 const MyInfo = () => {
+  const APIURL = useSelector((state:RootState) => state.api.APIURL);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const username = useSelector((state: RootState) => state.user.username); // username 상태 가져오기
-  // const memberId = useSelector((state: RootState) => state.user.id);
-  const email = useSelector((state: RootState) => state.user.email);
   const accessToken = useSelector((state: RootState) => state.user.accessToken);
   const refreshToken = useSelector((state: RootState) => state.user.refreshToken);
+  const email = useSelector((state: RootState) => state.user.email);
+
 
   const profileImg = useSelector((state: RootState) => state.user.profileImg);
   const [isModalOpen, setModalOpen] = useState(false);
@@ -27,53 +30,7 @@ const MyInfo = () => {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
 
-  // const [currentPassword, setCurrentPassword] = useState('');
-  // const [newPassword, setNewPassword] = useState('');
-  // const [confirmNewPassword, setConfirmNewPassword] = useState('');
 
-  // const [data, setData] = useState({
-  //   username: 'user',
-  //   email: 'polareco@gmail.com',
-  //   profileImage: { profileImg },
-  //   day: 'Mon',
-  //   stamp: 3,
-  //   achievement: { //6단계(0-5)
-  //     Mon: 0,
-  //     Tue: 0,
-  //     Wed: 0,
-  //     Thur: 0,
-  //     Fri: 0,
-  //     Sat: 0,
-  //     Sun: 0,
-  //   },
-  //   badges: {
-  //     '북극곰 연인': false,
-  //     '가까운 거리 탐험가': false,
-  //     '스탬프 수집가': false,
-  //     '티끌모아 피카츄': false,
-  //     '세상의 소금': false,
-  //     '대지의 어머니': false,
-  //   },
-  // });
-
-  const APIURL = useSelector((state: RootState) => state.api.APIURL);
-
-  useEffect(() => {
-    axios
-      .get(`${APIURL}/members/my-info`, {
-        headers: {
-          Authorization: accessToken,
-          'Refresh-Token': refreshToken,
-        },
-      })
-      .then(res => {
-        dispatch(setUsername(res.data.username));
-        console.log(username);
-      })
-      .catch(error => {
-        console.log(error, '데이터를 불러오는데 실패했습니다.');
-      });
-  }, []);
 
   const day = ['Mon', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat', 'Sun'];
   const DayComponent = day.map(a => {
@@ -277,7 +234,6 @@ const MyInfo = () => {
 
   const PasswordModalContent = () => {
 
-    const [focusKey, setFocusKey] = useState(null);
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmNewPassword, setConfirmNewPassword] = useState('');
@@ -312,7 +268,6 @@ const MyInfo = () => {
             <label htmlFor="new-password">새로운 비밀번호</label>
           </PasswordTitle>
           <PasswordInput
-                  autoFocus={focusKey === 2}
             type="password"
             id="new-password"
             value={newPassword}
@@ -326,7 +281,6 @@ const MyInfo = () => {
             <label htmlFor="confirm-new-password">새로운 비밀번호 확인</label>
           </PasswordTitle>
           <PasswordInput
-                  autoFocus={focusKey === 3}
             type="password"
             id="confirm-new-password"
             value={confirmNewPassword}
@@ -379,13 +333,14 @@ const MyInfo = () => {
           setSelectedImage(reader.result);
           dispatch(setProfileImg(reader.result));
           uploadImage(file); //서버에 이미지 전송
+          console.log(reader.result)
         }
       };
       reader.readAsDataURL(file);
     }
   };
 
-  const uploadImage = async file => {
+  const uploadImage = async (file) => {
     const formData = new FormData();
     formData.append('imageFile', file);
 
@@ -401,24 +356,30 @@ const MyInfo = () => {
         if (response.status === 200) {
           setProfileImg(response.data.imageUrl + '?' + new Date().getTime());
           console.log(response);
-          axios.patch(`${APIURL}/members/profile-image`,
+          axios
+          .patch(`${APIURL}/members/profile-image`, formData, 
           {
             headers: {
-              'authorization': accessToken,
+              Authorization: accessToken,
               'refresh-token': refreshToken,
             },
             params: {
-              'img': response.data, // 쿼리 파라미터로 username 추가
+              'img': response.data, // 쿼리 파라미터로 dataurl 추가
             },
 
           }).then(response => {
             if (response.status === 200) {
               alert('업로드에 성공하였습니다.');
-              setProfileImg(response.data);//user정보 전체 response로 올 것 
+              localStorage.setItem('profileImg',response.data.imageUrl)
+              setProfileImg(response.data.imageUrl);//user정보 전체 response로 올 것
+              console.log(response)
             }
           });
         }
-      });
+      })
+      .catch(error => {
+        console.log(error, '서버에 이미지 전송을 실패하였습니다.')
+      })
   };
 
   //myinfo 로딩할 때 다시 서버 프로필 이미지를 get해오는 로직 추가(useEffect?)
@@ -666,8 +627,8 @@ const PasswordTitle = styled.div`
 
 const DropdownMenu = styled.div`
   position: absolute;
-  top: 230px;
-  left: 378px;
+  top: 350px;
+  left: 385px;
   font-size: 12px;
   background-color: white;
   border: 0.8px solid #a5a5a5;

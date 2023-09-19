@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 // import { login } from '../../redux/slice/loginSlice';
 import { logout } from '../../redux/slice/loginSlice';
 import { useSelector } from 'react-redux';
+import { gapi } from 'gapi-script';
 
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -24,6 +25,7 @@ const Header: React.FC = () => {
   const profileImg = useSelector((state: RootState) => state.user.profileImg);
   const accessToken = useSelector((state: RootState) => state.user.accessToken);
   const refreshToken = useSelector((state: RootState) => state.user.refreshToken);
+  const authType = useSelector((state: RootState) => state.user.authType);
 
   // logout: {APIURL}/auth/logout -> delete -> accesstoken, refreshtoken, Id 요청
 
@@ -101,9 +103,21 @@ const Header: React.FC = () => {
   //   dispatch(login());
   // }
 
+
   const handleLogout = () => {
+    if(authType === 'GOOGLE') {      
+      if(gapi.auth2 != undefined){
+        var auth2 = gapi.auth2.getAuthInstance();
+           auth2.signOut().then(function () {
+         console.log('User signed out.');
+   });
+   } location.href= "/"   
+
+    }
+    else {
     navigate('/login');
     dispatch(logout());
+    }
   };
 
   const navigateToMain = () => {

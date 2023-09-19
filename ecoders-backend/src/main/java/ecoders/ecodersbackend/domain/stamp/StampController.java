@@ -39,52 +39,52 @@ public class StampController {
     }
 
 
-    /**
-     * 주간 스탬프 조회
-     */
-    @GetMapping("/stamp/weekly")
-    public ResponseEntity<WeeklyStampDto> getWeeklyStampCount(@RequestHeader(HEADER_AUTHORIZATION) String accessToken) {
-
-        UUID memberId = getMemberIdFromAccessToken(accessToken);
-
-        WeeklyStampDto weeklyStampDto = new WeeklyStampDto();
-
-        LocalDateTime currentDate = LocalDateTime.now();
-        DayOfWeek currentDay = currentDate.getDayOfWeek();
-
-        for (int i = 0; i < currentDay.getValue(); i++) {
-
-            LocalDateTime startOfWeekDate = currentDate.minusDays(i).with(LocalDateTime.MIN);
-            LocalDateTime endOfWeekDate = currentDate.plusDays(6 - i).with(LocalDateTime.MAX);
-
-            if (startOfWeekDate.isBefore(endOfWeekDate)) {
-                switch (i) {
-                    case 0:
-                        weeklyStampDto.setSundayCount(stampService.getStampCount(memberId, startOfWeekDate, endOfWeekDate));
-                        break;
-                    case 1:
-                        weeklyStampDto.setMondayCount(stampService.getStampCount(memberId, startOfWeekDate, endOfWeekDate));
-                        break;
-                    case 2:
-                        weeklyStampDto.setTuesdayCount(stampService.getStampCount(memberId, startOfWeekDate, endOfWeekDate));
-                        break;
-                    case 3:
-                        weeklyStampDto.setWednesdayCount(stampService.getStampCount(memberId, startOfWeekDate, endOfWeekDate));
-                        break;
-                    case 4:
-                        weeklyStampDto.setThursdayCount(stampService.getStampCount(memberId, startOfWeekDate, endOfWeekDate));
-                        break;
-                    case 5:
-                        weeklyStampDto.setFridayCount(stampService.getStampCount(memberId, startOfWeekDate, endOfWeekDate));
-                        break;
-                    case 6:
-                        weeklyStampDto.setSaturdayCount(stampService.getStampCount(memberId, startOfWeekDate, endOfWeekDate));
-                        break;
-                }
-            }
-        }
-        return ResponseEntity.ok(weeklyStampDto);
-    }
+//    /**
+//     * 주간 스탬프 조회
+//     */
+//    @GetMapping("/stamp/weekly")
+//    public ResponseEntity<WeeklyStampDto> getWeeklyStampCount(@RequestHeader(HEADER_AUTHORIZATION) String accessToken) {
+//
+//        UUID memberId = getMemberIdFromAccessToken(accessToken);
+//
+//        WeeklyStampDto weeklyStampDto = new WeeklyStampDto();
+//
+//        LocalDateTime currentDate = LocalDateTime.now();
+//        DayOfWeek currentDay = currentDate.getDayOfWeek();
+//
+//        for (int i = 0; i < currentDay.getValue(); i++) {
+//
+//            LocalDateTime startOfWeekDate = currentDate.minusDays(i).with(LocalDateTime.MIN);
+//            LocalDateTime endOfWeekDate = currentDate.plusDays(6 - i).with(LocalDateTime.MAX);
+//
+//            if (startOfWeekDate.isBefore(endOfWeekDate)) {
+//                switch (i) {
+//                    case 0:
+//                        weeklyStampDto.setSundayCount(stampService.getStampCount(memberId, startOfWeekDate, endOfWeekDate));
+//                        break;
+//                    case 1:
+//                        weeklyStampDto.setMondayCount(stampService.getStampCount(memberId, startOfWeekDate, endOfWeekDate));
+//                        break;
+//                    case 2:
+//                        weeklyStampDto.setTuesdayCount(stampService.getStampCount(memberId, startOfWeekDate, endOfWeekDate));
+//                        break;
+//                    case 3:
+//                        weeklyStampDto.setWednesdayCount(stampService.getStampCount(memberId, startOfWeekDate, endOfWeekDate));
+//                        break;
+//                    case 4:
+//                        weeklyStampDto.setThursdayCount(stampService.getStampCount(memberId, startOfWeekDate, endOfWeekDate));
+//                        break;
+//                    case 5:
+//                        weeklyStampDto.setFridayCount(stampService.getStampCount(memberId, startOfWeekDate, endOfWeekDate));
+//                        break;
+//                    case 6:
+//                        weeklyStampDto.setSaturdayCount(stampService.getStampCount(memberId, startOfWeekDate, endOfWeekDate));
+//                        break;
+//                }
+//            }
+//        }
+//        return ResponseEntity.ok(weeklyStampDto);
+//    }
 
     private UUID getMemberIdFromAccessToken(String accessToken) {
         String email = jwtProvider.getEmailFromToken(accessToken);

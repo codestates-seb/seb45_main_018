@@ -11,69 +11,21 @@ import { FiChevronDown, FiEdit2 } from 'react-icons/fi';
 import { logout } from '../redux/slice/loginSlice';
 import { useNavigate } from 'react-router-dom';
 import { useRef } from 'react';
-
 const MyInfo = () => {
+  const APIURL = useSelector((state:RootState) => state.api.APIURL);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const username = useSelector((state: RootState) => state.user.username); // username 상태 가져오기
-  // const memberId = useSelector((state: RootState) => state.user.id);
-  const email = useSelector((state: RootState) => state.user.email);
   const accessToken = useSelector((state: RootState) => state.user.accessToken);
   const refreshToken = useSelector((state: RootState) => state.user.refreshToken);
+  const email = useSelector((state: RootState) => state.user.email);
 
   const profileImg = useSelector((state: RootState) => state.user.profileImg);
   const [isModalOpen, setModalOpen] = useState(false);
 
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
-
-  // const [currentPassword, setCurrentPassword] = useState('');
-  // const [newPassword, setNewPassword] = useState('');
-  // const [confirmNewPassword, setConfirmNewPassword] = useState('');
-
-  // const [data, setData] = useState({
-  //   username: 'user',
-  //   email: 'polareco@gmail.com',
-  //   profileImage: { profileImg },
-  //   day: 'Mon',
-  //   stamp: 3,
-  //   achievement: { //6단계(0-5)
-  //     Mon: 0,
-  //     Tue: 0,
-  //     Wed: 0,
-  //     Thur: 0,
-  //     Fri: 0,
-  //     Sat: 0,
-  //     Sun: 0,
-  //   },
-  //   badges: {
-  //     '북극곰 연인': false,
-  //     '가까운 거리 탐험가': false,
-  //     '스탬프 수집가': false,
-  //     '티끌모아 피카츄': false,
-  //     '세상의 소금': false,
-  //     '대지의 어머니': false,
-  //   },
-  // });
-
-  const APIURL = useSelector((state: RootState) => state.api.APIURL);
-
-  useEffect(() => {
-    axios
-      .get(`${APIURL}/members/myinfo`, {
-        headers: {
-          Authorization: accessToken,
-          'Refresh-Token': refreshToken,
-        },
-      })
-      .then(res => {
-        dispatch(setUsername(res.data.username));
-        console.log(username);
-      })
-      .catch(error => {
-        console.log(error, '데이터를 불러오는데 실패했습니다.');
-      });
-  }, []);
 
   const day = ['Mon', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat', 'Sun'];
   const DayComponent = day.map(a => {
@@ -97,116 +49,10 @@ const MyInfo = () => {
     );
   });
 
-  // axios
-  // .get(`${APIURL}/members/myinfo`, {
-  //   headers: {
-  //     'Authorization': accessToken,
-  //     'Refresh-Token': refreshToken,
-  //   },
-  // })
-  // .then(res => {
-  //   dispatch(setUsername(res.data.username));
-  // })
-  // .catch(error => {
-  //   console.log(error, '데이터를 불러오는데 실패했습니다.');
-  // });
-
-  const changePassword = async () => {
-    try {
-      // 현재 비밀번호 확인
-      const response = await axios.patch(
-        `${APIURL}/members/password`,
-        { currentPassword: currentPassword, newPassword: newPassword },
-        {
-          headers: {
-            Authorization: accessToken,
-            'Refresh-Token': refreshToken,
-          },
-        },
-      );
-
-      console.log(currentPassword, newPassword);
-
-      if (response.status === 200) {
-        alert('비밀번호가 성공적으로 변경되었습니다.');
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  // 현재 비밀번호가 일치하면
-
-  // 새 비밀번호와 확인 비밀번호 비교
-  // if (newPassword !== confirmNewPassword) {
-  //   alert('두 비밀번호가 일치하지 않습니다.');
-  //   return;
-  // }
-
-  // 비밀번호 업데이트
-  //       try {
-  //         await axios.patch(
-  //           `${APIURL}/members/${memberId}/patch-password`,
-  //           { password: newPassword }
-  //         );
-  //         alert('비밀번호가 성공적으로 변경되었습니다.');
-  //         setModalOpen(false);
-  //       } catch (error) {
-  //         console.error('비밀번호 변경 중 오류 발생:', error);
-  //         alert('비밀번호 변경 중 오류가 발생했습니다.');
-  //       }
-  //     } else {
-  //       alert('현재 비밀번호가 일치하지 않습니다.');
-  //     }
-  //   } catch (error) {
-  //     console.error('비밀번호 확인 중 오류 발생:', error);
-  //     alert('비밀번호 확인 중 오류가 발생했습니다.');
-  //   }
-  // };
-
-  //   const changePassword = () => {
-  //     // 현재 비밀번호 확인
-  //     axios
-  //       .post(`${APIURL}/members/reset-password`,{
-  //         headers: {
-  //           "Authorization": accessToken,
-  //           'Refresh-Token': refreshToken,
-  //         },
-  //          { currentpassword: currentPassword, newPassword: newPassword }
-  //       }
-  // )
-  //       .then(response => {
-  //         if (response.status === 200) {
-  //           //현재 비밀번호가 일치하면
-  //           // 새비밀번호와 확인 비밀번호 비교
-  //           if (newPassword !== confirmNewPassword) {
-  //             alert('두 비밀번호가 일치하지 않습니다.');
-  //             return;
-  //           }
-
-  //           // 비밀번호 업데이트
-  //           axios
-  //             .patch(`${APIURL}/members/${memberId}/patch-password`, { password: newPassword })
-  //             .then(() => {
-  //               alert('비밀번호가 성공적으로 변경되었습니다.');
-  //               setModalOpen(false);
-  //             })
-  //             .catch(() => {
-  //               console.error('비밀번호 변경 중 오류 발생');
-  //               alert('비밀번호 변경 중 오류가 발생했습니다.');
-  //             });
-  //         } else {
-  //           alert('현재 비밀번호가 일치하지 않습니다.');
-  //         }
-  //       })
-  //       .catch(error => {
-  //         console.error('비밀번호 확인 중 오류 발생:', error);
-  //         alert('비밀번호 확인 중 오류가 발생했습니다.');
-  //       });
-  //   };
-
+  //계정 삭제 기능 
   const deleteHandler = () => {
     axios
-      .delete(`${APIURL}/members/myinfo`, {
+      .delete(`${APIURL}/members/my-info`, {
         headers: {
           Authorization: accessToken,
           'Refresh-Token': refreshToken,
@@ -214,7 +60,7 @@ const MyInfo = () => {
       })
       .then(response => {
         //헤더에 accesstoken, refreshtoken 담기
-        if (response.status === 200) {
+        if (response.status === 204) {
           alert('계정이 삭제되었습니다.');
           dispatch(logout());
           navigate('/');
@@ -275,12 +121,37 @@ const MyInfo = () => {
     );
   };
 
+  //비밀번호변경 모달
   const PasswordModalContent = () => {
 
-    const [focusKey, setFocusKey] = useState(null);
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmNewPassword, setConfirmNewPassword] = useState('');
+
+    //비밀번호 변경
+    const changePassword = async () => {
+      try {
+        // 현재 비밀번호 확인
+        const response = await axios.patch(
+          `${APIURL}/members/password`,
+          { currentPassword: currentPassword, newPassword: newPassword },
+          {
+            headers: {
+              Authorization: accessToken,
+              'Refresh-Token': refreshToken,
+            },
+          },
+        );
+  
+        console.log(currentPassword, newPassword);
+  
+        if (response.status === 200) {
+          alert('비밀번호가 성공적으로 변경되었습니다.');
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
 
     const inputRef = useRef<HTMLInputElement | null>(null);
     
@@ -312,8 +183,6 @@ const MyInfo = () => {
             <label htmlFor="new-password">새로운 비밀번호</label>
           </PasswordTitle>
           <PasswordInput
-                  onClick={() => setFocusKey(2)}
-                  autoFocus={focusKey === 2}
             type="password"
             id="new-password"
             value={newPassword}
@@ -327,8 +196,6 @@ const MyInfo = () => {
             <label htmlFor="confirm-new-password">새로운 비밀번호 확인</label>
           </PasswordTitle>
           <PasswordInput
-                  onClick={() => setFocusKey(3)}
-                  autoFocus={focusKey === 3}
             type="password"
             id="confirm-new-password"
             value={confirmNewPassword}
@@ -338,6 +205,7 @@ const MyInfo = () => {
         </div>
 
         <PasswordContainer>
+          {/* authtype google이면 안 보이게 */}
           <PasswordButton
             className="buttontop"
             onClick={changePassword}
@@ -360,7 +228,7 @@ const MyInfo = () => {
     );
   };
 
-  const [selectedImage, setSelectedImage] = useState(null);
+  // const [selectedImage, setSelectedImage] = useState(null);
   // console.log(selectedImage);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -377,16 +245,18 @@ const MyInfo = () => {
       const reader = new FileReader();
       reader.onloadend = () => {
         if (typeof reader.result === 'string') {
-          setSelectedImage(reader.result);
+          // setSelectedImage(reader.result);
           dispatch(setProfileImg(reader.result));
           uploadImage(file); //서버에 이미지 전송
+          console.log(reader.result)
         }
       };
       reader.readAsDataURL(file);
     }
   };
 
-  const uploadImage = async file => {
+  //이미지 업로드
+  const uploadImage = async (file: any) => {
     const formData = new FormData();
     formData.append('imageFile', file);
 
@@ -402,25 +272,39 @@ const MyInfo = () => {
         if (response.status === 200) {
           setProfileImg(response.data.imageUrl + '?' + new Date().getTime());
           console.log(response);
-          axios.post(`${APIURL}/upload`, response.data).then(response => {
+          axios
+          .patch(`${APIURL}/members/profile-image`, formData, 
+          {
+            headers: {
+              Authorization: accessToken,
+              'refresh-token': refreshToken,
+            },
+            params: {
+              'img': response.data, // 쿼리 파라미터로 dataurl 추가
+            },
+
+          }).then(response => {
             if (response.status === 200) {
-              alert('업로드에 성공하였습니다.');
-              setProfileImg(response.data);
+              alert('프로필 사진이 변경되었습니다.');
+              localStorage.setItem('profileImg',response.data.imageUrl)
+              setProfileImg(response.data.imageUrl);//user정보 전체 response로 올 것
+              console.log(response)
             }
           });
         }
-      });
+      })
+      .catch(error => {
+        console.log(error, '서버에 이미지 전송을 실패하였습니다.')
+      })
   };
-
-  //myinfo 로딩할 때 다시 서버 프로필 이미지를 get해오는 로직 추가(useEffect?)
 
   const [isEditing, setIsEditing] = useState(false); // username을 수정하는 중인지 상태
   const [tempUsername, setTempUsername] = useState(username); // 임시 username 저장
   const [byte, setByte] = useState(getByteLength(username));
 
   //20byte 길이 검사하는 함수 - 한글은 3byte, 영문 및 숫자는 1byte
-  function getByteLength(str) {
-    return str.split('').reduce((byteLength, char) => {
+  function getByteLength(str: any) {
+    return str.split('').reduce((byteLength:any, char: any) => {
       const charCode = char.charCodeAt(0);
       if (charCode <= 0x7f) {
         return byteLength + 1;
@@ -447,7 +331,7 @@ const MyInfo = () => {
     setIsEditing(true);
   };
 
-  const handleInputChange = e => {
+  const handleInputChange = (e: any) => {
     const inputValue = e.target.value;
     const inputByte = getByteLength(inputValue);
 
@@ -458,18 +342,22 @@ const MyInfo = () => {
   };
 
   const handleInputBlur = async () => {
-    // (옵션) 사용자가 input 바깥을 클릭했을 때 변경을 적용할 경우 아래 코드 추가
+    // 사용자가 input 바깥을 클릭했을 때 변경을 적용할 경우 아래 코드 추가
     await updateUsername();
     setIsEditing(false);
+    setUsername(tempUsername);
+
   };
 
-  const handleInputKeyUp = async e => {
+  const handleInputKeyUp = async (e:any) => {
     if (e.key === 'Enter') {
       await updateUsername();
       setIsEditing(false);
+      setUsername(tempUsername);
     }
   };
 
+  //닉네임 변경
   const updateUsername = async () => {
     // tempUsername이 빈 문자열이면 업데이트를 건너뛴다.
     if (!tempUsername.trim()) {
@@ -502,32 +390,6 @@ const MyInfo = () => {
       console.log(error);
     }
   };
-
-  // try {
-  //   const response = await axios.patch(`${APIURL}/members/username?username=${username}`, {
-  //     headers: {
-  //       'Authorization': accessToken,
-  //       'Refresh-Token': refreshToken
-  //     }
-  //   })
-  //   if( response.status === 200 ) {
-  //     alert("닉네임이 변경되었습니다.")
-  //   }
-  // } catch(error) {
-  //   console.error('Error updating username: ', error);
-  // }
-  // }
-
-  //   try {
-  //     const response = await axios.patch(`${APIURL}/members/username`, { username: tempUsername });
-  //     if (response.status !== 200) {
-  //       // 에러 처리
-  //       console.error('Username update failed');
-  //     }
-  //   } catch (error) {
-  //     console.error('Error updating username:', error);
-  //   }
-  // };
 
 
   return (
@@ -656,8 +518,8 @@ const PasswordTitle = styled.div`
 
 const DropdownMenu = styled.div`
   position: absolute;
-  top: 230px;
-  left: 378px;
+  top: 350px;
+  left: 385px;
   font-size: 12px;
   background-color: white;
   border: 0.8px solid #a5a5a5;

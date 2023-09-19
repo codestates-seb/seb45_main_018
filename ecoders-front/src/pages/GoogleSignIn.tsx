@@ -12,7 +12,7 @@ const GoogleSignIn = () => {
   const clientId = useSelector((state: RootState) => state.login.clientId);
 
     const dispatch = useDispatch();
-  const responseGoogle = async (response) => {
+  const responseGoogle = async (response: any) => {
     console.log(response);
     const email = response.profileObj.email;
     const username = response.profileObj.name;
@@ -52,3 +52,10 @@ const GoogleSignIn = () => {
 }
 
 export default GoogleSignIn;
+
+
+
+
+
+
+

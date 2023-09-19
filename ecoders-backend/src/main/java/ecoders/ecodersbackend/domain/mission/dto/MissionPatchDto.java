@@ -24,6 +24,7 @@ public class MissionPatchDto {
         private final Long id;
         private final String text;
         private final LocalDateTime createdAt;
+        private final LocalDateTime modifiedAt;
         private final LocalDateTime completedAt;
         private final boolean completed;
     }

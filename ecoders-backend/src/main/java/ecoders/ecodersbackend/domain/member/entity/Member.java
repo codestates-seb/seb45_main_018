@@ -1,10 +1,12 @@
 package ecoders.ecodersbackend.domain.member.entity;
 
 import ecoders.ecodersbackend.audit.Auditable;
+import ecoders.ecodersbackend.domain.mission.entity.MemberMission;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.UUID;
 
 @NoArgsConstructor
@@ -42,6 +44,9 @@ public class Member extends Auditable {
     @Setter
     @Column(nullable = false)
     protected boolean isVerified;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    private List<MemberMission> memberMission;
 
     @Getter
     public enum AuthType {

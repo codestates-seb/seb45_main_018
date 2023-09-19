@@ -80,15 +80,16 @@ public class MyMissionController {
             @RequestBody Map<String, Boolean> requestBody,
             @RequestHeader(HEADER_AUTHORIZATION) String accessToken) throws IOException {
 
-        boolean isCompleted = requestBody.get("isCompleted");
-        missionService.patchMissionComplete(missionId, isCompleted);
+        boolean completed = requestBody.get("isCompleted");
+        missionService.patchMissionComplete(missionId, completed);
         return ResponseEntity.ok().build();
     }
 
     /**
      * 나만의 미션 리스트 조회 API
      */
-    @GetMapping("/my_missions")
+    // 👴 API 수정!!!
+    @GetMapping("/my_missions/list")
     public ResponseEntity<List<MemberMissionDto>> getMyMissions(
             @RequestHeader(HEADER_AUTHORIZATION) String accessToken) {
 
@@ -107,6 +108,19 @@ public class MyMissionController {
         UUID memberId = getMemberIdFromAccessToken(accessToken);
 
         missionService.deleteMission(missionId, memberId);
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    /**
+     * 나만의 미션 전체 삭제 API
+     */
+    @DeleteMapping("/my_missions")
+    public ResponseEntity deleteAllMissions(
+            @RequestHeader(HEADER_AUTHORIZATION) String accessToken) throws IOException {
+        UUID memberId = getMemberIdFromAccessToken(accessToken);
+
+        missionService.deleteAllMission(memberId);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

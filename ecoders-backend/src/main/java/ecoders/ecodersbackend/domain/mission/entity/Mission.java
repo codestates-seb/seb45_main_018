@@ -3,6 +3,7 @@ package ecoders.ecodersbackend.domain.mission.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Getter
 @Setter
@@ -13,12 +14,13 @@ import javax.persistence.*;
 public class Mission {
 
     @Id
-    @GeneratedValue
-    @Column
-    private long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    @Column(nullable = false)
     private String text;
+
+    @OneToMany(mappedBy = "mission", cascade = CascadeType.ALL)
+    private List<MemberMission> memberMission;
 
     @Enumerated(EnumType.STRING)
     private MissionType missionType;

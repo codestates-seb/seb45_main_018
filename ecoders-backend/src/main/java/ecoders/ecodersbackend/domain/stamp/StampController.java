@@ -24,20 +24,6 @@ public class StampController {
     private final JwtProvider jwtProvider;
     private final MemberService memberService;
 
-    /**
-     * 오늘의 미션 완료 개수 가져오기
-     */
-    @GetMapping("/today_mission/count")
-    public ResponseEntity<Integer> getCompletedMissionCount(@RequestHeader(HEADER_AUTHORIZATION) String accessToken) {
-        LocalDateTime today = LocalDateTime.now().with(LocalTime.MIN);
-        LocalDateTime endOfDay = LocalDateTime.now().with(LocalTime.MAX);
-
-        UUID memberId = getMemberIdFromAccessToken(accessToken);
-
-        int completedCount = stampService.getStampCount(memberId, today, endOfDay);
-        return ResponseEntity.ok(completedCount);
-    }
-
 
 //    /**
 //     * 주간 스탬프 조회

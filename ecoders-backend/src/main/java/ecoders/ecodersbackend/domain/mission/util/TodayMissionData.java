@@ -3,23 +3,30 @@ package ecoders.ecodersbackend.domain.mission.util;
 import ecoders.ecodersbackend.domain.mission.entity.Mission;
 import ecoders.ecodersbackend.domain.mission.entity.MissionType;
 import ecoders.ecodersbackend.domain.mission.repository.MissionRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.event.EventListener;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+import java.util.stream.Collectors;
 
 @Configuration
+@Transactional
 public class TodayMissionData {
 
+    @Autowired
     private final MissionRepository missionRepository;
 
     public TodayMissionData(MissionRepository missionRepository) {
         this.missionRepository = missionRepository;
     }
 
+    @EventListener(ApplicationReadyEvent.class)
     public void todayMissionData() {
-        List<Mission> missions = new ArrayList<>();
-
         String[] missionList = {
                 "사용하지 않는 전자제품 플러그 뽑기",
                 "빨래 모아서 세탁하기",
@@ -39,9 +46,12 @@ public class TodayMissionData {
                 "자가용보다 공공자전거 이용하기",
                 "샤워 빨리하기(샤워에 집중)",
         };
+
+        List<Mission> missions = new ArrayList<>();
         for (String missionDescription : missionList) {
             Mission mission = Mission.builder()
                     .missionType(MissionType.TODAY_MISSION)
+                    .text(missionDescription)
                     .build();
             missions.add(mission);
         }

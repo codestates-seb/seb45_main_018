@@ -1,20 +1,18 @@
 package ecoders.ecodersbackend.domain.mission.dto;
 
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+
+import java.util.UUID;
 
 @Getter
 @Setter
-@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class TodayMissionResponseDto {
-    private Long todayMissionId;
+
+    private Long id;
     private String text;
     private boolean completed;
+    private UUID memberId;
 
-    public TodayMissionResponseDto(Long todayMissionId, String text, boolean completed) {
-        this.todayMissionId = todayMissionId;
-        this.text = text;
-        this.completed = completed;
-    }
 }

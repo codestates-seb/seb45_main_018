@@ -63,7 +63,7 @@ public class MyMissionService {
 
         // 미션 내용 수정
         memberMission.getMission().setText(patchDto.getText());
-        memberMission.setCompletedAt(LocalDateTime.now());
+        memberMission.setModifiedAt(LocalDateTime.now());
 
         // 변경 사항 저장
         memberMissionRepository.save(memberMission);
@@ -106,13 +106,24 @@ public class MyMissionService {
         MemberMission memberMission = memberMissionRepository.findById(missionId)
                 .orElseThrow(() -> new IllegalArgumentException("미션을 찾을 수 없습니다."));
 
-        if(memberMission.getMember().getId().equals(memberId)) {
+        if (memberMission.getMember().getId().equals(memberId)) {
             memberMissionRepository.delete(memberMission);
             log.info("미션 삭제: memberId={}, missionId={}", memberId, missionId);
         } else {
             throw new IllegalStateException("해당 미션을 삭제할 권한이 없습니다.");
         }
     }
+
+    /**
+     * 나만의 전체 삭제
+     */
+    @Transactional
+    public void deleteAllMission(UUID memberId) {
+
+        memberMissionRepository.deleteByMemberId(memberId);
+
+    }
+
 
     private MissionPostDto.Response mapToMissionResponse(MemberMission memberMission) {
         return new MissionPostDto.Response(
@@ -130,6 +141,7 @@ public class MyMissionService {
                 memberMission.getMission().getId(),
                 memberMission.getMission().getText(),
                 memberMission.getCreatedAt(),
+                memberMission.getModifiedAt(),
                 memberMission.getCompletedAt(),
                 memberMission.isCompleted()
         );

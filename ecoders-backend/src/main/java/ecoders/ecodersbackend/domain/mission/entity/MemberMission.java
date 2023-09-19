@@ -24,12 +24,15 @@ public class MemberMission {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "mission_id")
     private Mission mission;
 
     @Column(updatable = false)
     private LocalDateTime createdAt;
+
+    @Column(updatable = false)
+    private LocalDateTime modifiedAt;
 
     @Column(name = "completed_at")
     private LocalDateTime completedAt;

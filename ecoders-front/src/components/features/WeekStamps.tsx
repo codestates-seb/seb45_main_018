@@ -26,7 +26,7 @@ function WeekStamps() {
                 {day}
             </DayBox>
             <Stamp
-              key={day}
+              key={index}
               isCurrentDay={index === currentDay}
               day={day}
             />

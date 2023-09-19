@@ -16,12 +16,15 @@ const loginSlice = createSlice({
   reducers: {
     login: state => {
       state.isLoggedIn = true;
+      localStorage.getItem('accessToken');
+      localStorage.getItem('refreshToken');
     },
     logout: state => {
       state.isLoggedIn = false;
       localStorage.removeItem('accessToken');
       localStorage.removeItem('refreshToken');
       localStorage.removeItem('id');
+      localStorage.removeItem('profileImg');
     },
     clientId: (state, action) => {
       state.clientId = action.payload;

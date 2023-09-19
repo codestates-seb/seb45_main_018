@@ -6,9 +6,12 @@ import Modal from '../components/atoms/Modal';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { closeModal, openModal } from '../redux/slice/modalSlice';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { registerFail, registerStart, registerSuccess } from '../redux/slice/authSlice';
 import axios from 'axios';
+import GLogin from './GLogin';
+import { RootState } from '../redux/store/store';
+import { gapi } from 'gapi-script';
 
 interface ErrorObject {
   email: string | null | undefined;
@@ -26,8 +29,15 @@ type ApiState = {
 function Signup() {
   const APIURL = useSelector((state: ApiState) => state.api.APIURL);
 
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const clientId = useSelector((state: RootState) => state.login.clientId);
+
+  // input 상태
+  const [formData, setFormData] = useState({
+    email: '',
+    password: '',
+    confirmPassword: '',
+    username: '',
+  });
 
   // input 상태
   const [formData, setFormData] = useState({
@@ -98,7 +108,11 @@ function Signup() {
       newErrors.confirmPassword = '비밀번호가 일치하지 않습니다.';
     }
 
-    setErrors(newErrors);
+    const response = await axios.post(`${APIURL}/auth/signup`, newformData, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
 
     // 오류가 없다면
     return Object.values(newErrors).every(error => !error);
@@ -113,48 +127,24 @@ function Signup() {
     });
   };
 
-  // 로그인 페이지로 이동
-  const linkToLoginPageHandler = () => {
-    navigate('/login');
-    dispatch(closeModal('')); // 모달이 열려 있지 않게 함
-  };
-
-  // submit 함수
-  const onSubmitHandler = async (e: React.FormEvent) => {
-    e.preventDefault();
-    dispatch(registerStart());
-
-    // 유효성 검사
-    const isValid = validateForm();
-    if (!isValid) {
-      return;
-    }
-
+  async function googleHandler() {
     try {
-      const newformData = {
-        ...formData,
-        confirmPassword: '',
-      };
-
-      const response = await axios.post(`${APIURL}/auth/signup`, newformData, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
+      useEffect(() => {
+        function start() {
+          gapi.client.init({
+            clientId: clientId,
+            scope: '',
+          });
+        }
+        gapi.load('client:auth2', start);
       });
 
-      // 이미 존재하는 이매일 일때
-      if (response.status === 403) {
-        errors.email = '이미 존재하는 이메일입니다.';
-        setErrors(errors);
-      }
-
-      console.log(response.data);
-      dispatch(registerSuccess(response.data.user));
-      dispatch(openModal('sendingMailModal'));
-    } catch (err: any) {
-      dispatch(registerFail(err.response.data.error));
+      const accessToken = gapi.auth.getToken().access_token;
+      localStorage.setItem('accessToken', accessToken);
+    } catch {
+      alert('오류가 발생했습니다.');
     }
-  };
+  }
 
   return (
     <Container>
@@ -213,7 +203,7 @@ function Signup() {
                     </div>
                   </div>
                 </SignUpModal>
-                <SubmitButton className="google-sign-up-submit">Sign up with Google</SubmitButton>
+                <GLogin onClick={() => googleHandler}>Sign up with Google</GLogin>
               </ButtonWrapper>
             </SignUpForm>
           </FormContainer>

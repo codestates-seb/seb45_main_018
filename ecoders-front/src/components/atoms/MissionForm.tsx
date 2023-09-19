@@ -1,60 +1,23 @@
 import { styled } from "styled-components";
 import { FaCircleArrowUp } from "react-icons/fa6";
 import Input from "./Input";
-import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
-import { addMyMission } from "../../redux/slice/missionSlice";
-import { RootState } from "../../redux/store/store";
-import axios from "axios";
+import { addMissionAsync } from "../../redux/slice/myMissionSlice";
+import { useAppDispatch } from "../../redux/hooks/useAppDispatch";
 
 
 function MissionForm () {
-    const dispatch = useDispatch();
-    const myMissions = useSelector((state: RootState) => state.missions.myMissions); // 미션 상태 가져오기
+    const dispatch = useAppDispatch();
 
-    const [ text, setText ] = useState('');
+    const [ text, setText ] = useState<string>('');
 
-    const postMission = async (missionData: { my_mission_id: number; text: string; completed: boolean; }) => {
-        try {
-            const response = await axios.post('https://4345e16a-fdc3-4d6f-8760-0b3b56303a85.mock.pstmn.io/mission/my_mission', missionData, {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem('accessToken')}`
-                }
-            });
-            console.log(response.data);
-            return response.data;
-        } catch (error: any) {
-            console.error('post 도중 오류 발생', error);
-            throw error;
-        }
-    }
-
-    const missionHandler = async () => {
-        // 빈 문자열은 추가하지 않음
-        if (text.trim() === '') return;
-
-        // 새로운 미션 객체 생성, id에 날짜는 임시
-        const newMission = { my_mission_id: Date.now(), text, completed: false };
-
-        try {
-            await postMission(newMission);
-
-             // 나만의 미션 추가 액션 디스패치
-            dispatch(addMyMission(newMission));
-
-            // 입력 값 초기화
+    const addMissionHandler = () => {
+        if (text.trim() !== '') {
+            dispatch(addMissionAsync(text)); // 서버에 잘 감
+            console.log(text)
             setText('');
-
-            console.log("My Missions:", myMissions);
-        } catch (error) {
-            console.error('미션 추가 중 오류:', error);
         }
-
     }
-
-    const changeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setText(e.target.value);
-    };
 
 
     return (
@@ -62,8 +25,8 @@ function MissionForm () {
             <MissionInput
             placeholder="미션을 입력해주세요."
             value={text}
-            onChange={changeHandler}/>
-            <div className="button-box" onClick={missionHandler}>
+            onChange={(e) => setText(e.target.value)}/>
+            <div className="button-box" onClick={addMissionHandler}>
                 <FaCircleArrowUp style={{color: '#CCCCCC'}}/>
             </div>
         </Container>

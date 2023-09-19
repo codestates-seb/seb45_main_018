@@ -1,10 +1,9 @@
 import styled from 'styled-components';
 import logo from '../../assets/Logo.png';
 import { useDispatch } from 'react-redux';
-// import { login } from '../../redux/slice/loginSlice';
 import { logout } from '../../redux/slice/loginSlice';
 import { useSelector } from 'react-redux';
-
+import { gapi } from 'gapi-script';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -18,92 +17,72 @@ const Header: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const isLoggedIn = useSelector((state: RootState) => state.login.isLoggedIn);
-  // const memberId = useSelector((state: RootState) => state.user.id);
   const username = useSelector((state: RootState) => state.user.username); // username 상태 가져오기
   const APIURL = useSelector((state: RootState) => state.api.APIURL);
   const profileImg = useSelector((state: RootState) => state.user.profileImg);
   const accessToken = useSelector((state: RootState) => state.user.accessToken);
   const refreshToken = useSelector((state: RootState) => state.user.refreshToken);
-
-  // logout: {APIURL}/auth/logout -> delete -> accesstoken, refreshtoken, Id 요청
+  const authType = useSelector((state: RootState) => state.user.authType);
+  const id = useSelector((state: RootState) => state.user.id);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(`${APIURL}/members/myinfo`, {
-          headers: {
-            Authorization: accessToken,
-            'Refresh-Token': refreshToken,
-          },
-        });
+    if (isLoggedIn === true) {
+      const fetchData = async () => {
+        try {
+          const response = await axios.get(`${APIURL}/members/my-info`, {
+            headers: {
+              Authorization: accessToken,
+              'Refresh-Token': refreshToken,
+            },
+          });
 
-        console.log(response.data);
-        dispatch(setUsername(response.data.username));
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    fetchData(); // 비동기 함수 실행
+          console.log(response.data);
+          dispatch(setUsername(response.data.username));
+        } catch (error: any) {
+          if (error.response?.status === 401) {
+            alert('로그인에 실패했습니다.');
+          } else {
+            alert('서버 오류가 발생했습니다.');
+            console.error('로그인 에러:', error);
+          }
+        }
+      };
+      fetchData(); // 비동기 함수 실행
+    }
   }, [isLoggedIn]);
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try{
-  //       axios.get(`${APIURL}/members/my-info`, {
-  //         headers: {
-  //           'Authorization': accessToken,
-  //           'Refresh-Token': refreshToken,
-  //         }
-  //       })
-  //       .then(response => {
-  //         console.log(response.data);
-  //       dispatch(setUsername(response.data.username))
-  //     })
-  //       // .catch(error => console.error('Error:', error));
+  function deleteCookie(name: string) {
+    document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+  }
 
-  //     } catch (error: any) {
-  //       if (error.response?.status === 401) {
-  //         alert('로그인에 실패했습니다.');
-  //       } else {
-  //         alert('서버 오류가 발생했습니다.');
-  //         console.error('로그인 에러:', error);
-  //       }
-  //     }
-  //   };
+  const handleLogout = async () => {
+    deleteCookie('G_ENABLED_IDPS');
+    document.cookie.split(';').forEach(function (c) {
+      document.cookie = c.replace(/^ +/, '').replace(/=.*/, '=;expires=' + new Date().toUTCString() + ';path=/');
+    });
 
-  //   fetchData(); // 비동기 함수 실행
-  // }, [isLoggedIn]);
+    axios.delete(`${APIURL}/auth/logout`, {
+      headers: {
+        Authorization: accessToken,
+        'refresh-token': refreshToken,
+        id: id,
+      },
+    });
 
-  //   try {
-  //     const response = await axios.get(`${APIURL}/member`);
+    if (authType === 'GOOGLE') {
+      if (gapi.auth2 != undefined) {
+        var auth2 = gapi.auth2.getAuthInstance();
 
-  //     if (response.status === 200) {
-  //       const { username, stamp } = response.data;
-  //       // (수정사항) 1. 다시 user 정보 get 새로..
-  //       // (수정사항) 2. 유저정보조회 시: id로 검색
-
-  //       dispatch(setUsername(username));
-  //       dispatch(setStamp(stamp));
-
-  //       navigate('/');
-  //     }
-  //   } catch (error: any) {
-  //     if(error.response.status === 401) {
-  //       alert('로그인에 실패했습니다.')
-  //     } else {
-  //     alert('서버 오류가 발생했습니다.');
-  //     console.error('로그인 에러:', error); }
-  //   }
-  // };
-
-  // const handleLogin = () => {
-  //   dispatch(login());
-  // }
-
-  const handleLogout = () => {
-    navigate('/login');
-    dispatch(logout());
+        auth2.signOut().then(function () {
+          console.log('User signed out.');
+          dispatch(logout());
+        });
+      }
+      location.href = '/';
+    } else {
+      dispatch(logout());
+      navigate('/');
+    }
   };
 
   const navigateToMain = () => {
@@ -123,6 +102,9 @@ const Header: React.FC = () => {
     navigate('/login');
   };
 
+  const modalOpenHandler = () => {
+    dispatch(openModal('loginModal'));
+  };
   const loginModalState = useSelector((state: RootState) => state.modal.modals.loginModal);
 
   //chatting 구현 이후 살리기
@@ -132,9 +114,6 @@ const Header: React.FC = () => {
   //   }
   // }, [loginModalState]);
 
-  const modalOpenHandler = () => {
-    dispatch(openModal('loginModal'));
-  };
   return (
     <>
       <Entire>

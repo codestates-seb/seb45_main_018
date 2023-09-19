@@ -8,8 +8,9 @@ export const userSlice = createSlice({
     refreshToken: null,
     username: 'user',
     id: '',
-    email: 'user@gmail.com',
+    email: '',
     profileImg: profileImg,
+    authType: 'default',
   },
   reducers: {
     setAccessToken: (state, action) => {
@@ -33,8 +34,13 @@ export const userSlice = createSlice({
     setProfileImg: (state, action) => {
       state.profileImg = action.payload;
     },
+
+    setAuthType: (state, action) => {
+      state.authType = action.payload;
+    },
   },
 });
 
-export const { setAccessToken, setRefreshToken, setUsername, setId, setEmail, setProfileImg } = userSlice.actions;
+export const { setAccessToken, setRefreshToken, setUsername, setId, setEmail, setProfileImg, setAuthType } =
+  userSlice.actions;
 export default userSlice.reducer;

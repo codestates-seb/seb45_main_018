@@ -3,48 +3,53 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store/store";
 import { styled } from "styled-components";
 import { useEffect } from "react";
-import { fetchTodaysMissions } from "../../redux/slice/missionSlice";
 import { useAppDispatch } from "../../redux/hooks/useAppDispatch";
 import Button from "../atoms/Button";
 import { BsFillCheckCircleFill } from "react-icons/bs";
-import { completeTodayMission } from "../../redux/slice/missionSlice";
 import axios from "axios";
+import { toggleTodayMission, fetchTodayMissionsAsync } from "../../redux/slice/todayMissionSlice";
 
 function TodaysMissionList () {
     const dispatch = useAppDispatch();
 
-    const todaysMissions = useSelector((state: RootState) => state.missions.todaysMissions);
+    const apiUrl = useSelector((state:RootState) => state.api.APIURL);
+    const todaysMissions = useSelector((state: RootState) => state.todayMissions.todaymissions);
+    const option = useSelector((state: RootState) => state.option.option);
 
     useEffect(() => {
-        dispatch(fetchTodaysMissions());
-    }, [dispatch]);
+        dispatch(fetchTodayMissionsAsync());
+    }, [dispatch, option]);
 
-    const missionDoneHandler = async (event: React.MouseEvent<HTMLLIElement | HTMLButtonElement | HTMLDivElement, MouseEvent>) => {
-        // 클릭된 요소에서 data-mission-id 값을 가져오기
-        const todayMissionId = parseInt((event.target as HTMLElement).getAttribute("data-today-mission-id") || "", 10);
-        console.log(todayMissionId)
-
-        if (!isNaN(todayMissionId)) {
-        // 미션 완료 액션 디스패치
-        dispatch(completeTodayMission(todayMissionId));
+    const toggleHandler = async (todayMissionId: number) => {
         try {
-            const mission = todaysMissions.find((m) => m.today_mission_id === todayMissionId);
+            // 현재 미션 찾기
+            const mission = todaysMissions.find((mission) => mission.todayMissionId === todayMissionId);
+
+
             if (mission) {
-                await axios.patch('api주소'), {
-                    completed: mission.completed
-                }
-                const response = await axios.patch(`https://4345e16a-fdc3-4d6f-8760-0b3b56303a85.mock.pstmn.io/mission/today_mission/${todayMissionId}`, {
-                    completed: !mission.completed
-                }, {
+                // completed 값 변경
+                const updatedCompleted = !mission.completed;
+
+                // 서버 요청
+                const response = await axios.patch(
+                    `${apiUrl}/mission/today_mission/${todayMissionId}`, updatedCompleted,
+                    {
                     headers: {
-                        Authorization: `Bearer ${localStorage.getItem('accessToken')}`
+                        "Content-Type" : "application/json",
+                        Authorization: `${localStorage.getItem('accessToken')}`,
+                    },
                     }
-                })
-                console.log(response.data)
+                );
+
+                if (response.status === 200) {
+                    console.log(`미션 ${todayMissionId}를 업데이트했습니다.`);
+                    dispatch(toggleTodayMission(todayMissionId));
+                } else {
+                    console.error(`미션 ${todayMissionId} 업데이트 오류가 발생했습니다.`);
+                }
             }
         } catch (error) {
-            console.error("요청을 보내는 도중 에러가 발생했습니다.", error);
-        }
+            console.error(`오류가 발생했습니다.`, error);
         }
     };
 
@@ -52,22 +57,22 @@ function TodaysMissionList () {
         <Container>
             <MissionList>
                 {todaysMissions && todaysMissions.map((mission) => (
-                    <React.Fragment key={mission.today_mission_id}>
+                    <React.Fragment key={mission.todayMissionId}>
                         {mission.completed ? (
                             <CompletedMission
-                                data-today-mission-id={mission.today_mission_id}
-                                onClick={missionDoneHandler}>
-                                {mission.text}
+                                data-today-mission-id={mission.todayMissionId}
+                                onClick={() => toggleHandler(mission.todayMissionId)}>
+                                {mission.content}
                                 <BsFillCheckCircleFill
                                     style ={{ color: '#D4FFC0' }}
-                                    onClick={missionDoneHandler} />
+                                    onClick={() => toggleHandler(mission.todayMissionId)} />
                             </CompletedMission>
                         ) : (
                         <Mission
-                            data-today-mission-id={mission.today_mission_id}
-                            onClick={missionDoneHandler}>
-                            {mission.text}
-                            <CompletedButton onClick={missionDoneHandler}/>
+                            data-today-mission-id={mission.todayMissionId}
+                            onClick={() => toggleHandler(mission.todayMissionId)}>
+                            {mission.content}
+                            <CompletedButton onClick={() => toggleHandler(mission.todayMissionId)}/>
                         </Mission>
                     )}
                     </React.Fragment>

@@ -1,33 +1,38 @@
 package ecoders.ecodersbackend.domain.stamp;
 
-import ecoders.ecodersbackend.domain.mission.entity.TodayMission;
-import ecoders.ecodersbackend.domain.mission.repository.TodayMissionRepository;
+import ecoders.ecodersbackend.domain.mission.entity.MemberMission;
+import ecoders.ecodersbackend.domain.mission.entity.Mission;
+import ecoders.ecodersbackend.domain.mission.entity.MissionType;
+import ecoders.ecodersbackend.domain.mission.repository.MemberMissionRepository;
+import ecoders.ecodersbackend.domain.mission.repository.MissionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class StampService {
 
-    private final TodayMissionRepository todayMissionRepository;
+    private final MissionRepository missionRepository;
+    private final MemberMissionRepository memberMissionRepository;
     private final StampRepository stampRepository;
 
     /**
      * 오늘의 미션 완료 개수 가져오기
      */
     @Transactional
-    public int getStampCount(Long memberId, LocalDateTime startDate, LocalDateTime endDate) {
+    public int getStampCount(UUID memberId, LocalDateTime startDate, LocalDateTime endDate) {
 
         LocalDateTime completionTime = LocalDateTime.now();
 
 
         List<Stamp> existingStamp = stampRepository.findByMemberIdAndStampDateBetween(memberId, startDate, endDate);
-        List<TodayMission> competedMissions =
-                todayMissionRepository.findByCompletedAndCompletionDateBetween(true, startDate, endDate);
+        List<MemberMission> competedMissions =
+                memberMissionRepository.findByMissionMissionTypeAndCompletedAndCompletedAtBetween(MissionType.TODAY_MISSION, true, startDate, endDate);
 
         int completedMissionCount = competedMissions.size();
 

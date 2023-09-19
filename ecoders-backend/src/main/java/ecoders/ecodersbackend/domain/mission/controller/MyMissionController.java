@@ -3,13 +3,13 @@ package ecoders.ecodersbackend.domain.mission.controller;
 import ecoders.ecodersbackend.auth.jwt.JwtProvider;
 import ecoders.ecodersbackend.domain.member.entity.Member;
 import ecoders.ecodersbackend.domain.member.service.MemberService;
+import ecoders.ecodersbackend.domain.mission.dto.MemberMissionDto;
 import ecoders.ecodersbackend.domain.mission.dto.MissionPatchDto;
 import ecoders.ecodersbackend.domain.mission.dto.MissionPostDto;
 import ecoders.ecodersbackend.domain.mission.dto.TodayMissionResponseDto;
-import ecoders.ecodersbackend.domain.mission.entity.MyMission;
+import ecoders.ecodersbackend.domain.mission.entity.MemberMission;
 import ecoders.ecodersbackend.domain.mission.service.MyMissionService;
 import ecoders.ecodersbackend.domain.mission.service.TodayMissionService;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import static ecoders.ecodersbackend.auth.jwt.JwtProvider.HEADER_AUTHORIZATION;
 
@@ -39,7 +41,7 @@ public class MyMissionController {
     public ResponseEntity<MissionPostDto.Response> createMission(
             @Valid @RequestBody MissionPostDto.Request postDto,
             @RequestHeader(HEADER_AUTHORIZATION) String accessToken) throws IOException {
-        Long memberId = getMemberIdFromAccessToken(accessToken);
+        UUID memberId = getMemberIdFromAccessToken(accessToken);
 
         MissionPostDto.Response response = missionService.createMission(postDto, memberId);
 
@@ -62,7 +64,7 @@ public class MyMissionController {
             @PathVariable Long missionId,
             @Valid @RequestBody MissionPatchDto.Request patchDto,
             @RequestHeader(HEADER_AUTHORIZATION) String accessToken) throws IOException {
-        Long memberId = getMemberIdFromAccessToken(accessToken);
+        UUID memberId = getMemberIdFromAccessToken(accessToken);
 
         MissionPatchDto.Response response = missionService.updateMission(missionId, patchDto, memberId);
 
@@ -75,10 +77,11 @@ public class MyMissionController {
     @PatchMapping("/my_mission/complete/{missionId}")
     public ResponseEntity<?> patchTodayMissionComplete(
             @PathVariable Long missionId,
-            @RequestBody boolean iscompleted,
+            @RequestBody Map<String, Boolean> requestBody,
             @RequestHeader(HEADER_AUTHORIZATION) String accessToken) throws IOException {
 
-        missionService.patchMissionComplete(missionId, iscompleted);
+        boolean isCompleted = requestBody.get("isCompleted");
+        missionService.patchMissionComplete(missionId, isCompleted);
         return ResponseEntity.ok().build();
     }
 
@@ -86,10 +89,10 @@ public class MyMissionController {
      * 나만의 미션 리스트 조회 API
      */
     @GetMapping("/my_missions")
-    public ResponseEntity<List<MyMission>> getMyMissions(
+    public ResponseEntity<List<MemberMissionDto>> getMyMissions(
             @RequestHeader(HEADER_AUTHORIZATION) String accessToken) {
 
-        List<MyMission> missions = missionService.getAllMissions();
+        List<MemberMissionDto> missions = missionService.getAllMissions();
 
         return new ResponseEntity<>(missions, HttpStatus.OK);
     }
@@ -101,18 +104,17 @@ public class MyMissionController {
     public ResponseEntity deleteMission(
             @PathVariable Long missionId,
             @RequestHeader(HEADER_AUTHORIZATION) String accessToken) throws IOException {
-        Long memberId = getMemberIdFromAccessToken(accessToken);
+        UUID memberId = getMemberIdFromAccessToken(accessToken);
 
         missionService.deleteMission(missionId, memberId);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    private Long getMemberIdFromAccessToken(String accessToken) {
+    private UUID getMemberIdFromAccessToken(String accessToken) {
         String email = jwtProvider.getEmailFromToken(accessToken);
         Member member = memberService.findMemberByEmail(email);
-        Long memberId = member.getId();
+        UUID memberId = member.getId();
         return memberId;
     }
-
 }

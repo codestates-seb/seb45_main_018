@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.UUID;
 
 import static ecoders.ecodersbackend.auth.jwt.JwtProvider.HEADER_AUTHORIZATION;
 
@@ -31,7 +32,7 @@ public class StampController {
         LocalDateTime today = LocalDateTime.now().with(LocalTime.MIN);
         LocalDateTime endOfDay = LocalDateTime.now().with(LocalTime.MAX);
 
-        Long memberId = getMemberIdFromAccessToken(accessToken);
+        UUID memberId = getMemberIdFromAccessToken(accessToken);
 
         int completedCount = stampService.getStampCount(memberId, today, endOfDay);
         return ResponseEntity.ok(completedCount);
@@ -44,10 +45,9 @@ public class StampController {
     @GetMapping("/stamp/weekly")
     public ResponseEntity<WeeklyStampDto> getWeeklyStampCount(@RequestHeader(HEADER_AUTHORIZATION) String accessToken) {
 
-        Long memberId = getMemberIdFromAccessToken(accessToken);
+        UUID memberId = getMemberIdFromAccessToken(accessToken);
 
         WeeklyStampDto weeklyStampDto = new WeeklyStampDto();
-
 
         LocalDateTime currentDate = LocalDateTime.now();
         DayOfWeek currentDay = currentDate.getDayOfWeek();
@@ -86,10 +86,10 @@ public class StampController {
         return ResponseEntity.ok(weeklyStampDto);
     }
 
-    private Long getMemberIdFromAccessToken(String accessToken) {
+    private UUID getMemberIdFromAccessToken(String accessToken) {
         String email = jwtProvider.getEmailFromToken(accessToken);
         Member member = memberService.findMemberByEmail(email);
-        Long memberId = member.getId();
+        UUID memberId = member.getId();
         return memberId;
     }
 }

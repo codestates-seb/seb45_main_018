@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/store/store';
 import { useState } from 'react';
 import axios from 'axios';
-// import ChatContent from './ChatContent';
+import ChatContent from './ChatContent';
 // import { useEffect } from 'react';
 
 const Chat = () => {

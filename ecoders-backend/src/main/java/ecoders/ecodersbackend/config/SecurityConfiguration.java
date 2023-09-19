@@ -45,7 +45,7 @@ public class SecurityConfiguration {
 //                .antMatchers(GET, "/members/my-info").hasAnyRole("UNVERIFIED", "VERIFIED")
 //                .antMatchers(GET, "/members/").permitAll()
 //                .antMatchers(POST, "/mission/my-mission").hasAnyRole("UNVERIFIED", "VERIFIED")
-//                .antMatchers(POST, "/posts/uploadImage").hasRole("VERIFIED")
+//                .antMatchers(POST, "/posts/uploadImage").hasAnyRole("UNVERIFIED", "VERIFIED")
 //                .antMatchers(POST, "/posts/").hasRole("VERIFIED")
 //                .antMatchers(GET, "/posts/").permitAll()
                 .anyRequest().permitAll()
@@ -60,7 +60,7 @@ public class SecurityConfiguration {
         corsConfiguration.setAllowedOrigins(List.of("http://localhost:5173", "http://polareco-deploy.s3-website.ap-northeast-2.amazonaws.com"));
         corsConfiguration.setAllowedMethods(List.of("POST", "GET", "PATCH", "DELETE", "OPTIONS"));
         corsConfiguration.setAllowedHeaders(List.of("*"));
-        corsConfiguration.setExposedHeaders(List.of("Authorization", "Refresh-Token", "Member-ID", "Set-cookie"));
+        corsConfiguration.setExposedHeaders(List.of("Authorization", "Refresh-Token", "Member-ID", "Set-Cookie", "Cross-Origin-Opener-Policy"));
         corsConfiguration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource corsConfigurationSource = new UrlBasedCorsConfigurationSource();
         corsConfigurationSource.registerCorsConfiguration("/**", corsConfiguration);

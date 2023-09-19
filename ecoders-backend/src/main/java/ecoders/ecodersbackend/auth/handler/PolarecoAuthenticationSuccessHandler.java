@@ -27,21 +27,7 @@ public class PolarecoAuthenticationSuccessHandler implements AuthenticationSucce
         Authentication authentication
     ) throws IOException, ServletException {
         PolarecoMemberDetails memberDetails = (PolarecoMemberDetails) authentication.getPrincipal();
-        String uuid = memberDetails.getId().toString();
-        String email = memberDetails.getEmail();
-        boolean isVerified = memberDetails.isVerified();
-
-        Claims claims = Jwts.claims().setSubject(uuid);
-        claims.put("email", email);
-        claims.put("isVerified", isVerified);
-
-        String accessToken = jwtProvider.generateAccessToken(claims);
-        String refreshToken = jwtProvider.generateRefreshToken(claims);
-
-        response.setHeader("Authorization", "Bearer " + accessToken);
-        response.setHeader("Refresh-Token", "Bearer " + refreshToken);
-        response.setHeader("Member-ID", uuid);
-
+        jwtProvider.issueTokens(memberDetails, response);
         log.info("Authenticated successfully");
     }
 }

@@ -16,14 +16,12 @@ jpa:
 spring:
   mail:
     host: smtp.gmail.com
-    port: 465
+    port: 587
     username: ${SMTP_GMAIL_USERNAME}
     password: ${SMTP_GMAIL_PASSWORD}
     properties:
       mail:
         smtp:
           auth: true
-          timeout: 5000
           starttls:
             enable: true
-            required: true

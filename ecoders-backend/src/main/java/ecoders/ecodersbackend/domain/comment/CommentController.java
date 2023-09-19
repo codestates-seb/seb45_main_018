@@ -40,6 +40,7 @@ public class CommentController {
         this.postRepository = postRepository;
         this.jwtProvider = jwtProvider;
     }
+
     @PostMapping("/{post-id}/comment")
     public ResponseEntity<Map<String,Object>> postComment(@PathVariable("post-id") long postId,
                                                           @RequestBody CommentDto.CommentCreateDto commentDto,

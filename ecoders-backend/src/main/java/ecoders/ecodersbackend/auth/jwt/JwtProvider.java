@@ -1,5 +1,6 @@
 package ecoders.ecodersbackend.auth.jwt;
 
+import ecoders.ecodersbackend.domain.member.entity.Member;
 import ecoders.ecodersbackend.domain.member.service.MemberService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -8,6 +9,7 @@ import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.servlet.http.HttpServletResponse;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
@@ -66,5 +68,22 @@ public class JwtProvider {
 
     public String getEmailFromToken(String token) {
         return (String) getClaims(token).get("email");
+    }
+
+    public void issueTokens(Member member, HttpServletResponse response) {
+        String uuid = member.getId().toString();
+        String email = member.getEmail();
+        boolean isVerified = member.isVerified();
+
+        Claims claims = Jwts.claims().setSubject(uuid);
+        claims.put("email", email);
+        claims.put("isVerified", isVerified);
+
+        String accessToken = generateAccessToken(claims);
+        String refreshToken = generateRefreshToken(claims);
+
+        response.setHeader("Authorization", "Bearer " + accessToken);
+        response.setHeader("Refresh-Token", "Bearer " + refreshToken);
+        response.setHeader("Member-ID", uuid);
     }
 }

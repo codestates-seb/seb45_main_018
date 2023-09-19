@@ -8,6 +8,7 @@ import ecoders.ecodersbackend.domain.member.repository.MemberRepository;
 import ecoders.ecodersbackend.domain.member.service.MemberService;
 import ecoders.ecodersbackend.exception.BusinessLogicException;
 import ecoders.ecodersbackend.exception.code.ExceptionCode;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,7 +28,8 @@ import java.util.*;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.stream.Collectors;
-import org.springframework.http.ResponseCookie;
+
+@Slf4j
 @Service
 @Transactional
 public class PostService {
@@ -210,6 +212,14 @@ public class PostService {
     public int updateView(Long postId, HttpServletRequest request, HttpServletResponse response) {
 
         Cookie[] cookies = request.getCookies();
+        if (cookies == null) {
+            log.info("cookies is null");
+        } else  {
+            for (Cookie cookie : cookies) {
+                log.info("[cookie] name:{}, value:{}", cookie.getName(), cookie.getValue());
+            }
+        }
+
         boolean checkCookie = false;
         int result = 0;
         if(cookies != null){

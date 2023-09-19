@@ -1,6 +1,7 @@
 package ecoders.ecodersbackend.domain.member.controller;
 
 import ecoders.ecodersbackend.auth.jwt.JwtProvider;
+import ecoders.ecodersbackend.auth.validation.annotation.PolarecoUsername;
 import ecoders.ecodersbackend.domain.member.dto.MemberDto;
 import ecoders.ecodersbackend.domain.member.entity.Member;
 import ecoders.ecodersbackend.domain.member.service.MemberService;
@@ -32,6 +33,13 @@ public class MemberController {
         return ResponseEntity.ok(responseDto);
     }
 
+    @DeleteMapping("/my-info")
+    public ResponseEntity<?> deleteMyInfo(@RequestHeader(HEADER_AUTHORIZATION) String accessToken) {
+        String email = jwtProvider.getEmailFromToken(accessToken);
+        memberService.deleteMember(email);
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping("/{member-id}")
     public ResponseEntity<MemberDto.Response> getMember(@PathVariable("member-id") UUID uuid) {
         Member member = memberService.findMemberById(uuid);
@@ -39,13 +47,34 @@ public class MemberController {
         return ResponseEntity.ok(responseDto);
     }
 
-    @PatchMapping("/my-info")
+    @PatchMapping("/username")
     public ResponseEntity<MemberDto.Response> updateMyInfo(
         @RequestHeader(HEADER_AUTHORIZATION) String accessToken,
-        @RequestBody @Valid MemberDto.Patch patchDto
+        @RequestParam("username") @PolarecoUsername String newUsername
     ) {
         String email = jwtProvider.getEmailFromToken(accessToken);
-        Member member = memberService.updateMember(email, patchDto.toMember());
+        Member member = memberService.updateUsername(email, newUsername);
+        MemberDto.Response responseDto = MemberDto.Response.parse(member);
+        return ResponseEntity.ok(responseDto);
+    }
+
+    @PatchMapping("/password")
+    public ResponseEntity<?> updatePassword(
+        @RequestHeader(HEADER_AUTHORIZATION) String accessToken,
+        @RequestBody @Valid MemberDto.PatchPassword patchPasswordDto
+    ) {
+        String email = jwtProvider.getEmailFromToken(accessToken);
+        memberService.updatePassword(email, patchPasswordDto.getCurrentPassword(), patchPasswordDto.getNewPassword());
+        return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping("/profile-image")
+    public ResponseEntity<?> updateProfileImage(
+        @RequestHeader(HEADER_AUTHORIZATION) String accessToken,
+        @RequestParam("img") String imageUrl
+    ) {
+        String email = jwtProvider.getEmailFromToken(accessToken);
+        Member member = memberService.updateProfileImage(email, imageUrl);
         MemberDto.Response responseDto = MemberDto.Response.parse(member);
         return ResponseEntity.ok(responseDto);
     }

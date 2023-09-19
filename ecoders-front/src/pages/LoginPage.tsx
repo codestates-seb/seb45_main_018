@@ -15,13 +15,40 @@ import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { setId } from '../redux/slice/userSlice';
 import { RootState } from '../redux/store/store';
-// import { gapi } from 'gapi-script';
-// import { useEffect } from 'react';
-
-// 1. 추가할 것: 이메일 형식이 올바르지 않으면 오류 메시지 띄우기(유효성 검사)
-// 2. 공란이면 입력해달라고하기.
+import { gapi } from 'gapi-script';
+import { useEffect } from 'react';
 
 function LoginPage() {
+  const APIURL = useSelector((state: RootState) => state.api.APIURL);
+  const clientId = useSelector((state: RootState) => state.login.clientId)
+  const [password, setPassword] = useState(''); // 비밀번호 상태와 업데이트 함수를 선언합니다.
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+
+
+  useEffect(() => {
+      function initGoogleAuth() {
+        gapi.auth2.init({
+          clientId: clientId,
+          prompt: 'select_account'
+      });
+          gapi.client.init({
+              clientId: clientId,
+              scope: 'email name' // 필요한 스코프를 여기에 추가하세요.
+          }).then(() => {
+              // 클라이언트 라이브러리가 초기화된 후의 로직
+              const authInstance = gapi.auth2.getAuthInstance();
+              if (authInstance.isSignedIn.get()) {
+                  dispatch(login());
+              }
+          });
+      }
+
+      // gapi 라이브러리를 로드하고, 로드가 완료되면 initGoogleAuth 함수를 호출합니다.
+      gapi.load("client:auth2", initGoogleAuth);
+  }, []);  // 의존성 배열에 clientId와 dispatch를 추가했습니다.
+
   const email = useSelector((state: RootState) => state.user.email);
 
   const onSuccess = async (res: any) => {
@@ -68,13 +95,6 @@ function LoginPage() {
     console.log('로그인 실패! res: ', res);
   };
 
-  const APIURL = useSelector((state: RootState) => state.api.APIURL);
-  const clientId = useSelector((state: RootState) => state.login.clientId);
-
-  const [password, setPassword] = useState(''); // 비밀번호 상태와 업데이트 함수를 선언합니다.
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-
   const linkToSignupHandler = () => {
     navigate('/signup');
   };
@@ -83,76 +103,8 @@ function LoginPage() {
     dispatch(openModal('findPwModal'));
   };
 
-  // useEffect(() => {
-  //     function initGoogleAuth() {
-  //         gapi.client.init({
-  //             clientId: clientId,
-  //             scope: 'email name' // 필요한 스코프를 여기에 추가하세요.
-  //         }).then(() => {
-  //             // 클라이언트 라이브러리가 초기화된 후의 로직
-  //             const authInstance = gapi.auth2.getAuthInstance();
-  //             if (authInstance.isSignedIn.get()) {
-  //                 dispatch(login());
-
-  //                 // 선택적으로 사용자 정보를 콘솔에 출력하는 코드
-  //                 // var profile = authInstance.currentUser.get().getBasicProfile();
-  //                 // console.log('Email: ' + profile.getEmail());
-  //                 // console.log('Full Name: ' + profile.getName());
-  //             }
-  //         });
-  //     }
-
-  //     // gapi 라이브러리를 로드하고, 로드가 완료되면 initGoogleAuth 함수를 호출합니다.
-  //     gapi.load("client:auth2", initGoogleAuth);
-  // }, [clientId, dispatch]);  // 의존성 배열에 clientId와 dispatch를 추가했습니다.
-
-  // const googleHandler = () => {
-  //   try {
-  //     if (!gapi.auth2.getAuthInstance().isSignedIn.get()) {
-  //         // 사용자가 로그인되지 않은 경우 로그인 프로세스 시작
-  //         gapi.auth2.getAuthInstance().signIn().then(() => {
-  //             const googleAccessToken = gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse().access_token;
-  //             console.log(googleAccessToken);
-  //             // 추가 로직
-  //         });
-  //     } else {
-  //         const googleAccessToken = gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse().access_token;
-  //         console.log(googleAccessToken);
-  //         // 추가 로직
-  //     }
-  // } catch (error) {
-  //     console.error(error);
-  //     alert('오류가 발생했습니다.');
-  // }
-  // }
-
-  //   async function googleHandler() {
-
-  //     try{
-  //         useEffect(()=> {
-  //             function start() {
-  //               gapi.client.init({
-  //                 clientId: clientId,
-  //                 scope: ""
-  //               })
-  //             }
-  //             gapi.load("client:auth2", start)
-  //           })
-
-  //           const googleAccessToken = gapi.auth.getToken().access_token;
-  //           console.log(googleAccessToken)
-  //           // localStorage.setItem('accessToken', accessToken);
-  //     }
-  //     catch {
-  //         alert('오류가 발생했습니다.')
-  //     }
-  // }
-
   const loginHandler = async (e: any) => {
     e.preventDefault();
-
-    // const emailToSend = email || 'abc@gmail.com'; // 이메일 상태 값을 사용합니다.
-    // const pwdToSend = password || '123456'; // 비밀번호 상태 값을 사용합니다.
 
     try {
       const response = await axios.post(`${APIURL}/auth/login`, {
@@ -164,12 +116,9 @@ function LoginPage() {
       console.log(password);
 
       if (response.status === 200) {
-        // const { accessToken, refreshToken } = response.data;
-        // (수정사항) 1. 다시 user 정보 get 새로..
-        // (수정사항) 2. 유저정보조회 시: id로 검색
+
         const authHeader = response.headers['authorization'];
         const refreshHeader = response.headers['refresh-token'];
-        // const idHeader = response.headers['member-id']
 
         let accessToken, refreshToken, id;
 
@@ -183,26 +132,14 @@ function LoginPage() {
           refreshToken = refreshHeader;
         }
 
-        //   if (idHeader) {
-        //     id = idHeader;
-        // } else {
-        //   id = 'id를 불러오지 못하였습니다.';
-        // }
-
         console.log(accessToken); // 액세스 토큰 값
         console.log(refreshToken); // 리프레시 토큰 값
 
         localStorage.setItem('accessToken', accessToken);
         localStorage.setItem('refreshToken', refreshToken);
-        // localStorage.setItem('id', id);
-
-        console.log(accessToken); //추후 삭제
-        console.log(refreshToken); //추후 삭제
-        console.log(id); //추후 삭제
 
         dispatch(setAccessToken(accessToken));
         dispatch(setRefreshToken(refreshToken));
-        // dispatch(setUsername(username));
         dispatch(setId(id));
         dispatch(login());
 

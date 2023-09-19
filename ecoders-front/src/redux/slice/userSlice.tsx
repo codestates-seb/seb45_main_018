@@ -1,9 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import profileImg from '../../assets/ProfileImage.svg';
 
-
-
-
 export const userSlice = createSlice({
     name: 'user',
     initialState: {

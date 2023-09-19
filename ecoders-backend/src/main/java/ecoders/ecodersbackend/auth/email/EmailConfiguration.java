@@ -23,6 +23,9 @@ public class EmailConfiguration {
     @Value("${spring.mail.password}")
     private String password;
 
+    @Value("${spring.mail.default-encoding}")
+    private String defaultEncoding;
+
     @Value("${spring.mail.properties.mail.smtp.auth}")
     private String auth;
 
@@ -36,9 +39,10 @@ public class EmailConfiguration {
         javaMailSender.setPort(port);
         javaMailSender.setUsername(username);
         javaMailSender.setPassword(password);
+        javaMailSender.setDefaultEncoding(defaultEncoding);
         Properties properties = javaMailSender.getJavaMailProperties();
-        properties.put("spring.mail.properties.mail.smtp.auth", auth);
-        properties.put("spring.mail.properties.mail.smtp.starttls.enable", tlsEnable);
+        properties.put("mail.smtp.auth", auth);
+        properties.put("mail.smtp.starttls.enable", tlsEnable);
         return javaMailSender;
     }
 }

@@ -52,7 +52,6 @@ public class MemberService {
 
         // 인증 이메일 전송
         emailService.sendVerificationMail(email);
-        log.info("이메일 전송 완료");
         return signedUpMemberId;
     }
 

@@ -27,7 +27,7 @@ import java.util.*;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.stream.Collectors;
-
+import org.springframework.http.ResponseCookie;
 @Service
 @Transactional
 public class PostService {
@@ -234,7 +234,7 @@ public class PostService {
 
     private Cookie createCookieForForNotOverlap(Long postId) {
         Cookie cookie = new Cookie(VIEWCOOKIENAME+postId, String.valueOf(postId));
-        cookie.setComment("조회수 중복 증가 방지 쿠키");
+        cookie.setComment("SameSite=None");
         cookie.setMaxAge(24*60*60);
        // cookie.setHttpOnly(true);
         return cookie;

@@ -24,71 +24,65 @@ const Header: React.FC = () => {
   const refreshToken = useSelector((state: RootState) => state.user.refreshToken);
   const authType = useSelector((state: RootState) => state.user.authType);
   const id = useSelector((state: RootState) => state.user.id);
- 
+
   useEffect(() => {
-    if(isLoggedIn === true){
+    if (isLoggedIn === true) {
       const fetchData = async () => {
         try {
           const response = await axios.get(`${APIURL}/members/my-info`, {
             headers: {
-              'Authorization': accessToken,
+              Authorization: accessToken,
               'Refresh-Token': refreshToken,
             },
           });
-  
+
           console.log(response.data);
           dispatch(setUsername(response.data.username));
         } catch (error: any) {
-                if (error.response?.status === 401) {
-                  alert('로그인에 실패했습니다.');
-                } else {
-                  alert('서버 오류가 발생했습니다.');
-                  console.error('로그인 에러:', error);
-                }
-              }
+          if (error.response?.status === 401) {
+            alert('로그인에 실패했습니다.');
+          } else {
+            alert('서버 오류가 발생했습니다.');
+            console.error('로그인 에러:', error);
+          }
+        }
       };
       fetchData(); // 비동기 함수 실행
     }
-
   }, [isLoggedIn]);
 
-   function deleteCookie(name: string) {
-    document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-}
+  function deleteCookie(name: string) {
+    document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+  }
 
+  const handleLogout = async () => {
+    deleteCookie('G_ENABLED_IDPS');
+    document.cookie.split(';').forEach(function (c) {
+      document.cookie = c.replace(/^ +/, '').replace(/=.*/, '=;expires=' + new Date().toUTCString() + ';path=/');
+    });
 
-  const handleLogout = async() => {
-
-    deleteCookie("G_ENABLED_IDPS");
-    document.cookie.split(";").forEach(function(c) {
-      document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
-  });
-
-    axios
-    .delete(`${APIURL}/auth/logout`, {
+    axios.delete(`${APIURL}/auth/logout`, {
       headers: {
         Authorization: accessToken,
         'refresh-token': refreshToken,
-        'id': id
-      }
-    })
+        id: id,
+      },
+    });
 
-    if(authType === 'GOOGLE') {      
-      if(gapi.auth2 != undefined){
+    if (authType === 'GOOGLE') {
+      if (gapi.auth2 != undefined) {
         var auth2 = gapi.auth2.getAuthInstance();
 
-           auth2.signOut().then(function () {
-         console.log('User signed out.');
-         dispatch(logout())
-   });
-   } location.href= "/"   
-
+        auth2.signOut().then(function () {
+          console.log('User signed out.');
+          dispatch(logout());
+        });
+      }
+      location.href = '/';
+    } else {
+      dispatch(logout());
+      navigate('/');
     }
-    else {
-       dispatch(logout());
-       navigate('/');
-    }
-
   };
 
   const navigateToMain = () => {
@@ -119,7 +113,6 @@ const Header: React.FC = () => {
   //     navigate('/login')
   //   }
   // }, [loginModalState]);
-
 
   return (
     <>

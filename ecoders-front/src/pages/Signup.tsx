@@ -206,7 +206,7 @@ function Signup () {
                 confirmPassword: '',
             };
 
-            const response = await axios.post('http://ec2-54-180-107-29.ap-northeast-2.compute.amazonaws.com:8080/auth/signup', newformData, {
+            const response = await axios.post(`${APIURL}/auth/signup`, newformData, {
                 headers: {
                     "Content-Type": "application/json"
                 }

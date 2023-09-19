@@ -12,7 +12,7 @@ import { logout } from '../redux/slice/loginSlice';
 import { useNavigate } from 'react-router-dom';
 import { useRef } from 'react';
 const MyInfo = () => {
-  const APIURL = useSelector((state:RootState) => state.api.APIURL);
+  const APIURL = useSelector((state: RootState) => state.api.APIURL);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -49,7 +49,7 @@ const MyInfo = () => {
     );
   });
 
-  //계정 삭제 기능 
+  //계정 삭제 기능
   const deleteHandler = () => {
     axios
       .delete(`${APIURL}/members/my-info`, {
@@ -123,7 +123,6 @@ const MyInfo = () => {
 
   //비밀번호변경 모달
   const PasswordModalContent = () => {
-
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmNewPassword, setConfirmNewPassword] = useState('');
@@ -142,9 +141,9 @@ const MyInfo = () => {
             },
           },
         );
-  
+
         console.log(currentPassword, newPassword);
-  
+
         if (response.status === 200) {
           alert('비밀번호가 성공적으로 변경되었습니다.');
         }
@@ -158,8 +157,8 @@ const MyInfo = () => {
     useEffect(() => {
       if (inputRef.current) {
         inputRef.current.focus();
-    }
-    })
+      }
+    });
 
     return (
       <ModalContentContainer>
@@ -248,7 +247,7 @@ const MyInfo = () => {
           // setSelectedImage(reader.result);
           dispatch(setProfileImg(reader.result));
           uploadImage(file); //서버에 이미지 전송
-          console.log(reader.result)
+          console.log(reader.result);
         }
       };
       reader.readAsDataURL(file);
@@ -273,29 +272,28 @@ const MyInfo = () => {
           setProfileImg(response.data.imageUrl + '?' + new Date().getTime());
           console.log(response);
           axios
-          .patch(`${APIURL}/members/profile-image`, formData, 
-          {
-            headers: {
-              Authorization: accessToken,
-              'refresh-token': refreshToken,
-            },
-            params: {
-              'img': response.data, // 쿼리 파라미터로 dataurl 추가
-            },
-
-          }).then(response => {
-            if (response.status === 200) {
-              alert('프로필 사진이 변경되었습니다.');
-              localStorage.setItem('profileImg',response.data.imageUrl)
-              setProfileImg(response.data.imageUrl);//user정보 전체 response로 올 것
-              console.log(response)
-            }
-          });
+            .patch(`${APIURL}/members/profile-image`, formData, {
+              headers: {
+                Authorization: accessToken,
+                'refresh-token': refreshToken,
+              },
+              params: {
+                img: response.data, // 쿼리 파라미터로 dataurl 추가
+              },
+            })
+            .then(response => {
+              if (response.status === 200) {
+                alert('프로필 사진이 변경되었습니다.');
+                localStorage.setItem('profileImg', response.data.imageUrl);
+                setProfileImg(response.data.imageUrl); //user정보 전체 response로 올 것
+                console.log(response);
+              }
+            });
         }
       })
       .catch(error => {
-        console.log(error, '서버에 이미지 전송을 실패하였습니다.')
-      })
+        console.log(error, '서버에 이미지 전송을 실패하였습니다.');
+      });
   };
 
   const [isEditing, setIsEditing] = useState(false); // username을 수정하는 중인지 상태
@@ -304,7 +302,7 @@ const MyInfo = () => {
 
   //20byte 길이 검사하는 함수 - 한글은 3byte, 영문 및 숫자는 1byte
   function getByteLength(str: any) {
-    return str.split('').reduce((byteLength:any, char: any) => {
+    return str.split('').reduce((byteLength: any, char: any) => {
       const charCode = char.charCodeAt(0);
       if (charCode <= 0x7f) {
         return byteLength + 1;
@@ -346,10 +344,9 @@ const MyInfo = () => {
     await updateUsername();
     setIsEditing(false);
     setUsername(tempUsername);
-
   };
 
-  const handleInputKeyUp = async (e:any) => {
+  const handleInputKeyUp = async (e: any) => {
     if (e.key === 'Enter') {
       await updateUsername();
       setIsEditing(false);
@@ -390,7 +387,6 @@ const MyInfo = () => {
       console.log(error);
     }
   };
-
 
   return (
     <div>

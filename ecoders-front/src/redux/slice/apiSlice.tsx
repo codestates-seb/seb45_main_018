@@ -1,7 +1,6 @@
 // redux/slice/apiSlice.js
 import { createSlice } from '@reduxjs/toolkit';
 
-
 interface ApiState {
   APIURL: string;
 }

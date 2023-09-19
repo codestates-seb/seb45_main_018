@@ -1,124 +1,201 @@
 import styled from 'styled-components';
 
-import { useState, useEffect } from 'react';
+import axios from 'axios';
+import React, { useState, useEffect, useRef } from 'react';
 
 import BoardCard from './BoardCard';
 import CommunityButtonGroup from './CommunityButtonGroup';
 import Button from '../atoms/Button';
 
-export interface card {
-  userName: string;
-  title: string;
-  likeCount: number;
-  category: string;
-  date: string;
-  imgUrl: string;
-}
+import { useSelector } from 'react-redux';
+
+import { card } from '../../pages/CommunityPage';
+import Loading from '../sharedlayout/Loading';
+
+type ApiState = {
+  api: {
+    APIURL: string;
+  };
+};
 
 function Board() {
+  const APIURL = useSelector((state: ApiState) => state.api.APIURL);
+
   const categoryOption: Array<string> = ['전체', '모집글', '인증글'];
   //카테고리 상태 (카드 컴포넌트에 넘겨주기 -> 조건부 렌더링 진행)
   const [category, setCategory] = useState('전체');
   //검색창 입력 데이터
   const [searchText, setSearchText] = useState('');
 
-  //더미 데이터
-  const dummyData: Array<card> = [
-    {
-      userName: '남극러버',
-      title: '소중한 극지방, 남극 봉사단 구합니다!',
-      likeCount: 12,
-      category: '모집글',
-      date: '2023/07/20 16:21',
-      imgUrl: 'https://source.unsplash.com/random/230x140/?antarctica',
-    },
-    {
-      userName: '지구보호',
-      title: '[지금, 지구] 지구를 위한 캠페인 운동 "지금, 지구"',
-      likeCount: 10,
-      category: '모집글',
-      date: '2023/08/01 10:10',
-      imgUrl: 'https://source.unsplash.com/random/230x140/?earth',
-    },
-    {
-      userName: '예예',
-      title: '일주일 텀블러 사용 완료, 인증글 올립니다~',
-      likeCount: 5,
-      category: '인증글',
-      date: '2023/08/03 14:41',
-      imgUrl: 'https://source.unsplash.com/random/230x140/?tumbler',
-    },
-    {
-      userName: '요즘건강',
-      title: '걷는 습관, 지구와 나 모두 건강하게!',
-      likeCount: 90,
-      category: '',
-      date: '2023/08/11 19:07',
-      imgUrl: 'https://source.unsplash.com/random/230x140/?walk',
-    },
-    {
-      userName: '지구야 아프지말자',
-      title: '절절하게 절약절약, 탄소발자국 줄여가는 챌린지! 참가자 모집합니다.',
-      likeCount: 3,
-      category: '모집글',
-      date: '2023/08/12 22:34',
-      imgUrl: 'https://source.unsplash.com/random/230x140/?forest',
-    },
-    {
-      userName: '유리',
-      title: '일회용품 사용 최대한 참았어요!',
-      likeCount: 3,
-      category: '인증글',
-      date: '2023/08/12 16:40',
-      imgUrl: 'https://source.unsplash.com/random/230x140/?plastic',
-    },
-    {
-      userName: '최고짱',
-      title: '탄소발자국이 뭔가요?',
-      likeCount: 40,
-      category: '',
-      date: '2023/08/18 17:01',
-      imgUrl: 'https://source.unsplash.com/random/230x140/?tree',
-    },
-    {
-      userName: '모두힘내',
-      title: '장바구니 사용, 어느정도 실천하고 계신가요? 함께 챌린지 해봐용~',
-      likeCount: 30,
-      category: '모집글',
-      date: '2023/08/22 09:30',
-      imgUrl: 'https://source.unsplash.com/random/230x140/?basket',
-    },
-  ];
+  const [isLoading, setIsLoading] = useState(false);
+  const [post, setPosts] = useState<Array<card>>([]);
+  // 우선 페이지를 마지막 포스트 아이디로 사용
+  const [page, setPage] = useState(99999);
+
+  // 검색어
+  const [keyWord, setKeyWord] = useState('');
+
+  const containerRef = useRef<HTMLDivElement | null>(null);
 
   //필터된 데이터 state
-  const [filteredData, setFilteredData] = useState(Array<card>);
+  const [filteredData, setFilteredData] = useState<Array<card>>([]);
 
+  //렌더링 첫 번째에 받아오기 1page -> 20개
+  useEffect(() => {
+    if (keyWord === '') {
+      if (page === 99999) {
+        axios
+          .get(`${APIURL}/posts/all?lastPostId=99999&size=20`, {})
+          .then(function (response) {
+            // response
+            console.log(response.data);
+            setPosts(response.data);
+            setPage(response.data[response.data.length - 1].postId);
+            if (response.data.length < 20) {
+              setPage(0);
+            } else {
+              setPage(response.data[response.data.length - 1].postId);
+            }
+          })
+          .catch(function (error) {
+            console.log('게시물 데이터 받아오기 실패');
+            console.log(error);
+          });
+      }
+    } else {
+      if (page === 99999) {
+        console.log('검색어 입력 후 다시렌더');
+        axios
+          .get(`${APIURL}/posts/all?lastPostId=99999&size=20&keyword=${keyWord}`)
+          .then(function (response) {
+            // response
+            console.log(response.data);
+            setPosts(response.data);
+            setPage(response.data[response.data.length - 1].postId);
+            if (response.data.length < 20) {
+              setPage(0);
+            } else {
+              setPage(response.data[response.data.length - 1].postId);
+            }
+          })
+          .catch(function (error) {
+            console.log('게시물 데이터 받아오기 실패');
+            console.log(error);
+          });
+      }
+    }
+  }, [keyWord]);
+
+  // 스크롤 이벤트 핸들러를 창에 추가
+  useEffect(() => {
+    //무한스크롤 이벤트 발생시
+    const handleScroll = () => {
+      // 스크롤이 아래로 내려가면서 로딩중이 아니라면 새로운 데이터 로드
+      if (
+        containerRef.current &&
+        containerRef.current.getBoundingClientRect().bottom <= window.innerHeight + 100 &&
+        !isLoading &&
+        post.length >= 10
+      ) {
+        setIsLoading(true);
+        if (keyWord === '') {
+          if (page !== 0) {
+            // 여기서 수정
+            axios
+              .get(`${APIURL}/posts/all?lastPostId=${page}&size=10`)
+              .then(function (response) {
+                // response
+                console.log(response.data);
+                setPosts(prevData => [...prevData, ...response.data]);
+
+                if (response.data.length < 10) {
+                  setPage(0);
+                  console.log(response.data.length);
+                } else {
+                  setPage(response.data[response.data.length - 1].postId);
+                }
+                setIsLoading(false);
+              })
+              .catch(function (error) {
+                console.log('게시물 데이터 받아오기 실패');
+                console.log(error);
+              });
+          } else {
+            setIsLoading(false);
+          }
+        } else {
+          if (page !== 0) {
+            // 여기서 수정
+            axios
+              .get(`${APIURL}/posts/all?lastPostId=${page}&size=10&keyword=${keyWord}`)
+              .then(function (response) {
+                // response
+                console.log(response.data);
+
+                setPosts(prevData => [...prevData, ...response.data]);
+                if (response.data.length < 10) {
+                  setPage(0);
+                  console.log(response.data.length);
+                } else {
+                  setPage(response.data[response.data.length - 1].postId);
+                }
+                setIsLoading(false);
+              })
+              .catch(function (error) {
+                console.log('게시물 데이터 받아오기 실패');
+                console.log(error);
+              });
+          } else {
+            setIsLoading(false);
+          }
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [isLoading, keyWord, page]);
+
+  // 카테고리 변경시
   function changeCategoryHandler(event: React.MouseEvent<HTMLButtonElement>) {
-    setCategory((event.target as HTMLButtonElement).value);
+    setCategory((event.target as HTMLButtonElement).innerText);
+  }
+
+  // 검색어 변경시
+  function submitSearchWordHandle(event: React.KeyboardEvent<HTMLInputElement>) {
+    // 엔터 키를 눌렀을 때 이벤트를 처리
+    if (event.key === 'Enter') {
+      // 입력한 내용을 처리하거나 원하는 동작 수행
+      setKeyWord((event.target as HTMLInputElement).value);
+      setPage(99999);
+      // alert('Enter key pressed with input value: ' + keyWord);
+    }
   }
   function changeSearchTextHandler(event: React.ChangeEvent<HTMLInputElement>) {
     setSearchText((event.target as HTMLInputElement).value);
   }
 
-  //필터 기능(특정 state(여기선 filteredData)가 바뀔 때마다.)
+  //필터 기능(특정 state(여기선 filteredData)가 바뀔 때마다 실행)
   useEffect(() => {
     if (category === '모집글') {
       setFilteredData(
-        dummyData.filter(item => {
+        post.filter(item => {
           console.log(item.category);
           return item.category === category;
         }),
       );
     } else if (category === '인증글') {
       setFilteredData(
-        dummyData.filter(item => {
+        post.filter(item => {
           return item.category === category;
         }),
       );
     } else {
-      setFilteredData(dummyData);
+      setFilteredData(post);
     }
-  }, [category]);
+  }, [category, post]);
 
   return (
     <BoardLayout>
@@ -131,8 +208,8 @@ function Board() {
                   <Button
                     key={index}
                     className={category === item ? 'clicked-category' : ''}
-                    width="60px"
-                    fontSize={0.5}
+                    width="70px"
+                    fontSize={1}
                     hoverBgColor="#7092bf"
                     hoverColor="white"
                     onClick={changeCategoryHandler}>
@@ -143,18 +220,25 @@ function Board() {
             })}
           </div>
           <div className="board-header-serch-input-container">
-            <SearchInput type="search" value={searchText} onChange={changeSearchTextHandler} />
+            <SearchInput
+              type="search"
+              value={searchText}
+              onChange={changeSearchTextHandler}
+              onKeyUp={submitSearchWordHandle}
+            />
           </div>
         </div>
       </BoardHead>
-      <br></br>
+      <br />
       <BoardBody>
-        <div className="board-body-container">
+        <div className="board-body-container" ref={containerRef}>
           {/* 필터된 데이터 전달 */}
-          <BoardCard dummyData={filteredData}></BoardCard>
+          {/*  likedPosts={likedPosts}  전달...*/}
+          <BoardCard data={filteredData}></BoardCard>
+          {isLoading && <Loading />}
         </div>
       </BoardBody>
-      <CommunityButtonGroup />
+      <CommunityButtonGroup top="15%" />
     </BoardLayout>
   );
 }
@@ -167,7 +251,7 @@ const BoardLayout = styled.div`
 
 const BoardHead = styled.div`
   border: 1px solid #a8adaf;
-  width: 64%;
+  width: 66%;
   background-color: #eceff1;
   display: flex;
   margin: 0 auto;
@@ -218,7 +302,7 @@ const BoardHead = styled.div`
 
 const BoardBody = styled.div`
   border: 1px solid #a8adaf;
-  width: 64%;
+  width: 66%;
   background-color: #eceff1;
   display: flex;
   margin: 0 auto;

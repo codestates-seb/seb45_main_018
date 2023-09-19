@@ -34,7 +34,7 @@ function CommunityPostWritePage() {
   });
 
   if (state !== null) {
-    console.log('dd');
+    console.log(postid);
     useEffect(() => {
       console.log(state.post);
       console.log(state.post.postId);

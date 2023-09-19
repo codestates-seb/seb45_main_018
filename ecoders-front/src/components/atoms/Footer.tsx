@@ -113,7 +113,7 @@ const FooterInfoContainer = styled.div`
 const FooterSectionContainer = styled.div`
   display: flex;
   flex-direction: column;
-  margin-top: 60px;
+  margin-top: 100px;
   margin-right: 122px;
 `;
 

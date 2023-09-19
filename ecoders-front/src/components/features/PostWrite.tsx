@@ -85,7 +85,6 @@ function PostWriteBody({ bodyData }: { bodyData: bodyProps }) {
   const editorRef = useRef<Editor>(null);
   const dispatch = useDispatch();
 
-  // console.log(bodyData.content);
   useEffect(() => {
     if (bodyData.content !== '') {
       editorRef.current?.getInstance().setHTML(bodyData.content);
@@ -98,11 +97,9 @@ function PostWriteBody({ bodyData }: { bodyData: bodyProps }) {
 
   type HookCallback = (url: string, text?: string) => void;
   const uploadImageHandler = async (blob: Blob | File, callback: HookCallback) => {
-    console.log(blob);
     const formData = new FormData();
     formData.append('imageFile', blob);
 
-    console.log(formData.has('image'));
     axios({
       method: 'post',
       url: `${APIURL}/posts/uploadImage`, // 적절한 엔드포인트로 변경해야 합니다. (이거 맞나..?)
@@ -124,8 +121,6 @@ function PostWriteBody({ bodyData }: { bodyData: bodyProps }) {
       });
     return false;
   };
-
-  // console.log(dummyData.content);
 
   const submitButtonClickHandler = () => {
     // 확인 모달
@@ -150,7 +145,6 @@ function PostWriteBody({ bodyData }: { bodyData: bodyProps }) {
       // imgTags 배열에 있음 imgTag.getAttribute('src');
       bodyData.setThumbnailUrl(imgTags[0].getAttribute('src'));
       // imgTags.forEach((imgTag: HTMLImageElement) => {
-      //   console.log(imgTag);
       // });
     }
     dispatch(openModal('postModal'));
@@ -178,7 +172,7 @@ function PostWriteBody({ bodyData }: { bodyData: bodyProps }) {
       </Modal>
       <div className="post-write-body">
         <Editor
-          height="550px"
+          height="490px"
           initialEditType="wysiwyg"
           hideModeSwitch={true}
           useCommandShortcut={false}
@@ -210,7 +204,6 @@ function PostWrite({ post }: { post: postData }) {
   const USERACCESSTOKEN = useSelector((state: UserState) => state.user.accessToken);
   const APIURL = useSelector((state: ApiState) => state.api.APIURL);
 
-  // console.log(post);
   const [title, setTitle] = useState<string | undefined>('');
   const [category, setCategory] = useState<string | undefined>('');
   const [content, setContent] = useState<string | undefined>('');
@@ -262,53 +255,58 @@ function PostWrite({ post }: { post: postData }) {
     if (isSubmit) {
       // 게시물 수정
       if (isModify) {
-        const postD = JSON.stringify(postData);
-        console.log(postD);
-
-        axios({
-          method: 'patch',
-          url: `${APIURL}/posts/${post.postId}`,
-          data: JSON.stringify(postData),
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `${USERACCESSTOKEN}`,
-          },
-        })
-          .then(response => {
-            console.log('게시물 수정 성공');
-            if (response.status === 200) {
-              navigate(`/community/postdetail/${post.postId}`);
-            }
+        if (postData.title !== '' && postData.content !== '<p><br></p>') {
+          axios({
+            method: 'patch',
+            url: `${APIURL}/posts/${post.postId}`,
+            data: JSON.stringify(postData),
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `${USERACCESSTOKEN}`,
+            },
           })
-          .catch(error => {
-            console.log(error);
-            console.log('게시물 수정 실패');
-          });
+            .then(response => {
+              console.log('게시물 수정 성공');
+              if (response.status === 200) {
+                navigate(`/community/postdetail/${post.postId}`);
+              }
+            })
+            .catch(error => {
+              console.log(error);
+              console.log('게시물 수정 실패');
+            });
+        } else {
+          alert('게시글 제목, 내용을 작성해야합니다.');
+          window.location.reload();
+        }
       }
       // 게시물 등록
       else {
         const postD = JSON.stringify(postData);
-        console.log(postD);
-
-        axios({
-          method: 'post',
-          url: `${APIURL}/posts`,
-          data: JSON.stringify(postData),
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `${USERACCESSTOKEN}`,
-          },
-        })
-          .then(response => {
-            console.log('게시물 등록 성공');
-            if (response.status === 200) {
-              navigate(`/community`);
-            }
+        if (postData.title !== '' && postData.content !== '<p><br></p>') {
+          axios({
+            method: 'post',
+            url: `${APIURL}/posts`,
+            data: JSON.stringify(postData),
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `${USERACCESSTOKEN}`,
+            },
           })
-          .catch(error => {
-            console.log(error);
-            console.log('게시물 등록 실패');
-          });
+            .then(response => {
+              console.log('게시물 등록 성공');
+              if (response.status === 200) {
+                navigate(`/community`);
+              }
+            })
+            .catch(error => {
+              console.log(error);
+              console.log('게시물 등록 실패');
+            });
+        } else {
+          alert('게시글 제목, 내용을 작성해야합니다.');
+          window.location.reload();
+        }
       }
     }
   }, [isSubmit]);
@@ -357,7 +355,7 @@ const PostWriteForm = styled.div`
     width: 83%;
     border: 1.5px solid #afafaf;
     padding: 0 10px;
-    height: 30px;
+    height: 35px;
     border-radius: 10px;
   }
   div.post-write-body {

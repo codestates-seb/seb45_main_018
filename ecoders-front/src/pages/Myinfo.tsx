@@ -276,10 +276,7 @@ const MyInfo = () => {
   };
 
   const PasswordModalContent = () => {
-
-    const [focusKey, setFocusKey] = useState(null);
-    
-
+    const [focusKey, setFocusKey] = useState<number>();
 
     return (
       <ModalContentContainer>
@@ -290,8 +287,8 @@ const MyInfo = () => {
             <label htmlFor="current-password">현재 비밀번호</label>
           </PasswordTitle>
           <PasswordInput
-        onClick={() => setFocusKey(1)}
-        autoFocus={focusKey === 1}
+            onClick={() => setFocusKey(1)}
+            autoFocus={focusKey === 1}
             type="password"
             id="current-password"
             value={currentPassword}
@@ -305,8 +302,8 @@ const MyInfo = () => {
             <label htmlFor="new-password">새로운 비밀번호</label>
           </PasswordTitle>
           <PasswordInput
-                  onClick={() => setFocusKey(2)}
-                  autoFocus={focusKey === 2}
+            onClick={() => setFocusKey(2)}
+            autoFocus={focusKey === 2}
             type="password"
             id="new-password"
             value={newPassword}
@@ -320,8 +317,8 @@ const MyInfo = () => {
             <label htmlFor="confirm-new-password">새로운 비밀번호 확인</label>
           </PasswordTitle>
           <PasswordInput
-                  onClick={() => setFocusKey(3)}
-                  autoFocus={focusKey === 3}
+            onClick={() => setFocusKey(3)}
+            autoFocus={focusKey === 3}
             type="password"
             id="confirm-new-password"
             value={confirmNewPassword}
@@ -353,7 +350,7 @@ const MyInfo = () => {
     );
   };
 
-  const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedImage, setSelectedImage] = useState('');
   // console.log(selectedImage);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -379,7 +376,7 @@ const MyInfo = () => {
     }
   };
 
-  const uploadImage = async file => {
+  const uploadImage = async (file: Blob) => {
     const formData = new FormData();
     formData.append('imageFile', file);
 
@@ -412,7 +409,7 @@ const MyInfo = () => {
   const [byte, setByte] = useState(getByteLength(username));
 
   //20byte 길이 검사하는 함수 - 한글은 3byte, 영문 및 숫자는 1byte
-  function getByteLength(str) {
+  function getByteLength(str: string) {
     return str.split('').reduce((byteLength, char) => {
       const charCode = char.charCodeAt(0);
       if (charCode <= 0x7f) {
@@ -440,7 +437,7 @@ const MyInfo = () => {
     setIsEditing(true);
   };
 
-  const handleInputChange = e => {
+  const handleInputChange = (e: any) => {
     const inputValue = e.target.value;
     const inputByte = getByteLength(inputValue);
 
@@ -456,7 +453,7 @@ const MyInfo = () => {
     setIsEditing(false);
   };
 
-  const handleInputKeyUp = async e => {
+  const handleInputKeyUp = async (e: { key: string }) => {
     if (e.key === 'Enter') {
       await updateUsername();
       setIsEditing(false);

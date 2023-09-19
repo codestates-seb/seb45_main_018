@@ -100,6 +100,7 @@ function CommunityPostDetailPage() {
         // response
         console.log(response.data);
         setPost(response.data);
+        console.log(response.headers);
         console.log(response.headers['set-cookie']);
       })
       .catch(function (error) {

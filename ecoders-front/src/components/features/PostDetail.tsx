@@ -12,7 +12,6 @@ import { closeModal, openModal } from '../../redux/slice/modalSlice';
 
 import { postData, comment } from '../../pages/CommunityPostDetailPage';
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { FiX } from 'react-icons/fi';
 
 type ApiState = {
@@ -51,7 +50,7 @@ const HeaderButtons = ({ post }: { post: postData }) => {
           Authorization: `${USERACCESSTOKEN}`,
         },
       })
-      .then(function (response) {
+      .then(function () {
         dispatch(closeModal('deletePostModal'));
         navigate(`/community`);
       })
@@ -93,13 +92,13 @@ const HeaderButtons = ({ post }: { post: postData }) => {
 
 const CommentButtons = ({
   comment,
-  postid,
+
   commentList,
   setCommentList,
   setIsCommentModify,
 }: {
   comment: comment;
-  postid: number | undefined;
+
   commentList: Array<comment>;
   setCommentList: React.Dispatch<React.SetStateAction<Array<comment> | undefined>>;
   setIsCommentModify: React.Dispatch<React.SetStateAction<number>>;
@@ -117,15 +116,11 @@ const CommentButtons = ({
     // // 댓글 삭제 낙관적 업데이트
     setIsDeleteModalOpen(false);
     console.log(comment);
-    console.log(comment.commentId);
     if (commentList !== undefined) {
       console.log(commentList);
-      console.log(comment.commentId);
       const deletedCommentList = commentList.filter(item => {
-        console.log(item);
         return item.commentId !== comment.commentId;
       });
-      console.log(deletedCommentList);
       setCommentList(deletedCommentList);
     }
 
@@ -136,7 +131,6 @@ const CommentButtons = ({
         },
       })
       .then(function (response) {
-        console.log(comment.commentId);
         console.log(response);
       })
       .catch(function (error) {
@@ -196,11 +190,9 @@ const CommentButtons = ({
 function CommentDetail({
   commentList,
   setCommentList,
-  post,
 }: {
   commentList: Array<comment>;
   setCommentList: React.Dispatch<React.SetStateAction<Array<comment> | undefined>>;
-  post: postData;
 }) {
   console.log(commentList);
   const USERID = useSelector((state: UserState) => state.user.id);
@@ -210,12 +202,10 @@ function CommentDetail({
     <div className="post-comment-container">
       {commentList.map((item, index) => {
         const commentItem = item;
-        console.log(commentItem);
         if (commentItem.commentId === isCommentModify) {
           return (
             <CommentModify
               initComment={commentItem}
-              postid={post.postId}
               commentList={commentList}
               setIsCommentModify={setIsCommentModify}
               setCommentList={setCommentList}
@@ -228,7 +218,6 @@ function CommentDetail({
             {commentItem.memberId === USERID ? (
               <CommentButtons
                 comment={commentItem}
-                postid={post.postId}
                 setIsCommentModify={setIsCommentModify}
                 commentList={commentList}
                 setCommentList={setCommentList}
@@ -252,13 +241,13 @@ function CommentDetail({
 
 function CommentModify({
   initComment,
-  postid,
+
   commentList,
   setIsCommentModify,
   setCommentList,
 }: {
   initComment: comment;
-  postid: number | undefined;
+
   commentList: Array<comment>;
   setIsCommentModify: React.Dispatch<React.SetStateAction<number>>;
   setCommentList: React.Dispatch<React.SetStateAction<Array<comment> | undefined>>;
@@ -293,7 +282,6 @@ function CommentModify({
       });
       setCommentList(modifyCommentList);
     }
-    console.log(JSON.stringify(commentData));
     axios({
       method: 'patch',
       url: `${APIURL}/posts/comment/${initComment.commentId}`,
@@ -303,7 +291,7 @@ function CommentModify({
         Authorization: `${USERACCESSTOKEN}`,
       },
     })
-      .then(response => {
+      .then(function () {
         console.log('댓글 수정 성공');
         setIsCommentModify(0);
         // window.location.reload();
@@ -334,12 +322,10 @@ function CommentAdd({
   commentList,
   setCommentList,
   postid,
-  setAppenCommentId,
 }: {
   commentList: Array<comment> | undefined;
   setCommentList: React.Dispatch<React.SetStateAction<Array<comment> | undefined>>;
   postid: number | undefined;
-  setAppenCommentId: React.Dispatch<React.SetStateAction<number>>;
 }) {
   const USERACCESSTOKEN = useSelector((state: UserState) => state.user.accessToken);
   const USERID = useSelector((state: UserState) => state.user.id);
@@ -363,7 +349,6 @@ function CommentAdd({
   }
   // 댓글 등록 버튼 클릭 함수
   function submitCommentHandler() {
-    console.log(comment);
     const commentData = {
       content: comment,
     };
@@ -389,7 +374,6 @@ function CommentAdd({
       setComment('');
     }
 
-    console.log(JSON.stringify(commentData));
     axios({
       method: 'post',
       url: `${APIURL}/posts/${postid}/comment`,
@@ -449,21 +433,16 @@ function PostDetail({ post }: { post: postData }) {
   const [likeList, setLikeList] = useState<Array<string> | undefined>(post.likedByUserIds);
   const [likeCount, setLikeCount] = useState<number | undefined>(post.likes);
   const [commentList, setCommentList] = useState<Array<comment> | undefined>(post.comments);
-  const [appendCommentId, setAppenCommentId] = useState(0);
 
   const navigate = useNavigate();
   function goToCommunityHandler() {
     navigate(`/community`);
   }
 
-  console.log(commentList);
-  console.log(USERID);
   //좋아요 상태 변경
   useEffect(() => {
     if (post.likedByUserIds !== undefined && post.postId !== undefined) {
       // if (post.myLikes.includes(UERID)) {}
-      console.log(typeof USERID);
-      console.log(USERID);
       console.log(post.likedByUserIds);
       console.log(post.likedByUserIds.includes(USERID));
       if (post.likedByUserIds.includes(USERID)) {
@@ -471,22 +450,6 @@ function PostDetail({ post }: { post: postData }) {
       }
     }
   }, []);
-
-  useEffect(() => {
-    if (!isLiked) {
-      console.log(likeList);
-      if (likeList !== undefined) {
-        setLikeList([...likeList, USERID]);
-      }
-    } else {
-      console.log(likeList);
-      if (likeList !== undefined) {
-        setLikeList(likeList.slice(0, likeList.length - 1));
-      }
-    }
-  }, []);
-
-  useEffect(() => {}, [appendCommentId]);
 
   // 좋아요 클릭시..요청
   function changeLikeHandler() {
@@ -519,7 +482,7 @@ function PostDetail({ post }: { post: postData }) {
           Authorization: `${USERACCESSTOKEN}`,
         },
       })
-        .then(response => {
+        .then(() => {
           console.log('좋아요 성공');
         })
         .catch(error => {
@@ -568,19 +531,15 @@ function PostDetail({ post }: { post: postData }) {
 
       <PostFooter>
         {/* 댓글 리스트 map으로 */}
-        {commentList ? <CommentDetail commentList={commentList} setCommentList={setCommentList} post={post} /> : null}
+        {commentList ? <CommentDetail commentList={commentList} setCommentList={setCommentList} /> : null}
         {/* {post.comments ? <CommentDetail comment={post.comments} post={post} /> : null} */}
         {USERID !== '0' ? (
-          <CommentAdd
-            commentList={commentList}
-            setCommentList={setCommentList}
-            postid={post.postId}
-            setAppenCommentId={setAppenCommentId}
-          />
+          <CommentAdd commentList={commentList} setCommentList={setCommentList} postid={post.postId} />
         ) : (
-          <div className="not-login-comment">
-            로그인하시면 댓글을 작성할 수 있습니다. <Link to={'/login'}>로그인 페이지로...</Link>
-          </div>
+          // <div className="not-login-comment">
+          //   로그인하시면 댓글을 작성할 수 있습니다. <Link to={'/login'}>로그인 페이지로...</Link>
+          // </div>
+          <div></div>
         )}
       </PostFooter>
 

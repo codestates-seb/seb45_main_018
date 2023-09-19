@@ -16,7 +16,6 @@ type UserState = {
 
 function BoardCard({ data }: { data: Array<card> }) {
   const USERID = useSelector((state: UserState) => state.user.id);
-  // console.log(dummyData);
   const navigate = useNavigate();
 
   function goToDetailHandeler(index: number) {

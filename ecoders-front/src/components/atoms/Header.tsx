@@ -230,11 +230,13 @@ export default Header;
 const Entire = styled.div`
   display: flex;
   justify-content: center;
+  height: 100px;
+  margin-bottom: 20px;
 `;
 
 const HeaderContainer = styled.div`
   position: fixed;
-  z-index: 1000;
+  z-index: 40;
   /* transform: scale(0.65); // 이 줄을 추가 */
   display: flex;
   justify-content: space-between;
@@ -242,7 +244,7 @@ const HeaderContainer = styled.div`
   width: 100%;
   max-width: 1920px;
   min-width: 960px;
-  height: 70px;
+  height: 100px;
   background-color: #ffffff;
   border: none;
   padding-left: 80px;

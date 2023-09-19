@@ -9,13 +9,12 @@ import lombok.Setter;
 @Data
 public class TodayMissionResponseDto {
     private Long todayMissionId;
-    private String content;
+    private String text;
     private boolean completed;
-    private int size;
 
-    public TodayMissionResponseDto(Long todayMissionId, String content, boolean completed) {
+    public TodayMissionResponseDto(Long todayMissionId, String text, boolean completed) {
         this.todayMissionId = todayMissionId;
-        this.content = content;
+        this.text = text;
         this.completed = completed;
     }
 }

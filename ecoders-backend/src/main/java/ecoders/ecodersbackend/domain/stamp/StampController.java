@@ -49,7 +49,6 @@ public class StampController {
 
         WeeklyStampDto weeklyStampDto = new WeeklyStampDto();
 
-
         LocalDateTime currentDate = LocalDateTime.now();
         DayOfWeek currentDay = currentDate.getDayOfWeek();
 

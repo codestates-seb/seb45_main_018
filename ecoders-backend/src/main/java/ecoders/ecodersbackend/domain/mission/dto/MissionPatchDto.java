@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 public class MissionPatchDto {
 
@@ -14,7 +15,6 @@ public class MissionPatchDto {
 
         private String text;
 
-//        private MyMission.MissionProgress missionProgress;
     }
 
     @Getter
@@ -23,8 +23,8 @@ public class MissionPatchDto {
 
         private final Long id;
         private final String text;
-        private final Timestamp createdAt;
-        private final Timestamp modifiedAt;
+        private final LocalDateTime createdAt;
+        private final LocalDateTime completedAt;
         private final boolean completed;
     }
 }

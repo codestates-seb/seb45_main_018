@@ -1,7 +1,10 @@
 package ecoders.ecodersbackend.domain.stamp;
 
-import ecoders.ecodersbackend.domain.mission.entity.TodayMission;
-import ecoders.ecodersbackend.domain.mission.repository.TodayMissionRepository;
+import ecoders.ecodersbackend.domain.mission.entity.MemberMission;
+import ecoders.ecodersbackend.domain.mission.entity.Mission;
+import ecoders.ecodersbackend.domain.mission.entity.MissionType;
+import ecoders.ecodersbackend.domain.mission.repository.MemberMissionRepository;
+import ecoders.ecodersbackend.domain.mission.repository.MissionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,7 +17,8 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class StampService {
 
-    private final TodayMissionRepository todayMissionRepository;
+    private final MissionRepository missionRepository;
+    private final MemberMissionRepository memberMissionRepository;
     private final StampRepository stampRepository;
 
     /**
@@ -27,8 +31,8 @@ public class StampService {
 
 
         List<Stamp> existingStamp = stampRepository.findByMemberIdAndStampDateBetween(memberId, startDate, endDate);
-        List<TodayMission> competedMissions =
-                todayMissionRepository.findByCompletedAndCompletionDateBetween(true, startDate, endDate);
+        List<MemberMission> competedMissions =
+                memberMissionRepository.findByMissionMissionTypeAndCompletedAndCompletedAtBetween(MissionType.TODAY_MISSION, true, startDate, endDate);
 
         int completedMissionCount = competedMissions.size();
 

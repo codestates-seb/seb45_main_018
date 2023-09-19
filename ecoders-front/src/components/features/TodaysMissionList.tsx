@@ -20,10 +20,10 @@ function TodaysMissionList () {
         dispatch(fetchTodayMissionsAsync());
     }, [dispatch, option]);
 
-    const toggleHandler = async (todayMissionId: number) => {
+    const toggleHandler = async (id: number) => {
         try {
             // 현재 미션 찾기
-            const mission = todaysMissions.find((mission) => mission.todayMissionId === todayMissionId);
+            const mission = todaysMissions.find((mission) => mission.id === id);
 
 
             if (mission) {
@@ -32,7 +32,7 @@ function TodaysMissionList () {
 
                 // 서버 요청
                 const response = await axios.patch(
-                    `${apiUrl}/mission/today_mission/${todayMissionId}`, updatedCompleted,
+                    `${apiUrl}/mission/today_mission/${id}`, updatedCompleted,
                     {
                     headers: {
                         "Content-Type" : "application/json",
@@ -42,10 +42,10 @@ function TodaysMissionList () {
                 );
 
                 if (response.status === 200) {
-                    console.log(`미션 ${todayMissionId}를 업데이트했습니다.`);
-                    dispatch(toggleTodayMission(todayMissionId));
+                    console.log(`미션 ${id}를 업데이트했습니다.`);
+                    dispatch(toggleTodayMission(id));
                 } else {
-                    console.error(`미션 ${todayMissionId} 업데이트 오류가 발생했습니다.`);
+                    console.error(`미션 ${id} 업데이트 오류가 발생했습니다.`);
                 }
             }
         } catch (error) {
@@ -57,22 +57,22 @@ function TodaysMissionList () {
         <Container>
             <MissionList>
                 {todaysMissions && todaysMissions.map((mission) => (
-                    <React.Fragment key={mission.todayMissionId}>
+                    <React.Fragment key={mission.id}>
                         {mission.completed ? (
                             <CompletedMission
-                                data-today-mission-id={mission.todayMissionId}
-                                onClick={() => toggleHandler(mission.todayMissionId)}>
-                                {mission.content}
+                                data-today-mission-id={mission.id}
+                                onClick={() => toggleHandler(mission.id)}>
+                                {mission.text}
                                 <BsFillCheckCircleFill
                                     style ={{ color: '#D4FFC0' }}
-                                    onClick={() => toggleHandler(mission.todayMissionId)} />
+                                    onClick={() => toggleHandler(mission.id)} />
                             </CompletedMission>
                         ) : (
                         <Mission
-                            data-today-mission-id={mission.todayMissionId}
-                            onClick={() => toggleHandler(mission.todayMissionId)}>
-                            {mission.content}
-                            <CompletedButton onClick={() => toggleHandler(mission.todayMissionId)}/>
+                            data-today-mission-id={mission.id}
+                            onClick={() => toggleHandler(mission.id)}>
+                            {mission.text}
+                            <CompletedButton onClick={() => toggleHandler(mission.id)}/>
                         </Mission>
                     )}
                     </React.Fragment>

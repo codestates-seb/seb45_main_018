@@ -15,6 +15,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../redux/store/store";
 import axios from "axios";
 import { setMyMissions } from "../redux/slice/myMissionSlice";
+import WeekStamps from "../components/features/WeekStamps";
 
 function Ecohabit () {
     const dispatch = useDispatch();
@@ -74,7 +75,7 @@ function Ecohabit () {
                             onClick={statusOpenHandler}>나의 스탬프 현황</CommonButton>
                     </div>
                     <div>
-                        {/* <WeekStamps /> */}
+                        <WeekStamps />
                     </div>
                 </StampContainer>
                 <StatusModal />

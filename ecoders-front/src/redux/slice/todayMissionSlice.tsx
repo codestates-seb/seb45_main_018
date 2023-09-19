@@ -2,10 +2,9 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppThunk } from "../store/store";
 import axios from "axios";
 
-
 interface TodayMission {
-    todayMissionId: number;
-    content: string;
+    id: number;
+    text: string;
     completed: boolean;
 }
 
@@ -22,7 +21,7 @@ const todayMissionSlice = createSlice( {
     initialState,
     reducers: {
         toggleTodayMission: (state, action: PayloadAction<number>) => {
-            const mission = state.todaymissions.find((mission) => mission.todayMissionId === action.payload);
+            const mission = state.todaymissions.find((mission) => mission.id === action.payload);
             if (mission) {
                 mission.completed = !mission.completed;
             }
@@ -42,15 +41,13 @@ export const fetchTodayMissionsAsync = (): AppThunk => async (dispatch, getState
 
 
         const response = await axios.get(
-            `http://ec2-54-180-124-160.ap-northeast-2.compute.amazonaws.com:8080/mission/today_mission?size=${option}`,
+            `http://ec2-54-180-107-29.ap-northeast-2.compute.amazonaws.com:8080/mission/today_mission?size=${option}`,
             {
             headers: {
                 Authorization: `${localStorage.getItem('accessToken')}`,
             },
             }
         );
-
-        console.log(option)
 
       if (response.status === 200) {
         dispatch(setTodayMissions(response.data));

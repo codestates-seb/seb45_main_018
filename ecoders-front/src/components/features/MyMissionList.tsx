@@ -44,7 +44,9 @@ function MyMissionList () {
 
                 // 서버 요청
                 const response = await axios.patch(
-                    `${apiUrl}/mission/my_mission/complete/${id}`, updatedCompleted,
+                    `${apiUrl}/mission/my_mission/complete/${id}`, {
+                        isCompleted: updatedCompleted,
+                    },
                     {
                     headers: {
                         "Content-Type" : "application/json",

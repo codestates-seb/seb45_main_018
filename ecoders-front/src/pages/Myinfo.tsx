@@ -283,7 +283,7 @@ const MyInfo = () => {
     const [confirmNewPassword, setConfirmNewPassword] = useState('');
 
     const inputRef = useRef<HTMLInputElement | null>(null);
-    
+
     useEffect(() => {
       if (inputRef.current) {
         inputRef.current.focus();

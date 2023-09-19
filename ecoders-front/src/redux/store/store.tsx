@@ -7,6 +7,7 @@ import apiReducer from "../slice/apiSlice"
 import optionReducer from "../slice/optionSlice";
 import myMissionReducer from "../slice/myMissionSlice";
 import todayMissionReducer from "../slice/todayMissionSlice";
+import stampReducer from "../slice/stampSlice";
 
 
 // configureStore를 사용하여 스토어를 설정
@@ -20,6 +21,7 @@ const store = configureStore({
         option: optionReducer,
         myMissions: myMissionReducer,
         todayMissions: todayMissionReducer,
+        stamps: stampReducer,
 
     },
 

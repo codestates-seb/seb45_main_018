@@ -102,7 +102,7 @@ export const updateMissionTextInState = (id: number, text: string) => ({
 export const fetchMyMissionsAsync = (): AppThunk => async (dispatch) => {
     try {
       const response = await axios.get(
-        "http://ec2-54-180-124-160.ap-northeast-2.compute.amazonaws.com:8080/mission/my_missions",
+        "http://ec2-54-180-124-160.ap-northeast-2.compute.amazonaws.com:8080/mission/my_missions/list",
         {
           headers: {
             Authorization: `${localStorage.getItem('accessToken')}`,

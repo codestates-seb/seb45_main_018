@@ -49,7 +49,7 @@ const myMissionSlice = createSlice({
 // addMission 액션 비동기 처리 함수
 export const addMissionAsync = (text: string): AppThunk => async (dispatch) => {
     try {
-        const response = await axios.post('http://ec2-54-180-124-160.ap-northeast-2.compute.amazonaws.com:8080/mission/my_mission', {
+        const response = await axios.post('http://ec2-54-180-107-29.ap-northeast-2.compute.amazonaws.com:8080/mission/my_mission', {
             text: text,
         }, {
             headers: {
@@ -69,7 +69,7 @@ export const addMissionAsync = (text: string): AppThunk => async (dispatch) => {
 // 수정 내용 업데이트 액션
 export const updatedMissionText = (id: number, text: string): AppThunk => async (dispatch) => {
     try {
-        const response = await axios.patch(`http://ec2-54-180-124-160.ap-northeast-2.compute.amazonaws.com:8080/mission/my_mission/${id}`, {
+        const response = await axios.patch(`http://ec2-54-180-107-29.ap-northeast-2.compute.amazonaws.com:8080/mission/my_mission/${id}`, {
             text: text,
         },
         {
@@ -102,7 +102,7 @@ export const updateMissionTextInState = (id: number, text: string) => ({
 export const fetchMyMissionsAsync = (): AppThunk => async (dispatch) => {
     try {
       const response = await axios.get(
-        "http://ec2-54-180-124-160.ap-northeast-2.compute.amazonaws.com:8080/mission/my_missions/list",
+        "http://ec2-54-180-107-29.ap-northeast-2.compute.amazonaws.com:8080/mission/my_missions/list",
         {
           headers: {
             Authorization: `${localStorage.getItem('accessToken')}`,

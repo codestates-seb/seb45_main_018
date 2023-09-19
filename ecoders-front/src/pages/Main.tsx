@@ -3,18 +3,18 @@ import styled from 'styled-components';
 import LogoutMain from '../assets/Main.png';
 import LoginBG from '../assets/LoginBG.png';
 import Bear1 from '../assets/bear1.png';
-import Bear2 from '../assets/bear2.png';
-import Bear3 from '../assets/bear3.png';
-import Bear4 from '../assets/bear4.png';
-import Bear5 from '../assets/bear5.png';
-import Bear6 from '../assets/bear6.png';
+// import Bear2 from '../assets/bear2.png';
+// import Bear3 from '../assets/bear3.png';
+// import Bear4 from '../assets/bear4.png';
+// import Bear5 from '../assets/bear5.png';
+// import Bear6 from '../assets/bear6.png';
 import TextPolarbear from '../assets/TextPolarBear️.png';
 import state1 from '../assets/state1_sad.png';
-import state2 from '../assets/state2_happysad.png';
-import state3 from '../assets/state3_happyhappy.png';
-import state4 from '../assets/state4_happydancing.png';
-import state5 from '../assets/state5_happyshining.png';
-import state6 from '../assets/state6_happylovely.png';
+// import state2 from '../assets/state2_happysad.png';
+// import state3 from '../assets/state3_happyhappy.png';
+// import state4 from '../assets/state4_happydancing.png';
+// import state5 from '../assets/state5_happyshining.png';
+// import state6 from '../assets/state6_happylovely.png';
 //(수정사항) 스탬프, 베어, state 상태관리 필요
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store/store';
@@ -28,7 +28,7 @@ const Main = () => {
   const APIURL = useSelector((state: RootState) => state.api.APIURL);
 
   const username = useSelector((state: RootState) => state.user.username); // username 상태 가져오기
-   // const completedMission = useSelector((state: RootState) => state.missions.completedMissionsCount); // 오늘의 미션 완료 상태 가져오기
+  //  const completedMission = useSelector((state: RootState) => state.missions.completedMissionsCount); // 오늘의 미션 완료 상태 가져오기
 
   const isLoggedIn = useSelector((state: RootState) => state.login.isLoggedIn);
   const [isHovered, setIsHovered] = useState(false);
@@ -54,37 +54,39 @@ const Main = () => {
 
   const [bearImage, setBearImage] = useState(Bear1); // BearImage의 초기 이미지를 설정
   const [stateImage, setStateImage] = useState(state1);
-  // useEffect(() => {
-  //   switch (completedMission) {
-  //     case 0:
-  //       setBearImage(Bear1);
-  //       setStateImage(state1);
-  //       break;
-  //     case 1:
-  //       setBearImage(Bear2);
-  //       setStateImage(state2);
-  //       break;
-  //     case 2:
-  //       setBearImage(Bear3);
-  //       setStateImage(state3);
-  //       break;
-  //     case 3:
-  //       setBearImage(Bear4);
-  //       setStateImage(state4);
-  //       break;
-  //     case 4:
-  //       setBearImage(Bear5);
-  //       setStateImage(state5);
-  //       break;
-  //     case 5:
-  //       setBearImage(Bear6);
-  //       setStateImage(state6);
-  //       break;
-  //     default:
-  //       setBearImage(Bear1);
-  //       setStateImage(state1); // 기본값으로 Bear1을 사용
-  //   }
-  // }, [completedMission]); // stamp 상태가 변경될 때마다 이 useEffect를 실행
+  useEffect(() => {
+        setBearImage(Bear1);
+        setStateImage(state1);
+    // switch (completedMission) {
+    //   case 0:
+    //     setBearImage(Bear1);
+    //     setStateImage(state1);
+    //     break;
+      // case 1:
+      //   setBearImage(Bear2);
+      //   setStateImage(state2);
+      //   break;
+      // case 2:
+      //   setBearImage(Bear3);
+      //   setStateImage(state3);
+      //   break;
+      // case 3:
+      //   setBearImage(Bear4);
+      //   setStateImage(state4);
+      //   break;
+      // case 4:
+      //   setBearImage(Bear5);
+      //   setStateImage(state5);
+      //   break;
+      // case 5:
+      //   setBearImage(Bear6);
+      //   setStateImage(state6);
+      //   break;
+      // default:
+      //   setBearImage(Bear1);
+      //   setStateImage(state1); // 기본값으로 Bear1을 사용
+    // }
+  }, []); // stamp 상태가 변경될 때마다 이 useEffect를 실행
 
   return (
     <>

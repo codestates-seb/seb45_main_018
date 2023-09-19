@@ -22,6 +22,7 @@ function LoginPage() {
   const APIURL = useSelector((state: RootState) => state.api.APIURL);
   const clientId = useSelector((state: RootState) => state.login.clientId);
   const [password, setPassword] = useState(''); // 비밀번호 상태와 업데이트 함수를 선언합니다.
+  const [mail, setMail] = useState('');
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -49,7 +50,7 @@ function LoginPage() {
     gapi.load('client:auth2', initGoogleAuth);
   }, []); // 의존성 배열에 clientId와 dispatch를 추가했습니다.
 
-  const email = useSelector((state: RootState) => state.user.email);
+  // const email = useSelector((state: RootState) => state.user.email);
 
   const onSuccess = async (res: any) => {
     const email = res.profileObj.email;
@@ -108,11 +109,11 @@ function LoginPage() {
 
     try {
       const response = await axios.post(`${APIURL}/auth/login`, {
-        email: email,
+        email: mail,
         password: password,
       });
 
-      console.log(email);
+      console.log(mail);
       console.log(password);
 
       if (response.status === 200) {
@@ -166,9 +167,9 @@ function LoginPage() {
                 className="email-input"
                 placeholder="이메일"
                 type="email"
-                value={email} // 이메일 상태 값을 할당합니다.
+                value={mail} // 이메일 상태 값을 할당합니다.
                 onChange={e => {
-                  setEmail(e.target.value);
+                  setMail(e.target.value);
                 }}
               />
               <Input

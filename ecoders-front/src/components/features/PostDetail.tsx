@@ -265,41 +265,45 @@ function CommentModify({
     const commentData = {
       content: comment,
     };
-    //댓글 수정 낙관적 업데이트
-    if (commentList !== undefined) {
-      const modifyCommentList = commentList.map(item => {
-        if (item.commentId === initComment.commentId) {
-          return {
-            ...item,
-            memberId: initComment.memberId,
-            content: comment,
-            username: initComment.username,
-            createdAt: initComment.createdAt,
-            updatedAt: initComment.updatedAt,
-          };
-        }
-        return item;
-      });
-      setCommentList(modifyCommentList);
-    }
-    axios({
-      method: 'patch',
-      url: `${APIURL}/posts/comment/${initComment.commentId}`,
-      data: JSON.stringify(commentData),
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `${USERACCESSTOKEN}`,
-      },
-    })
-      .then(function () {
-        console.log('댓글 수정 성공');
-        setIsCommentModify(0);
-        // window.location.reload();
+    if (comment === '') {
+      alert('댓글 내용을 작성해야합니다.');
+    } else {
+      //댓글 수정 낙관적 업데이트
+      if (commentList !== undefined) {
+        const modifyCommentList = commentList.map(item => {
+          if (item.commentId === initComment.commentId) {
+            return {
+              ...item,
+              memberId: initComment.memberId,
+              content: comment,
+              username: initComment.username,
+              createdAt: initComment.createdAt,
+              updatedAt: initComment.updatedAt,
+            };
+          }
+          return item;
+        });
+        setCommentList(modifyCommentList);
+      }
+      axios({
+        method: 'patch',
+        url: `${APIURL}/posts/comment/${initComment.commentId}`,
+        data: JSON.stringify(commentData),
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `${USERACCESSTOKEN}`,
+        },
       })
-      .catch(error => {
-        console.log(error);
-        console.log('댓글 수정 실패');
-      });
+        .then(function () {
+          console.log('댓글 수정 성공');
+          setIsCommentModify(0);
+          // window.location.reload();
+        })
+        .catch(error => {
+          console.log(error);
+          console.log('댓글 수정 실패');
+        });
+    }
   }
   return (
     <div className="post-comment-add">
@@ -353,59 +357,63 @@ function CommentAdd({
       content: comment,
     };
 
-    if (commentList !== undefined) {
-      let initCommentId;
-      if (commentList.length === 0) {
-        initCommentId = 1;
-      } else {
-        initCommentId = commentList[commentList?.length - 1].commentId + 1;
-      }
-      setCommentList([
-        ...commentList,
-        {
-          memberId: USERID,
-          commentId: initCommentId,
-          content: comment,
-          username: USERNAME,
-          createdAt: `${dateString} ${timeString}`,
-          updatedAt: null,
-        },
-      ]);
-      setComment('');
-    }
-
-    axios({
-      method: 'post',
-      url: `${APIURL}/posts/${postid}/comment`,
-      data: JSON.stringify(commentData),
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `${USERACCESSTOKEN}`,
-      },
-    })
-      .then(response => {
-        console.log('댓글 등록 성공');
-        console.log(response.data.commentId);
-
-        if (commentList !== undefined) {
-          setCommentList([
-            ...commentList,
-            {
-              memberId: USERID,
-              commentId: response.data.commentId,
-              content: comment,
-              username: USERNAME,
-              createdAt: `${dateString} ${timeString}`,
-              updatedAt: null,
-            },
-          ]);
-          setComment('');
+    if (comment === '') {
+      alert('댓글 내용을 작성해야합니다.');
+    } else {
+      if (commentList !== undefined) {
+        let initCommentId;
+        if (commentList.length === 0) {
+          initCommentId = 1;
+        } else {
+          initCommentId = commentList[commentList?.length - 1].commentId + 1;
         }
+        setCommentList([
+          ...commentList,
+          {
+            memberId: USERID,
+            commentId: initCommentId,
+            content: comment,
+            username: USERNAME,
+            createdAt: `${dateString} ${timeString}`,
+            updatedAt: null,
+          },
+        ]);
+        setComment('');
+      }
+
+      axios({
+        method: 'post',
+        url: `${APIURL}/posts/${postid}/comment`,
+        data: JSON.stringify(commentData),
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `${USERACCESSTOKEN}`,
+        },
       })
-      .catch(error => {
-        console.log(error);
-        console.log('댓글 등록 실패');
-      });
+        .then(response => {
+          console.log('댓글 등록 성공');
+          console.log(response.data.commentId);
+
+          if (commentList !== undefined) {
+            setCommentList([
+              ...commentList,
+              {
+                memberId: USERID,
+                commentId: response.data.commentId,
+                content: comment,
+                username: USERNAME,
+                createdAt: `${dateString} ${timeString}`,
+                updatedAt: null,
+              },
+            ]);
+            setComment('');
+          }
+        })
+        .catch(error => {
+          console.log(error);
+          console.log('댓글 등록 실패');
+        });
+    }
   }
   return (
     <div className="post-comment-add">
@@ -596,6 +604,8 @@ const PostDetailHeader = styled.div`
 `;
 
 const PostDetailContent = styled.div`
+  width: 100%;
+  overflow: hidden;
   padding: 20px;
   background-color: #fcfcfc;
   border: 1px solid #a8adaf;

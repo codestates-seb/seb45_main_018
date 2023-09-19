@@ -8,7 +8,6 @@ function StatusModal () {
         <>
             <ModalStyle modaltype="stampStatusModal">
                 <ModalConent>
-                    <div>스탬프 모달입니다.</div>
                     <MonthStamps />
                 </ModalConent>
             </ModalStyle>
@@ -19,6 +18,8 @@ function StatusModal () {
 export default StatusModal;
 
 const ModalStyle = styled(Modal)<{$modaltype? : string}>`
+    width: auto;
+    height: auto;
 `;
 
 const ModalConent = styled.div`

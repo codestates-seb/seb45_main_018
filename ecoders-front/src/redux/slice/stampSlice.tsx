@@ -1,44 +1,46 @@
-import { createSlice } from "@reduxjs/toolkit"
+import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { AppThunk } from "../store/store"
 import axios from "axios"
 
-interface Stamp {
-
+interface Complete {
+    date: string;
+    count: number;
 }
 
-interface StampState {
-    stamp: Stamp[]
-
+interface CompleteState {
+    completes: Complete[]
 }
 
-const initialState: StampState = {
-    stamp: [],
+const initialState: CompleteState = {
+    completes: [],
 }
 
 const stampSlice = createSlice({
-    name: 'stamp',
+    name: 'stamps',
     initialState,
     reducers: {
-
+        setCompletes: (state, action: PayloadAction<Complete[]>) => {
+            state.completes = action.payload;
+        }
     }
 })
 
 export const fetchStampsAsync = (): AppThunk => async (dispatch) => {
     try {
-
-        const response = await axios.get(`apiUrl`, {
+        const response = await axios.get(`apiUrl/today_mission/count`, {
             headers: {
                 Authorization: `${localStorage.getItem('accessToken')}`,
             }
         });
 
         if (response.status === 200) {
-            dispatch;
+            dispatch(setCompletes(response.data));
         }
     } catch (error) {
 
     }
-}
+};
 
-export const { } = stampSlice.actions;
+
+export const { setCompletes } = stampSlice.actions;
 export default stampSlice.reducer;

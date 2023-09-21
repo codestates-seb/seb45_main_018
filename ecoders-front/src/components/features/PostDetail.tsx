@@ -611,6 +611,12 @@ const PostDetailContent = styled.div`
   border: 1px solid #a8adaf;
   border-radius: 15px;
   margin-bottom: 20px;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
 `;
 
 const PostDetailFooter = styled.div`

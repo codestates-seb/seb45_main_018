@@ -64,6 +64,7 @@ const Footer: React.FC = () => {
 
 export default Footer;
 
+
 const Container = styled.div`
   margin-top: 100px;
   display: flex;
@@ -71,6 +72,8 @@ const Container = styled.div`
   align-items: center;
   z-index: 9;
   position: sticky;
+
+
 `;
 
 const Logo = styled.img`
@@ -83,12 +86,12 @@ const FooterContainer = styled.div`
   margin: 0;
   padding: 0;
   max-width: 1920px;
-  height: 420px;
+  height: 450px;
   display: flex;
   flex-direction: column;
   align-items: center;
   background-color: #131313;
-  /* bottom: 0; */
+  bottom: 0;
 
   @media (max-width: 1152px) {
     // 화면 크기가 768px 이하일 때
@@ -181,6 +184,9 @@ const FooterLine = styled.hr`
 const RigthInfo = styled.div`
   color: var(--White, #fdfdfd);
   text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   /* H4 */
   font-family: 'Inter';
   font-size: 16px;

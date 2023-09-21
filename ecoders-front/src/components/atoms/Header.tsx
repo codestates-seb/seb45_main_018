@@ -35,9 +35,9 @@ const Header: React.FC = () => {
               'Refresh-Token': refreshToken,
             },
           });
-
-          console.log(response.data);
-          dispatch(setUsername(response.data.username));
+          if( response.status === 200) {
+            dispatch(setUsername(response.data.username));
+            }
         } catch (error: any) {
           if (error.response?.status === 401) {
             alert('로그인에 실패했습니다.');
@@ -49,7 +49,7 @@ const Header: React.FC = () => {
       };
       fetchData(); // 비동기 함수 실행
     }
-  }, [isLoggedIn]);
+  }, [isLoggedIn, username]);
 
   function deleteCookie(name: string) {
     document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';

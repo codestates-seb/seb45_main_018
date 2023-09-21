@@ -40,18 +40,18 @@ public class MemberService {
         log.info("신규 회원 DB 등록 완료");
         UUID signedUpMemberId = signedUpMember.getId();
 
-        // 인증 코드 발급 및 데이터베이스에 저장
-        String code = VerificationCodeIssuer.issue();
-        VerificationCode verificationCode = VerificationCode.builder()
-            .memberId(signedUpMemberId)
-            .email(email)
-            .code(code)
-            .build();
-        verificationCodeRepository.save(verificationCode);
-        log.info("인증 코드 발급 및 DB 저장 완료");
-
-        // 인증 이메일 전송
-        emailService.sendVerificationMail(email);
+//        // 인증 코드 발급 및 데이터베이스에 저장
+//        String code = VerificationCodeIssuer.issue();
+//        VerificationCode verificationCode = VerificationCode.builder()
+//            .memberId(signedUpMemberId)
+//            .email(email)
+//            .code(code)
+//            .build();
+//        verificationCodeRepository.save(verificationCode);
+//        log.info("인증 코드 발급 및 DB 저장 완료");
+//
+//        // 인증 이메일 전송
+//        emailService.sendVerificationMail(email);
         return signedUpMemberId;
     }
 

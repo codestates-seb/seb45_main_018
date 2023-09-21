@@ -39,6 +39,29 @@ const MyInfo = () => {
     );
   });
 
+  useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const response = await axios.get(`${APIURL}/members/my-info`, {
+            headers: {
+              Authorization: accessToken,
+              'Refresh-Token': refreshToken,
+            },
+          });
+          dispatch(setUsername(response.data.username));
+        } catch (error: any) {
+          if (error.response?.status === 401) {
+            alert('사용자 정보를 가져오지 못하였습니다.'); 
+        }
+      };
+      fetchData(); // 비동기 함수 실행
+    }
+  }, []);
+
+
+
+
+
   const badge = ['북극곰 연인', '가까운 거리 탐험가', '스탬프 수집가'];
   const BadgeComponent = badge.map(a => {
     return (
@@ -330,6 +353,7 @@ const MyInfo = () => {
   };
 
   const handleInputChange = (e: any) => {
+    
     const inputValue = e.target.value;
     const inputByte = getByteLength(inputValue);
 
@@ -339,7 +363,7 @@ const MyInfo = () => {
     }
   };
 
-  const handleInputBlur = async () => {
+  const handleInputBlur = async (e: any) => {
     // 사용자가 input 바깥을 클릭했을 때 변경을 적용할 경우 아래 코드 추가
     await updateUsername();
     setIsEditing(false);
@@ -358,7 +382,7 @@ const MyInfo = () => {
   const updateUsername = async () => {
     // tempUsername이 빈 문자열이면 업데이트를 건너뛴다.
     if (!tempUsername.trim()) {
-      setTempUsername(username); // 현재 username으로 tempUsername을 리셋한다.
+      setUsername(username); // 현재 username으로 tempUsername을 리셋한다.
       return;
     }
 
@@ -426,7 +450,7 @@ const MyInfo = () => {
                     <div style={{ display: 'flex', flexDirection: 'column' }}>
                       <input
                         style={{ fontSize: '16px', fontWeight: '700', textAlign: 'center', padding: 0, margin: 0 }}
-                        value={tempUsername}
+                        value={username}
                         onChange={handleInputChange}
                         onBlur={handleInputBlur} // (옵션) input 바깥을 클릭했을 때 변경 적용
                         onKeyUp={handleInputKeyUp}

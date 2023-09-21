@@ -112,7 +112,7 @@ const Main = () => {
         </>
         ) : (
           <>
-            <StyledImage src={LogoutMain} />;
+            <StyledImage src={LogoutMain} />
           </>
         )}
       </Container>

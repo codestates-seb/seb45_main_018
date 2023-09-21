@@ -1,0 +1,40 @@
+logging:
+  level:
+    org:
+      springframework:
+        jdbc:
+          core: trace
+jwt:
+  secret-key: ${JWT_SECRET_KEY}
+  access-token-expiration-minutes: 30
+  refresh-token-expiration-minutes: 600
+jpa:
+  properties:
+    hibernate:
+      format_sql: true
+      show_sql: true
+spring:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${SMTP_GMAIL_USERNAME}
+    password: ${SMTP_GMAIL_PASSWORD}
+    default-encoding: utf-8
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+cloud:
+  aws:
+    credentials:
+      accessKey: ${AWS_IAM_AccessKey}
+      secretKey: ${AWS_IAM_SecretKey}
+    s3:
+      bucket: polareco-bucket
+      dir: post_Image
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false

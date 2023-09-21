@@ -6,7 +6,8 @@ import axios from 'axios';
 
 export const fetchUsername = (): AppThunk => async (dispatch) => {
   try {
-      const response = await axios.get(`http://ec2-54-180-107-29.ap-northeast-2.compute.amazonaws.com:8080/members/my-info`,
+      const response = await axios.get(
+          `http://ec2-54-180-107-29.ap-northeast-2.compute.amazonaws.com:8080/members/my-info}`,
           {
           headers: {
               Authorization: `${localStorage.getItem('accessToken')}`,
@@ -23,7 +24,7 @@ export const fetchUsername = (): AppThunk => async (dispatch) => {
   } catch (error) {
     console.error("데이터를 불러오는 중 오류 발생:", error);
   }
-};
+}
 
 
 export const userSlice = createSlice({

@@ -509,7 +509,7 @@ function PostDetail({ post }: { post: postData }) {
             <div className="post-date">{post.createdAt}</div>
             <div className="post-view"> 조회수: {post.views}</div>
           </div>
-          {USERID === post.memberId && <HeaderButtons post={post} />}
+          {USERID === post.memberId ? <HeaderButtons post={post} /> : null}
           {/* <HeaderButtons post={post} /> */}
         </div>
       </PostDetailHeader>
@@ -611,7 +611,6 @@ const PostDetailContent = styled.div`
   border: 1px solid #a8adaf;
   border-radius: 15px;
   margin-bottom: 20px;
-
   img {
     width: 100%;
     height: 100%;

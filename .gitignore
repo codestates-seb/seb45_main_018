@@ -1,0 +1,15 @@
+ecoders-backend/.gradle/
+ecoders-backend/build/
+ecoders-backend/src/main/**/build/
+ecoders-backend/src/test/**/build/
+
+### IntelliJ IDEA ###
+.idea
+ecoders-backend/.idea/
+ecoders-backend/*.iws
+ecoders-backend/*.iml
+ecoders-backend/*.ipr
+ecoders-backend/out/
+ecoders-backend/src/main/**/out/
+ecoders-backend/src/test/**/out/
+ecoders-backend/Dockerfile

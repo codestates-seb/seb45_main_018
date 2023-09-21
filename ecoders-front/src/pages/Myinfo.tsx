@@ -256,6 +256,7 @@ const MyInfo = () => {
 
   //이미지 업로드
   const uploadImage = async (file: any) => {
+    
     const formData = new FormData();
     formData.append('imageFile', file);
 

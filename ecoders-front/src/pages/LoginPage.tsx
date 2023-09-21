@@ -119,8 +119,8 @@ function LoginPage() {
       if (response.status === 200) {
         const authHeader = response.headers['authorization'];
         const refreshHeader = response.headers['refresh-token'];
-
-        let accessToken, refreshToken, id;
+        const id = response.headers['member-id'];
+        let accessToken, refreshToken;
 
         // Authorization 헤더 값 할당
         if (authHeader) {

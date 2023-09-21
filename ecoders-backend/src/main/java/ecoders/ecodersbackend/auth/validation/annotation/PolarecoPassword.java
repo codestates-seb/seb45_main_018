@@ -14,7 +14,7 @@ import java.lang.annotation.Target;
 @Constraint(validatedBy = { PolarecoPasswordValidator.class })
 public @interface PolarecoPassword {
 
-    String message() default "Password constraint violation";
+    String message() default "비밀번호는 알파벳, 숫자, 키보드로 입력할 수 있는 특수문자로 구성된 8~20자의 문자열이어야 합니다.";
 
     Class<?>[] groups() default {};
 

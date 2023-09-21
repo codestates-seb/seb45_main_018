@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
 import { useSelector } from 'react-redux';
-import { useDispatch } from 'react-redux';
+import { useAppDispatch } from '../redux/hooks/useAppDispatch';
 import { setUsername, setProfileImg } from '../redux/slice/userSlice';
 import { RootState } from '../redux/store/store';
 import shiningImg from '../assets/shining.png';
@@ -11,10 +11,17 @@ import { FiChevronDown, FiEdit2 } from 'react-icons/fi';
 import { logout } from '../redux/slice/loginSlice';
 import { useNavigate } from 'react-router-dom';
 import { useRef } from 'react';
+import { fetchUsername } from '../redux/slice/userSlice';
 const MyInfo = () => {
+
+  useEffect(()=> {
+    dispatch(fetchUsername());
+  }, [])
+
+
   const APIURL = useSelector((state: RootState) => state.api.APIURL);
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const username = useSelector((state: RootState) => state.user.username); // username 상태 가져오기
   const accessToken = useSelector((state: RootState) => state.user.accessToken);
@@ -38,29 +45,6 @@ const MyInfo = () => {
       </DayHillContainer>
     );
   });
-
-  useEffect(() => {
-      const fetchData = async () => {
-        try {
-          const response = await axios.get(`${APIURL}/members/my-info`, {
-            headers: {
-              Authorization: accessToken,
-              'Refresh-Token': refreshToken,
-            },
-          });
-          dispatch(setUsername(response.data.username));
-        } catch (error: any) {
-          if (error.response?.status === 401) {
-            alert('사용자 정보를 가져오지 못하였습니다.'); 
-        }
-      };
-      fetchData(); // 비동기 함수 실행
-    }
-  }, []);
-
-
-
-
 
   const badge = ['북극곰 연인', '가까운 거리 탐험가', '스탬프 수집가'];
   const BadgeComponent = badge.map(a => {
@@ -320,8 +304,9 @@ const MyInfo = () => {
   };
 
   const [isEditing, setIsEditing] = useState(false); // username을 수정하는 중인지 상태
-  const [tempUsername, setTempUsername] = useState(username); // 임시 username 저장
+  const [tempUsername, setTempUsername] = useState(username) // 임시 username 저장
   const [byte, setByte] = useState(getByteLength(username));
+  console.log(tempUsername)
 
   //20byte 길이 검사하는 함수 - 한글은 3byte, 영문 및 숫자는 1byte
   function getByteLength(str: any) {
@@ -349,11 +334,10 @@ const MyInfo = () => {
   };
 
   const handleEditClick = () => {
-    setIsEditing(true);
+    setIsEditing(true);    
   };
 
   const handleInputChange = (e: any) => {
-    
     const inputValue = e.target.value;
     const inputByte = getByteLength(inputValue);
 
@@ -361,12 +345,15 @@ const MyInfo = () => {
       setTempUsername(inputValue);
       setByte(inputByte);
     }
+    console.log(tempUsername)
+    console.log(username)
   };
 
-  const handleInputBlur = async (e: any) => {
+  const handleInputBlur = async () => {
     // 사용자가 input 바깥을 클릭했을 때 변경을 적용할 경우 아래 코드 추가
     await updateUsername();
     setIsEditing(false);
+    // setTempUsername(tempUsername);
     setUsername(tempUsername);
   };
 
@@ -374,6 +361,7 @@ const MyInfo = () => {
     if (e.key === 'Enter') {
       await updateUsername();
       setIsEditing(false);
+      // setTempUsername(tempUsername);
       setUsername(tempUsername);
     }
   };
@@ -382,7 +370,7 @@ const MyInfo = () => {
   const updateUsername = async () => {
     // tempUsername이 빈 문자열이면 업데이트를 건너뛴다.
     if (!tempUsername.trim()) {
-      setUsername(username); // 현재 username으로 tempUsername을 리셋한다.
+      setTempUsername(username); // 현재 username으로 tempUsername을 리셋한다.
       return;
     }
 
@@ -391,13 +379,13 @@ const MyInfo = () => {
 
     // 서버 업데이트
     try {
-      const response = await axios.patch(`${APIURL}/members/username`, {
+      const response = await axios.patch(`${APIURL}/members/username`, tempUsername, {
         headers: {
           Authorization: accessToken,
           'Refresh-Token': refreshToken,
         },
         params: {
-          username: username, // 쿼리 파라미터로 username 추가
+          username: tempUsername, // 쿼리 파라미터로 username 추가
         },
       });
 
@@ -405,8 +393,10 @@ const MyInfo = () => {
 
       if (response.status === 200) {
         console.log(response.data);
-        dispatch(setUsername(response.data['username']));
-      }
+        dispatch(setUsername(tempUsername));
+        // dispatch(setUsername(response.data['username']));
+
+     }
     } catch (error) {
       console.log(error);
     }
@@ -450,7 +440,7 @@ const MyInfo = () => {
                     <div style={{ display: 'flex', flexDirection: 'column' }}>
                       <input
                         style={{ fontSize: '16px', fontWeight: '700', textAlign: 'center', padding: 0, margin: 0 }}
-                        value={username}
+                        value={tempUsername}
                         onChange={handleInputChange}
                         onBlur={handleInputBlur} // (옵션) input 바깥을 클릭했을 때 변경 적용
                         onKeyUp={handleInputKeyUp}

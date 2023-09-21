@@ -14,6 +14,8 @@ public class PolarecoPasswordValidator implements ConstraintValidator<PolarecoPa
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        return value != null && value.matches("^(?=.*[a-zA-Z])(?=.*\\d)(?=.*\\W).{8,20}$");
+        String passwordRegex = "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[`~!@#$%^&*()\\-_=+;:'\"{}\\[\\]\\\\|,.<>/?])"
+                               + "[a-zA-Z\\d`~!@#$%^&*()\\-_=+;:'\"{}\\[\\]\\\\|,.<>/?]{8,20}$";
+        return value != null && value.matches(passwordRegex);
     }
 }

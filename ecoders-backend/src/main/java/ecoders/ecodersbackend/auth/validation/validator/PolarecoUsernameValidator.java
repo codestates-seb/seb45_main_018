@@ -14,8 +14,7 @@ public class PolarecoUsernameValidator implements ConstraintValidator<PolarecoUs
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        return value != null
-               && !value.isBlank()
-               && value.length() <= 20;
+        String usernameRegex = "^[ㄱ-ㅎㅏ-ㅣ가-힣a-zA-Z\\d]{4,20}$";
+        return value != null && value.matches(usernameRegex);
     }
 }

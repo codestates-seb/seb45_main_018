@@ -8,6 +8,7 @@ import ecoders.ecodersbackend.domain.member.service.MemberService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -19,6 +20,7 @@ import static ecoders.ecodersbackend.auth.jwt.JwtProvider.HEADER_AUTHORIZATION;
 @AllArgsConstructor
 @RequestMapping("/members")
 @RestController
+@Validated
 public class MemberController {
 
     private final MemberService memberService;
@@ -48,7 +50,7 @@ public class MemberController {
     }
 
     @PatchMapping("/username")
-    public ResponseEntity<MemberDto.Response> updateMyInfo(
+    public ResponseEntity<MemberDto.Response> updateUsername(
         @RequestHeader(HEADER_AUTHORIZATION) String accessToken,
         @RequestParam("username") @PolarecoUsername String newUsername
     ) {

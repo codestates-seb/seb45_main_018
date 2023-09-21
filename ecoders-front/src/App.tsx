@@ -16,7 +16,7 @@ import Signup from './pages/Signup';
 import { useDispatch } from 'react-redux';
 import { useEffect } from 'react';
 import { login, logout } from './redux/slice/loginSlice';
-import { setAccessToken, setRefreshToken, setId, setProfileImg, setTempUsername } from './redux/slice/userSlice';
+import { setAccessToken, setRefreshToken, setId, setProfileImg } from './redux/slice/userSlice';
 import PageWrapper from './PageWrapper';
 import { useSelector } from 'react-redux';
 import { setUsername, setEmail } from './redux/slice/userSlice';
@@ -43,7 +43,7 @@ function App() {
         })
         .then(res => {
           dispatch(setUsername(res.data.username));
-          dispatch(setTempUsername(res.data.username));
+          // dispatch(setTempUsername(res.data.username));
           dispatch(setEmail(res.data.email));
           dispatch(setProfileImg(res.data.imageUrl));
           dispatch(setId(res.data.id));

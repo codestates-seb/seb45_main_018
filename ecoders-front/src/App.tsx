@@ -22,6 +22,7 @@ import { useSelector } from 'react-redux';
 import { setUsername, setEmail } from './redux/slice/userSlice';
 import { RootState } from './redux/store/store';
 import axios from 'axios';
+import styled from 'styled-components';
 
 function App() {
   const dispatch = useDispatch();
@@ -79,6 +80,7 @@ function App() {
     <>
       <BrowserRouter>
         <Header />
+        <Wrapper>
         <PageWrapper>
           <Routes>
             <Route path="/" element={<Main />} />
@@ -95,6 +97,7 @@ function App() {
             {/* <Route element={NotFound} /> */}
           </Routes>
         </PageWrapper>
+        </Wrapper>
         <Footer />
       </BrowserRouter>
     </>
@@ -102,3 +105,8 @@ function App() {
 }
 
 export default App;
+
+
+const Wrapper = styled.div`
+ height: 100%;
+ `

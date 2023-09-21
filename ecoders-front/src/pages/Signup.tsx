@@ -145,12 +145,21 @@ function Signup () {
         }
 
         // 닉네임이 형식에 맞지 않을 때
-        if (formData.username.length > 20) {
-            newErrors.username = '닉네임은 20자 이하로 설정하세요.';
+        const usernameRegex = /^(?!.*\s)(?=.*[a-z0-9가-힣])[a-z0-9가-힣]{4,20}$/;
+        if (formData.username) {
+            newErrors.username = !formData.username
+                ? '닉네임을 입력하세요.'
+                : !usernameRegex.test(formData.username)
+                ? '닉네임 형식이 맞지 않습니다.'
+                : formData.username.length < 4
+                ? '닉네임은 4자 이상이어야 합니다.'
+                : formData.username.length > 20
+                ? '닉네임은 20자 이하로 설정하세요.'
+                : undefined;
         }
 
         // 비밀번호가 형식에 맞지 않을 때
-        const passwordRegex = /^(?![0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*()_+])[A-Za-z0-9!@#$%^&*()_+]{8,}$/;
+        const passwordRegex = /^(?![0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*()_+`])[A-Za-z0-9!@#$%^&*()_+`]{8,20}$/;
 
         if (formData.password) {
             newErrors.password = !passwordRegex.test(formData.password)
@@ -253,7 +262,7 @@ function Signup () {
                                 value={formData.password}
                                 onChange={changeHandler}
                                 />
-                                {errors.password && <ErrorText>{errors.password}</ErrorText>}
+                                {errors.password ? (<ErrorText>{errors.password}</ErrorText>) : (<Info>비밀번호는 영문/숫자/특수문자를 반드시 포함한 8자 이상이어야 합니다.</Info>)}
                             <Input
                                 className="password-check-input"
                                 placeholder="비밀번호 확인"
@@ -271,13 +280,13 @@ function Signup () {
                                 value={formData.username}
                                 onChange={changeHandler}
                                 />
-                                {errors.username && <ErrorText>{errors.username}</ErrorText>}
+                                {errors.username ? (<ErrorText>{errors.username}</ErrorText>) : (<Info>닉네임은 한글/영문/숫자 포함 4자 이상 20자 이하여야 합니다.</Info>)}
                             <ButtonWrapper>
                                 <SubmitButton
                                     className="sign-up-submit">Sign up</SubmitButton>
                                     <SignUpModal modaltype="sendingMailModal">
                                         <div className="modal-cont-wrapper">
-                                            <p className="modal-content">회원가입 인증 메일이 전송되었습니다. 메일함을 확인해주세요.</p>
+                                            <p className="modal-content">회원가입에 성공하였습니다.</p>
                                             <div>
                                                 <SubmitButton
                                                 className="link-to-login"
@@ -331,6 +340,24 @@ const SignupContainer = styled.div`
     background-color: #fff;
     width: 32rem;
     padding: 5rem;
+
+    @media (max-width: 1152px) {
+    // 화면 크기가 1152px 이하일 때
+        width: 32rem;
+        padding: 5rem;
+    }
+
+    @media (max-width: 768px) {
+        // 화면 크기가 768px 이하일 때
+        width: 32rem;
+        padding: 5rem;
+    }
+
+    @media (max-width: 480px) {
+        // 화면 크기가 480px 이하일 때
+        width: 24rem;
+        padding: 3rem;
+    }
 `;
 
 const EleWrapper = styled.div`
@@ -348,6 +375,21 @@ const EleWrapper = styled.div`
 
 const Logo = styled.img`
     width: 115px;
+
+    @media (max-width: 1152px) {
+    // 화면 크기가 1152px 이하일 때
+        width: 115px;
+    }
+
+    @media (max-width: 768px) {
+        // 화면 크기가 768px 이하일 때
+        width: 115px;
+    }
+
+    @media (max-width: 480px) {
+        // 화면 크기가 480px 이하일 때
+        width: 78px;
+    }
 `;
 
 const Title = styled.div`
@@ -510,4 +552,10 @@ const GoogleLogo = styled.img`
   width: 20px;
   height: auto;
   margin: 5px;
+`;
+
+const Info = styled.p`
+    font-size: 12px;
+    color:#D4D4D4;
+    padding-left: 5px;
 `;

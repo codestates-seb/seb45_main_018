@@ -327,7 +327,7 @@ const Container = styled.section`
     justify-content: center;
     align-items: center;
     width: auto;
-    height: 100vh;
+    height: 100%;
 `;
 
 const SignupContainer = styled.div`

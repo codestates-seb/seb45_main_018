@@ -3,26 +3,25 @@
 ## 🐻‍❄️북극곰 살리기 프로젝트(탄소 중립 실천 습관 형성)
 
 CodeStates 45기 Main-Project 018
-- [배포 주소] 
-- [배포 주소] 
+- [POLARECO](http://polareco-bucket.s3-website.ap-northeast-2.amazonaws.com/)
 - 프로젝트 기간: 2023.08.24 ~ 2023.09.22
 
 <br>
 
 ## 📌 팀소개
-|이민수|양연주|백아름|조은별|양진호|강석완|
+|조은별|이민수|백아름|양연주|양진호|강석완|
 |:--:|:--:|:--:|:--:|:--:|:--:|
-|FE(부팀장)|FE|FE|BE(팀장)|BE|BE|
+|<img src="https://media.discordapp.net/attachments/1144091288887623704/1153734704068034560/u1f3a7_u1f30d.png" width="80" height="80" />|<img src="https://media.discordapp.net/attachments/1144091288887623704/1153734530474180658/image.png" width="80" height="80" />|<img src="https://media.discordapp.net/attachments/1144091288887623704/1153734621238923325/u1f431_u1f30d.png" width="80" height="80" />|<img src="https://media.discordapp.net/attachments/1144091288887623704/1153733452814897152/image.png" width="80" height="80" />|<img src="https://media.discordapp.net/attachments/1144091288887623704/1153734899816222751/image.png" width="80" height="80" />|<img src="https://media.discordapp.net/attachments/1144091288887623704/1153735398166642838/u1f92b_u1f30d.png" width="80" height="80" />|
+|BE(팀장)|FE(부팀장)|FE|FE|BE|BE|
 
 <br>
 
 ## 📝 주요 문서 
-- [SEB 45 Main-Project]
-- [사용자 요구사항 정의서]
-- [화면정의서]
-- [API명세서]
-- [테이블명세서]
-- [ERD]
+- [SEB 45 Main-Project](https://www.notion.so/codestates/e9dd3bc6e7e244ff926f4f6bf313ffe8)
+- [사용자 요구사항 정의서](https://www.notion.so/codestates/9511a61f711e4a99beff57e7c4eb69da)
+- [화면정의서](https://www.figma.com/file/GgbrNQqrLhwz3YBGB3rW3l/Wire-frame?type=design&node-id=69%3A272&mode=design&t=o7mOHVuGqm6siqMC-1)
+- [API명세서](https://documenter.getpostman.com/view/27564235/2s9YC7SXEd)
+- [ERD](https://drawsql.app/teams/ecoders-1/diagrams/polareco)
 
 <br>
 

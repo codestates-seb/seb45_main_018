@@ -26,6 +26,7 @@ function SettingModal () {
     const optionSubmitHandler = async () => {
         try {
             dispatch(setOption(selectedOption)); // 5?
+            localStorage.setItem('option', selectedOption.toString());
         } catch (error) {
             console.error("옵션 설정 중 에러가 발생했습니다.", error);
         }
@@ -33,8 +34,8 @@ function SettingModal () {
     };
 
     useEffect(() => {
-        setOption(selectedOption);
-    }, [setOption])
+        setSelectedOption(option);
+    }, [option])
 
     return (
         <>

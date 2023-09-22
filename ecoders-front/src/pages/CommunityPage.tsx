@@ -1,4 +1,5 @@
 import Board from '../components/features/Board';
+import styled from 'styled-components';
 
 export interface card {
   postId: number;
@@ -12,6 +13,16 @@ export interface card {
 }
 
 function CommunityPage() {
-  return <Board />;
+  return (
+    <>
+    <DivContainer>
+      <Board />
+    </DivContainer>
+    </>
+  );
 }
 export default CommunityPage;
+
+const DivContainer = styled.div`
+  height:100vh;
+`;

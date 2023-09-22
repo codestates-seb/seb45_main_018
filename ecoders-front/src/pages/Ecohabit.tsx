@@ -125,7 +125,7 @@ export default Ecohabit;
 
 const Container = styled.section`
     width: 100%;
-    height: 100vh;
+    height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -136,12 +136,11 @@ const ContentsContiner = styled.div`
     border-left: 1px solid black;
     border-right: 1px solid black;
     width: 60rem;
-    height: 100vh;
+    height: 100%;
     padding: 46px 24px;
     display: flex;
     flex-direction: column;
     gap: 5rem;
-
 `;
 
 const StampContainer = styled.div`

@@ -16,18 +16,20 @@ import Signup from './pages/Signup';
 import { useDispatch } from 'react-redux';
 import { useEffect } from 'react';
 import { login, logout } from './redux/slice/loginSlice';
-import { setAccessToken, setRefreshToken, setId, setProfileImg, setTempUsername } from './redux/slice/userSlice';
+import { setAccessToken, setRefreshToken, setId, setProfileImg } from './redux/slice/userSlice';
 import PageWrapper from './PageWrapper';
 import { useSelector } from 'react-redux';
 import { setUsername, setEmail } from './redux/slice/userSlice';
 import { RootState } from './redux/store/store';
 import axios from 'axios';
+import styled from 'styled-components';
 
 function App() {
   const dispatch = useDispatch();
 
   const APIURL = useSelector((state: RootState) => state.api.APIURL);
   const email = useSelector((state: RootState) => state.user.email);
+  const profileImg = useSelector((state:RootState) => state.user.profileImg)
 
   useEffect(() => {
     const accessToken = localStorage.getItem('accessToken');
@@ -43,11 +45,12 @@ function App() {
         })
         .then(res => {
           dispatch(setUsername(res.data.username));
-          dispatch(setTempUsername(res.data.username));
+          // dispatch(setTempUsername(res.data.username));
           dispatch(setEmail(res.data.email));
-          dispatch(setProfileImg(res.data.imageUrl));
+          dispatch(setProfileImg(res.data.imageUrl ? res.data.imageUrl : profileImg));
           dispatch(setId(res.data.id));
           console.log('유저 정보를 성공적으로 불러왔습니다.');
+          console.log(res)
         })
         .catch(error => {
           console.log(error, '데이터를 불러오는데 실패했습니다.');
@@ -77,6 +80,7 @@ function App() {
     <>
       <BrowserRouter>
         <Header />
+        <Wrapper>
         <PageWrapper>
           <Routes>
             <Route path="/" element={<Main />} />
@@ -93,6 +97,7 @@ function App() {
             {/* <Route element={NotFound} /> */}
           </Routes>
         </PageWrapper>
+        </Wrapper>
         <Footer />
       </BrowserRouter>
     </>
@@ -100,3 +105,8 @@ function App() {
 }
 
 export default App;
+
+
+const Wrapper = styled.div`
+ height: 100%;
+ `

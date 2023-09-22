@@ -3,7 +3,7 @@ import { AppThunk } from "../store/store";
 import axios from "axios";
 
 interface TodayMission {
-    id: number;
+    today_mission_id: number;
     text: string;
     completed: boolean;
 }
@@ -21,14 +21,14 @@ const todayMissionSlice = createSlice( {
     initialState,
     reducers: {
         toggleTodayMission: (state, action: PayloadAction<number>) => {
-            const mission = state.todaymissions.find((mission) => mission.id === action.payload);
+            const mission = state.todaymissions.find((mission) => mission.today_mission_id === action.payload);
             if (mission) {
                 mission.completed = !mission.completed;
             }
         },
         setTodayMissions: (state, action: PayloadAction<TodayMission[]>) => {
             state.todaymissions = action.payload;
-        }
+        },
     },
 })
 
@@ -36,24 +36,68 @@ const todayMissionSlice = createSlice( {
 export const fetchTodayMissionsAsync = (): AppThunk => async (dispatch, getState) => {
     try {
 
-        const state = getState();
-        const option = state.option.option;
+        const option = localStorage.getItem('option');
+
+        if (option === null) {
+            const state = getState();
+            const option = state.option.option;
+
+            const response = await axios.get(
+                `http://ec2-54-180-107-29.ap-northeast-2.compute.amazonaws.com:8080/mission/today_mission?size=${option}`,
+                {
+                headers: {
+                    Authorization: `${localStorage.getItem('accessToken')}`,
+                    'Refresh-Token': `${localStorage.getItem('refreshToken')}`,
+                },
+                }
+            );
+
+            if (response.status === 200) {
+                dispatch(setTodayMissions(response.data));
+              } else {
+                console.error("데이터를 불러오는 중 오류 발생:", response);
+              }
+        } else {
+
+            const option = localStorage.getItem('option');
+
+            const response = await axios.get(
+                `http://ec2-54-180-107-29.ap-northeast-2.compute.amazonaws.com:8080/mission/today_mission?size=${option}`,
+                {
+                headers: {
+                    Authorization: `${localStorage.getItem('accessToken')}`,
+                    'Refresh-Token': `${localStorage.getItem('refreshToken')}`,
+                },
+                }
+            );
+
+          if (response.status === 200) {
+            dispatch(setTodayMissions(response.data));
+          } else {
+            console.error("데이터를 불러오는 중 오류 발생:", response);
+          }
+        }
+
+        // const state = getState();
+        // const option = state.option.option;
 
 
-        const response = await axios.get(
-            `http://ec2-54-180-107-29.ap-northeast-2.compute.amazonaws.com:8080/mission/today_mission?size=${option}`,
-            {
-            headers: {
-                Authorization: `${localStorage.getItem('accessToken')}`,
-            },
-            }
-        );
 
-      if (response.status === 200) {
-        dispatch(setTodayMissions(response.data));
-      } else {
-        console.error("데이터를 불러오는 중 오류 발생:", response);
-      }
+    //     const response = await axios.get(
+    //         `http://ec2-54-180-124-160.ap-northeast-2.compute.amazonaws.com:8080/mission/today_mission?size=${option}`,
+    //         {
+    //         headers: {
+    //             Authorization: `${localStorage.getItem('accessToken')}`,
+    //             'Refresh-Token': `${localStorage.getItem('refreshToken')}`,
+    //         },
+    //         }
+    //     );
+
+    //   if (response.status === 200) {
+    //     dispatch(setTodayMissions(response.data));
+    //   } else {
+    //     console.error("데이터를 불러오는 중 오류 발생:", response);
+    //   }
     } catch (error) {
       console.error("데이터를 불러오는 중 오류 발생:", error);
     }

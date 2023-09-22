@@ -46,6 +46,7 @@ function Ecohabit () {
               {
                 headers: {
                   Authorization: `${localStorage.getItem('accessToken')}`,
+                  'Refresh-Token': `${localStorage.getItem('refreshToken')}`,
                 },
               }
             );

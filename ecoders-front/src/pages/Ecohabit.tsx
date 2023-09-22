@@ -51,7 +51,6 @@ function Ecohabit () {
               }
             );
             if (response.status === 204) {
-              console.log("모든 나만의 미션을 삭제했습니다.");
                 // redux에서 모든 미션 삭제
                 dispatch(setMyMissions([]));
             } else {

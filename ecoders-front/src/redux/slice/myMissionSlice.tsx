@@ -82,7 +82,6 @@ export const updatedMissionText = (my_mission_id: number, text: string): AppThun
 
         if (response.status === 200) {
             // 서버요청 성공 -> redux 상태 업데이트
-            console.log(`미션 ${my_mission_id}를 업데이트했습니다.`);
             dispatch(updateMissionTextInState(my_mission_id, text));
         } else {
             console.error(`미션 ${my_mission_id}를 업데이트하는 중 오류가 발생했습니다.`);
@@ -115,7 +114,6 @@ export const fetchMyMissionsAsync = (): AppThunk => async (dispatch) => {
 
       if (response.status === 200) {
         dispatch(setMyMissions(response.data));
-        console.log(response.data) // 받아온 데이터로 슬라이스 상태를 업데이트합니다.
       } else {
         console.error("데이터를 불러오는 중 오류 발생:", response);
       }

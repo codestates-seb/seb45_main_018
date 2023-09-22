@@ -43,7 +43,6 @@ function TodaysMissionList () {
                 );
 
                 if (response.status === 200) {
-                    console.log(`미션 ${today_mission_id}를 업데이트했습니다.`);
                     dispatch(toggleTodayMission(today_mission_id));
                 } else {
                     console.error(`미션 ${today_mission_id} 업데이트 오류가 발생했습니다.`);

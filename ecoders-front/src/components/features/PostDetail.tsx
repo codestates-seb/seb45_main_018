@@ -23,6 +23,7 @@ type ApiState = {
 type UserState = {
   user: {
     accessToken: string | null;
+    refreshToken: string | null;
     username: string;
     id: string;
     // id: number;
@@ -32,6 +33,7 @@ type UserState = {
 
 const HeaderButtons = ({ post }: { post: postData }) => {
   const USERACCESSTOKEN = useSelector((state: UserState) => state.user.accessToken);
+  const USERREFRESHTOKEN = useSelector((state: UserState) => state.user.refreshToken);
 
   const APIURL = useSelector((state: ApiState) => state.api.APIURL);
   const dispatch = useDispatch();
@@ -48,6 +50,7 @@ const HeaderButtons = ({ post }: { post: postData }) => {
       .delete(`${APIURL}/posts/${post.postId}`, {
         headers: {
           Authorization: `${USERACCESSTOKEN}`,
+          'Refresh-Token': `${USERREFRESHTOKEN}`,
         },
       })
       .then(function () {
@@ -55,7 +58,7 @@ const HeaderButtons = ({ post }: { post: postData }) => {
         navigate(`/community`);
       })
       .catch(function (error) {
-        console.log('게시물 삭제 실패');
+        //console.log('게시물 삭제 실패');
         console.log(error);
       });
   }
@@ -104,6 +107,7 @@ const CommentButtons = ({
   setIsCommentModify: React.Dispatch<React.SetStateAction<number>>;
 }) => {
   const USERACCESSTOKEN = useSelector((state: UserState) => state.user.accessToken);
+  const USERREFRESHTOKEN = useSelector((state: UserState) => state.user.refreshToken);
   const APIURL = useSelector((state: ApiState) => state.api.APIURL);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
@@ -115,9 +119,9 @@ const CommentButtons = ({
   function commentDeleteHandler() {
     // // 댓글 삭제 낙관적 업데이트
     setIsDeleteModalOpen(false);
-    console.log(comment);
+    //console.log(comment);
     if (commentList !== undefined) {
-      console.log(commentList);
+      //console.log(commentList);
       const deletedCommentList = commentList.filter(item => {
         return item.commentId !== comment.commentId;
       });
@@ -128,13 +132,14 @@ const CommentButtons = ({
       .delete(`${APIURL}/posts/comment/${comment.commentId}`, {
         headers: {
           Authorization: `${USERACCESSTOKEN}`,
+          'Refresh-Token': `${USERREFRESHTOKEN}`,
         },
       })
       .then(function (response) {
-        console.log(response);
+        console.log(response.status);
       })
       .catch(function (error) {
-        console.log('댓글 삭제 실패');
+        //console.log('댓글 삭제 실패');
         console.log(error);
       });
   }
@@ -194,7 +199,7 @@ function CommentDetail({
   commentList: Array<comment>;
   setCommentList: React.Dispatch<React.SetStateAction<Array<comment> | undefined>>;
 }) {
-  console.log(commentList);
+  //console.log(commentList);
   const USERID = useSelector((state: UserState) => state.user.id);
   const [isCommentModify, setIsCommentModify] = useState(0);
 
@@ -253,6 +258,7 @@ function CommentModify({
   setCommentList: React.Dispatch<React.SetStateAction<Array<comment> | undefined>>;
 }) {
   const USERACCESSTOKEN = useSelector((state: UserState) => state.user.accessToken);
+  const USERREFRESHTOKEN = useSelector((state: UserState) => state.user.refreshToken);
   const APIURL = useSelector((state: ApiState) => state.api.APIURL);
   const [comment, setComment] = useState(initComment.content);
 
@@ -261,7 +267,7 @@ function CommentModify({
   }
   // 댓글 수정 버튼 클릭 함수
   function submitCommentHandler() {
-    console.log(comment);
+    //console.log(comment);
     const commentData = {
       content: comment,
     };
@@ -292,16 +298,17 @@ function CommentModify({
         headers: {
           'Content-Type': 'application/json',
           Authorization: `${USERACCESSTOKEN}`,
+          'Refresh-Token': `${USERREFRESHTOKEN}`,
         },
       })
         .then(function () {
-          console.log('댓글 수정 성공');
+          //console.log('댓글 수정 성공');
           setIsCommentModify(0);
           // window.location.reload();
         })
         .catch(error => {
           console.log(error);
-          console.log('댓글 수정 실패');
+          //console.log('댓글 수정 실패');
         });
     }
   }
@@ -332,6 +339,7 @@ function CommentAdd({
   postid: number | undefined;
 }) {
   const USERACCESSTOKEN = useSelector((state: UserState) => state.user.accessToken);
+  const USERREFRESHTOKEN = useSelector((state: UserState) => state.user.refreshToken);
   const USERID = useSelector((state: UserState) => state.user.id);
   const USERNAME = useSelector((state: UserState) => state.user.username);
   const APIURL = useSelector((state: ApiState) => state.api.APIURL);
@@ -388,10 +396,11 @@ function CommentAdd({
         headers: {
           'Content-Type': 'application/json',
           Authorization: `${USERACCESSTOKEN}`,
+          'Refresh-Token': `${USERREFRESHTOKEN}`,
         },
       })
         .then(response => {
-          console.log('댓글 등록 성공');
+          //console.log('댓글 등록 성공');
           console.log(response.data.commentId);
 
           if (commentList !== undefined) {
@@ -411,7 +420,7 @@ function CommentAdd({
         })
         .catch(error => {
           console.log(error);
-          console.log('댓글 등록 실패');
+          //console.log('댓글 등록 실패');
         });
     }
   }
@@ -436,6 +445,7 @@ function PostDetail({ post }: { post: postData }) {
   // const USERID = localStorage.getItem("id");
   const USERID = useSelector((state: UserState) => state.user.id);
   const USERACCESSTOKEN = useSelector((state: UserState) => state.user.accessToken);
+  const USERREFRESHTOKEN = useSelector((state: UserState) => state.user.refreshToken);
   const APIURL = useSelector((state: ApiState) => state.api.APIURL);
   const [isLiked, setIsLiked] = useState<boolean>(false);
   const [likeList, setLikeList] = useState<Array<string> | undefined>(post.likedByUserIds);
@@ -488,10 +498,11 @@ function PostDetail({ post }: { post: postData }) {
         url: `${APIURL}/posts/${post.postId}/likes`,
         headers: {
           Authorization: `${USERACCESSTOKEN}`,
+          'Refresh-Token': `${USERREFRESHTOKEN}`,
         },
       })
         .then(() => {
-          console.log('좋아요 성공');
+          ////console.log('좋아요 성공');
         })
         .catch(error => {
           console.log(error);

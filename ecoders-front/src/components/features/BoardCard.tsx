@@ -7,6 +7,7 @@ import { card } from '../../pages/CommunityPage';
 type UserState = {
   user: {
     accessToken: string | null;
+    refreshToken: string | null;
     username: string;
     id: string;
     // id: number;
@@ -22,7 +23,7 @@ function BoardCard({ data }: { data: Array<card> }) {
     //detaial페이지로 이동
     navigate(`/community/postdetail/${index}`);
   }
-  console.log(data);
+  //console.log(data);
   return (
     <div className="board-card-container">
       {data.map((item, index) => {

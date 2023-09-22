@@ -24,8 +24,10 @@ type ApiState = {
 type UserState = {
   user: {
     accessToken: string | null;
+    refreshToken: string | null;
     username: string;
     id: string;
+    // id: number;
     stamp: number;
   };
 };
@@ -94,6 +96,7 @@ function PostWriteBody({ bodyData }: { bodyData: bodyProps }) {
   // 이미지 업로드 서버로 보내는 로직
   const APIURL = useSelector((state: ApiState) => state.api.APIURL);
   const USERACCESSTOKEN = useSelector((state: UserState) => state.user.accessToken);
+  const USERREFRESHTOKEN = useSelector((state: UserState) => state.user.refreshToken);
 
   type HookCallback = (url: string, text?: string) => void;
   const uploadImageHandler = async (blob: Blob | File, callback: HookCallback) => {
@@ -107,11 +110,12 @@ function PostWriteBody({ bodyData }: { bodyData: bodyProps }) {
       headers: {
         'Content-Type': 'multipart/form-data',
         Authorization: `${USERACCESSTOKEN}`,
+        'Refresh-Token': `${USERREFRESHTOKEN}`,
       },
     })
       .then(response => {
-        console.log('axios 이미지 업로드 성공');
-        console.log(response.data);
+        //console.log('axios 이미지 업로드 성공');
+        //console.log(response.data);
         const imageUrl = `${response.data}`;
         callback(imageUrl, 'img');
       })
@@ -130,7 +134,7 @@ function PostWriteBody({ bodyData }: { bodyData: bodyProps }) {
     // const content = markdownData.getMarkdown();
 
     // content 설정
-    console.log(data);
+    //console.log(data);
     bodyData.setContent(data);
 
     // thumbnailUrl설정
@@ -202,6 +206,7 @@ function PostWriteBody({ bodyData }: { bodyData: bodyProps }) {
 function PostWrite({ post }: { post: postData }) {
   const navigate = useNavigate();
   const USERACCESSTOKEN = useSelector((state: UserState) => state.user.accessToken);
+  const USERREFRESHTOKEN = useSelector((state: UserState) => state.user.refreshToken);
   const APIURL = useSelector((state: ApiState) => state.api.APIURL);
 
   const [title, setTitle] = useState<string | undefined>('');
@@ -263,17 +268,18 @@ function PostWrite({ post }: { post: postData }) {
             headers: {
               'Content-Type': 'application/json',
               Authorization: `${USERACCESSTOKEN}`,
+              'Refresh-Token': `${USERREFRESHTOKEN}`,
             },
           })
             .then(response => {
-              console.log('게시물 수정 성공');
+              //console.log('게시물 수정 성공');
               if (response.status === 200) {
                 navigate(`/community/postdetail/${post.postId}`);
               }
             })
             .catch(error => {
               console.log(error);
-              console.log('게시물 수정 실패');
+              //console.log('게시물 수정 실패');
             });
         } else {
           alert('게시글 제목, 내용을 작성해야합니다.');
@@ -290,17 +296,18 @@ function PostWrite({ post }: { post: postData }) {
             headers: {
               'Content-Type': 'application/json',
               Authorization: `${USERACCESSTOKEN}`,
+              'Refresh-Token': `${USERREFRESHTOKEN}`,
             },
           })
             .then(response => {
-              console.log('게시물 등록 성공');
+              //console.log('게시물 등록 성공');
               if (response.status === 200) {
                 navigate(`/community`);
               }
             })
             .catch(error => {
               console.log(error);
-              console.log('게시물 등록 실패');
+              //console.log('게시물 등록 실패');
             });
         } else {
           alert('게시글 제목, 내용을 작성해야합니다.');

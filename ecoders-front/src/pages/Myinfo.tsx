@@ -11,26 +11,19 @@ import { FiChevronDown, FiEdit2 } from 'react-icons/fi';
 import { logout } from '../redux/slice/loginSlice';
 import { useNavigate } from 'react-router-dom';
 import { useRef } from 'react';
-import { fetchUsername } from '../redux/slice/userSlice';
 const MyInfo = () => {
-
-  useEffect(()=> {
-    dispatch(fetchUsername());
-  }, [])
-
-
-  const APIURL = useSelector((state: RootState) => state.api.APIURL);
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+
+  const APIURL = useSelector((state: RootState) => state.api.APIURL);
   const username = useSelector((state: RootState) => state.user.username); // username 상태 가져오기
   const accessToken = useSelector((state: RootState) => state.user.accessToken);
   const refreshToken = useSelector((state: RootState) => state.user.refreshToken);
   const email = useSelector((state: RootState) => state.user.email);
-
   const profileImg = useSelector((state: RootState) => state.user.profileImg);
+  
   const [isModalOpen, setModalOpen] = useState(false);
-
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
 
@@ -263,6 +256,7 @@ const MyInfo = () => {
 
   //이미지 업로드
   const uploadImage = async (file: any) => {
+    
     const formData = new FormData();
     formData.append('imageFile', file);
 
@@ -304,9 +298,13 @@ const MyInfo = () => {
   };
 
   const [isEditing, setIsEditing] = useState(false); // username을 수정하는 중인지 상태
-  const [tempUsername, setTempUsername] = useState(username) // 임시 username 저장
   const [byte, setByte] = useState(getByteLength(username));
-  console.log(tempUsername)
+  const [tempUsername, setTempUsername] = useState(username) // 임시 username 저장
+
+  useEffect(() => {
+    setTempUsername(username);
+    setByte(getByteLength(username))
+  }, [username]);
 
   //20byte 길이 검사하는 함수 - 한글은 3byte, 영문 및 숫자는 1byte
   function getByteLength(str: any) {
@@ -390,12 +388,11 @@ const MyInfo = () => {
       });
 
       console.log(username);
+      console.log(tempUsername)
 
       if (response.status === 200) {
         console.log(response.data);
         dispatch(setUsername(tempUsername));
-        // dispatch(setUsername(response.data['username']));
-
      }
     } catch (error) {
       console.log(error);

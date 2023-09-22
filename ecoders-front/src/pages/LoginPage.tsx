@@ -56,7 +56,7 @@ function LoginPage() {
     const email = res.profileObj.email;
     dispatch(setEmail(email));
     const username = res.profileObj.name;
-    console.log(email);
+    //console.log(email);
     dispatch(setUsername(username));
     try {
       const response = await axios.post(`${APIURL}/auth/oauth/google/login`, {
@@ -78,11 +78,11 @@ function LoginPage() {
         dispatch(setRefreshToken(refreshToken));
         dispatch(setId(id));
         dispatch(setAuthType('GOOGLE'));
-        console.log(accessToken);
-        console.log(refreshToken);
+        //console.log(accessToken);
+        //console.log(refreshToken);
 
-        console.log(id);
-        console.log('로그인 성공! 현재 유저: ', res.profileObj);
+        //console.log(id);
+        //console.log('로그인 성공! 현재 유저: ', res.profileObj);
         dispatch(login());
         navigate('/');
       }
@@ -113,8 +113,8 @@ function LoginPage() {
         password: password,
       });
 
-      console.log(mail);
-      console.log(password);
+      //console.log(mail);
+      //console.log(password);
 
       if (response.status === 200) {
         const authHeader = response.headers['authorization'];
@@ -132,8 +132,8 @@ function LoginPage() {
           refreshToken = refreshHeader;
         }
 
-        console.log(accessToken); // 액세스 토큰 값
-        console.log(refreshToken); // 리프레시 토큰 값
+        //console.log(accessToken); // 액세스 토큰 값
+        //console.log(refreshToken); // 리프레시 토큰 값
 
         localStorage.setItem('accessToken', accessToken);
         localStorage.setItem('refreshToken', refreshToken);

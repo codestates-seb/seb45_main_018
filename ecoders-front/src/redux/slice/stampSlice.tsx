@@ -21,7 +21,7 @@ const stampSlice = createSlice({
     reducers: {
         setCompletes: (state, action: PayloadAction<Complete[]>) => {
             state.completes = action.payload;
-        }
+        },
     }
 })
 

@@ -14,6 +14,7 @@ function MyMissionList () {
 
     const apiUrl = useSelector((state:RootState) => state.api.APIURL);
     const missions = useSelector((state: RootState) => state.myMissions.missions);
+    console.log(missions)
 
 
 
@@ -33,10 +34,10 @@ function MyMissionList () {
         }
     }, []);
 
-    const toggleHandler = async (id: number) => {
+    const toggleHandler = async (my_mission_id: number) => {
         try {
             // 현재 미션 찾기
-            const mission = missions.find((mission) => mission.id === id);
+            const mission = missions.find((mission) => mission.my_mission_id === my_mission_id);
 
             if (mission) {
                 // completed 값 변경
@@ -44,22 +45,23 @@ function MyMissionList () {
 
                 // 서버 요청
                 const response = await axios.patch(
-                    `${apiUrl}/mission/my_mission/complete/${id}`, {
+                    `${apiUrl}/mission/my_mission/complete/${my_mission_id}`, {
                         isCompleted: updatedCompleted,
                     },
                     {
                     headers: {
                         "Content-Type" : "application/json",
                         Authorization: `${localStorage.getItem('accessToken')}`,
+                        'Refresh-Token': `${localStorage.getItem('refreshToken')}`,
                     },
                     }
                 );
 
                 if (response.status === 200) {
-                    console.log(`미션 ${id}를 업데이트했습니다.`);
-                    dispatch(toggleMission(id));
+                    console.log(`미션 ${my_mission_id}를 업데이트했습니다.`);
+                    dispatch(toggleMission(my_mission_id));
                 } else {
-                    console.error(`미션 ${id} 업데이트 오류가 발생했습니다.`);
+                    console.error(`미션 ${my_mission_id} 업데이트 오류가 발생했습니다.`);
                 }
             }
         } catch (error) {
@@ -67,63 +69,65 @@ function MyMissionList () {
         }
     };
 
-    const editHandler = (id: number) => {
-        setEditedId(id);
+    const editHandler = (my_mission_id: number) => {
+        setEditedId(my_mission_id);
 
-        const editedMission = missions.find((mission) => mission.id === id);
+        const editedMission = missions.find((mission) => mission.my_mission_id === my_mission_id);
 
         if (editedMission) {
             setEditedText(editedMission.text);
         }
     };
 
-    const saveHandler = async (id: number) => {
+    const saveHandler = async (my_mission_id: number) => {
         try {
             // 수정 텍스트 서버 업데이트
             const response = await axios.patch(
-              `${apiUrl}/mission/my_mission/${id}`,
+              `${apiUrl}/mission/my_mission/${my_mission_id}`,
               {
                 text: editedText,
               },
               {
                 headers: {
                   Authorization: `${localStorage.getItem('accessToken')}`,
+                  'Refresh-Token': `${localStorage.getItem('refreshToken')}`,
                 },
               }
             );
 
             if (response.status === 200) {
               // 서버 요청 성공 -> redux 상태 업데이트
-              console.log(`미션 ${id}를 업데이트했습니다.`);
-              dispatch(updateMissionText({ id, text: editedText }));
+              console.log(`미션 ${my_mission_id}를 업데이트했습니다.`);
+              dispatch(updateMissionText({ my_mission_id, text: editedText }));
               setEditedId(null);
               setEditedText('');
             } else {
-              console.error(`미션 ${id}를 업데이트하는 중 오류가 발생했습니다.`);
+              console.error(`미션 ${my_mission_id}를 업데이트하는 중 오류가 발생했습니다.`);
             }
           } catch (error) {
             console.error(`오류가 발생했습니다.`, error);
           }
     };
 
-    const deleteHandler = async (id: number) => {
+    const deleteHandler = async (my_mission_id: number) => {
         try {
             // 서버에서 삭제
             const response = await axios.delete(
-              `${apiUrl}/mission/my_mission/${id}`,
+              `${apiUrl}/mission/my_mission/${my_mission_id}`,
               {
                 headers: {
                   Authorization: `${localStorage.getItem('accessToken')}`,
+                  'Refresh-Token': `${localStorage.getItem('refreshToken')}`,
                 },
               }
             );
 
             if (response.status === 204) {
-              console.log(`미션 ${id}를 삭제했습니다.`);
+              console.log(`미션 ${my_mission_id}를 삭제했습니다.`);
                 // redux에서 삭제
-                dispatch(deleteMission(id));
+                dispatch(deleteMission(my_mission_id));
             } else {
-              console.error(`미션 ${id}를 삭제하는 중 오류가 발생했습니다.`);
+              console.error(`미션 ${my_mission_id}를 삭제하는 중 오류가 발생했습니다.`);
             }
           } catch (error) {
             console.error(`오류가 발생했습니다.`, error);
@@ -134,48 +138,48 @@ function MyMissionList () {
         <Container>
             <MissionList>
                 {missions.map((mission) => (
-                    <React.Fragment key={mission.id}>
+                    <React.Fragment key={mission.my_mission_id}>
                         {mission.completed ? (
                             <CompleteMission
-                                onClick={() => toggleHandler(mission.id)}>
+                                onClick={() => toggleHandler(mission.my_mission_id)}>
                                         {mission.text}
                                     <BsFillCheckCircleFill
                                         style ={{ color: '#D4FFC0' }}
-                                        onClick={() => toggleHandler(mission.id)} />
+                                        onClick={() => toggleHandler(mission.my_mission_id)} />
                             </CompleteMission>
                         ) : (
                             <Mission
-                                className={editedId === mission.id ? "editing" : ""}
-                                data-mission-id={mission.id}
+                                className={editedId === mission.my_mission_id ? "editing" : ""}
+                                data-mission-id={mission.my_mission_id}
                                 >
-                                        {editedId === mission.id ? (
+                                        {editedId === mission.my_mission_id ? (
                                     <div className="edit-form">
                                         <EditMission
                                             type="text"
                                             value={editedText}
                                             onChange={(e) => setEditedText(e.target.value)}
-                                            onBlur={() => saveHandler(mission.id)}
+                                            onBlur={() => saveHandler(mission.my_mission_id)}
                                             onKeyUp={(e) => {
                                                 if (e.key === "Enter") {
-                                                  saveHandler(mission.id);
+                                                  saveHandler(mission.my_mission_id);
                                                 }}}
                                             ref={inputRef}
                                         />
                                             <FaCircleArrowUp
                                                 className="editing-complete"
                                                 style={{color: '#CCCCCC'}}
-                                                onClick={() => saveHandler(mission.id)} />
+                                                onClick={() => saveHandler(mission.my_mission_id)} />
                                     </div>
                                 ) : (
-                                    <div onClick={() => toggleHandler(mission.id)}>
+                                    <div onClick={() => toggleHandler(mission.my_mission_id)}>
                                         {mission.text}
                                     </div>
                                 )}
                                         <IconWrapper className="icon-wrapper">
-                                            <EditIcon onClick={() => editHandler(mission.id)} />
-                                            <DeleteIcon onClick={() => deleteHandler(mission.id)}/>
+                                            <EditIcon onClick={() => editHandler(mission.my_mission_id)} />
+                                            <DeleteIcon onClick={() => deleteHandler(mission.my_mission_id)}/>
                                         </IconWrapper>
-                                        <CompletedButton onClick={() => toggleHandler(mission.id)} />
+                                        <CompletedButton onClick={() => toggleHandler(mission.my_mission_id)} />
                             </Mission>
                         )}
                     </React.Fragment>

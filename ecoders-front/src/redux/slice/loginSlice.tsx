@@ -25,6 +25,7 @@ const loginSlice = createSlice({
       localStorage.removeItem('refreshToken');
       localStorage.removeItem('id');
       localStorage.removeItem('profileImg');
+      localStorage.removeItem('option');
     },
     clientId: (state, action) => {
       state.clientId = action.payload;

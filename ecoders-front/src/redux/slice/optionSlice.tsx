@@ -15,6 +15,10 @@ const optionSlice = createSlice({
     reducers: {
         setOption: (state, action: PayloadAction<number>) => {
             state.option = action.payload;
+            localStorage.setItem('option', action.payload.toString());
+        },
+        updateOption: (state, action: PayloadAction<number>) => {
+            state.option = action.payload;
         }
     }
     }

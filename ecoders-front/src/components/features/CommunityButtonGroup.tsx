@@ -12,8 +12,10 @@ interface positionSetting {
 type UserState = {
   user: {
     accessToken: string | null;
+    refreshToken: string | null;
     username: string;
     id: string;
+    // id: number;
     stamp: number;
   };
 };

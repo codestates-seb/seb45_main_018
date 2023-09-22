@@ -48,7 +48,7 @@ function Board() {
           .get(`${APIURL}/posts/all?lastPostId=99999&size=20`, {})
           .then(function (response) {
             // response
-            console.log(response.data);
+            //console.log(response.data);
             setPosts(response.data);
             setPage(response.data[response.data.length - 1].postId);
             if (response.data.length < 20) {
@@ -58,18 +58,18 @@ function Board() {
             }
           })
           .catch(function (error) {
-            console.log('게시물 데이터 받아오기 실패');
+            //console.log('게시물 데이터 받아오기 실패');
             console.log(error);
           });
       }
     } else {
       if (page === 99999) {
-        console.log('검색어 입력 후 다시렌더');
+        //console.log('검색어 입력 후 다시렌더');
         axios
           .get(`${APIURL}/posts/all?lastPostId=99999&size=20&keyword=${keyWord}`)
           .then(function (response) {
             // response
-            console.log(response.data);
+            //console.log(response.data);
             setPosts(response.data);
             setPage(response.data[response.data.length - 1].postId);
             if (response.data.length < 20) {
@@ -79,7 +79,7 @@ function Board() {
             }
           })
           .catch(function (error) {
-            console.log('게시물 데이터 받아오기 실패');
+            //console.log('게시물 데이터 받아오기 실패');
             console.log(error);
           });
       }
@@ -105,19 +105,19 @@ function Board() {
               .get(`${APIURL}/posts/all?lastPostId=${page}&size=10`)
               .then(function (response) {
                 // response
-                console.log(response.data);
+                //console.log(response.data);
                 setPosts(prevData => [...prevData, ...response.data]);
 
                 if (response.data.length < 10) {
                   setPage(0);
-                  console.log(response.data.length);
+                  //console.log(response.data.length);
                 } else {
                   setPage(response.data[response.data.length - 1].postId);
                 }
                 setIsLoading(false);
               })
               .catch(function (error) {
-                console.log('게시물 데이터 받아오기 실패');
+                //console.log('게시물 데이터 받아오기 실패');
                 console.log(error);
               });
           } else {
@@ -130,19 +130,19 @@ function Board() {
               .get(`${APIURL}/posts/all?lastPostId=${page}&size=10&keyword=${keyWord}`)
               .then(function (response) {
                 // response
-                console.log(response.data);
+                //console.log(response.data);
 
                 setPosts(prevData => [...prevData, ...response.data]);
                 if (response.data.length < 10) {
                   setPage(0);
-                  console.log(response.data.length);
+                  //console.log(response.data.length);
                 } else {
                   setPage(response.data[response.data.length - 1].postId);
                 }
                 setIsLoading(false);
               })
               .catch(function (error) {
-                console.log('게시물 데이터 받아오기 실패');
+                //console.log('게시물 데이터 받아오기 실패');
                 console.log(error);
               });
           } else {
@@ -182,7 +182,7 @@ function Board() {
     if (category === '모집글') {
       setFilteredData(
         post.filter(item => {
-          console.log(item.category);
+          //console.log(item.category);
           return item.category === category;
         }),
       );
